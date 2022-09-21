@@ -120,7 +120,11 @@ class _HomePageState extends State<HomePage> {
             ),
             actions: [
               IconButton(
-                onPressed: (){}, 
+                onPressed: (){
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/pageOne', (Route<dynamic> route) => false
+                  );
+                }, 
                 icon: Icon(
                   Icons.shopping_cart_outlined,
                   color: Colors.blue.shade600,
@@ -136,7 +140,8 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           SliverToBoxAdapter(
-            child: Padding(
+            child: Container(
+              color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 20),
               child: Column(
                 children: [

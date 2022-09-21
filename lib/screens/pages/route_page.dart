@@ -1,12 +1,8 @@
-
-
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/screens/pages/favorite_page.dart';
 import 'package:travelservices/screens/pages/home_page.dart';
-import 'package:travelservices/screens/pages/order_page.dart';
 import 'package:travelservices/screens/pages/profile_page.dart';
 import 'package:travelservices/screens/pages/search_page.dart';
 
@@ -22,14 +18,16 @@ class _RoutePageState extends State<RoutePage> {
     HomePage(),
     SearchPage(),
     FavoritePage(),
-    OrderPage(),
     ProfilePage()
   ];
   int pageIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[pageIndex],
+      body: IndexedStack(
+        index: pageIndex,
+        children: pages, 
+      ), 
       bottomNavigationBar: Container(
         color: bgbottombar, 
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
