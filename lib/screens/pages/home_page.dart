@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/screens/pages/cart_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -121,9 +122,9 @@ class _HomePageState extends State<HomePage> {
             actions: [
               IconButton(
                 onPressed: (){
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/pageOne', (Route<dynamic> route) => false
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return const CartPage();
+                  }));
                 }, 
                 icon: Icon(
                   Icons.shopping_cart_outlined,
