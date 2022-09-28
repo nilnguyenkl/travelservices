@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pinput/pinput.dart';
+import 'package:travelservices/screens/arguments/signupform.dart';
 
 class VerifyPhonePage extends StatefulWidget {
   const VerifyPhonePage({Key? key}) : super(key: key);
@@ -9,8 +12,34 @@ class VerifyPhonePage extends StatefulWidget {
 }
 
 class _VerifyPhonePageState extends State<VerifyPhonePage> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var codeSMS = "";
   @override
   Widget build(BuildContext context) {
+    final formData = ModalRoute.of(context)!.settings.arguments as SignUpForm;
+    final defaultPinTheme = PinTheme(
+      width: 56,
+      height: 56,
+      textStyle: const TextStyle(
+          fontSize: 20,
+          color: Color.fromRGBO(30, 60, 87, 1),
+          fontWeight: FontWeight.w600),
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
+            borderRadius: BorderRadius.circular(20),
+          ),
+        );
+
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      border: Border.all(color: const Color.fromRGBO(114, 178, 238, 1)),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration?.copyWith(
+        color: const Color.fromRGBO(234, 239, 243, 1),
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -69,144 +98,87 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                 )
               ),
               const SizedBox(height: 40),
-              Form(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          height: 68,
-                          width: 64,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5)
-                              ),
+              
+              Column(
+                children: [
+                  Pinput(
+                    length: 6,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: focusedPinTheme,
+                    submittedPinTheme: submittedPinTheme,
+                    showCursor: true,
+                    onChanged: (value) {
+                      setState(() {
+                        codeSMS = value;
+                        print("${codeSMS.toString()}");
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 100),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.35,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: (){},
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
                             ),
-                            style: Theme.of(context).textTheme.headline6,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(1),
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 68,
-                          width: 64,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                            ),
-                            style: Theme.of(context).textTheme.headline6,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(1),
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 68,
-                          width: 64,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                            ),
-                            style: Theme.of(context).textTheme.headline6,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(1),
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 68,
-                          width: 64,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5)
-                              ),
-                            ),
-                            style: Theme.of(context).textTheme.headline6,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(1),
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textInputAction: TextInputAction.done,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 100),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width*0.35,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: (){},
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
-                              ),
-                              backgroundColor: MaterialStateProperty.all(Colors.grey.shade400)
-                            ), 
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 15, bottom: 15),
-                              child: Text(
-                                "Resend",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold
-                                ),
+                            backgroundColor: MaterialStateProperty.all(Colors.grey.shade400)
+                          ), 
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Text(
+                              "Resend",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width*0.35,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: (){},
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
-                              ),
-                              backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
-                            ), 
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 15, bottom: 15),
-                              child: Text(
-                                "Confirm",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold
-                                ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.35,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            print("======== ${formData.codeSMS}");
+                            print("===== ${codeSMS.toString()}");
+                            PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: formData.codeSMS, smsCode: codeSMS);
+                            
+                            // await auth.signInWithCredential(credential).then((value) {
+                            //   if (value.user != null) {
+                            //     print("Success");
+                            //   } else {
+                            //     print("Failed");
+                            //   }
+                            // });
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                            ),
+                            backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
+                          ), 
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Text(
+                              "Confirm",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
-                        )
-                      ],    
-                    )
-                  ],
-                )
+                        ),
+                      )
+                    ],    
+                  )
+                ],
               )
             ]
           ),
