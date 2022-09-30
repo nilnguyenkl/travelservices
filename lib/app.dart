@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
 import 'package:travelservices/repositories/auth_repositories.dart';
 import 'package:travelservices/routes.dart';
-import 'package:travelservices/screens/pages/signup_page.dart';
+import 'package:travelservices/screens/pages/route_page.dart';
 import 'package:travelservices/screens/pages/verify_phone_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => SignUpBloc(authRepo: context.read<AuthRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => NavbarBloc(),
           )
         ],
         child: MaterialApp(
@@ -28,7 +32,7 @@ class MyApp extends StatelessWidget {
             Routes.verifyPhone: (context) => const VerifyPhonePage()
           },
           debugShowCheckedModeBanner: false,
-          home: SignUpPage()
+          home: RoutePage()
         ),
       )
     );

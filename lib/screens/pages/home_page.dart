@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_event.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
@@ -86,31 +90,42 @@ class _HomePageState extends State<HomePage> {
                 alignment: Alignment.bottomCenter,
                 padding: const EdgeInsets.symmetric(horizontal: paddingWidth/2),
                 height: 50,
-                child: TextField(
-                  style: const TextStyle(
-                    fontSize: 14
-                  ),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(4),
-                    filled: true,
-                    fillColor: searchbar,
-                    prefixIcon: const Icon(
-                      Icons.search_outlined,
-                      color: Colors.black,
-                    ),
-                    suffixIcon: null,
-                    hintText: "Tìm kiếm",
-                    hintStyle: const TextStyle(
-                      color: hintText,
-                      fontSize: 14
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide.none
-                    )
-                  ),
-                ),
+                child: BlocBuilder<NavbarBloc, NavbarState>(
+                  builder:(context, state) {
+                    return Focus(
+                      onFocusChange: (value) {
+                        if (value) {
+                          context.read<NavbarBloc>().add(NavbarSearchPageEvent(true));
+                        }
+                      },
+                      child: TextField(
+                        style: const TextStyle(
+                          fontSize: 14
+                        ),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.all(4),
+                          filled: true,
+                          fillColor: searchbar,
+                          prefixIcon: const Icon(
+                            Icons.search_outlined,
+                            color: Colors.black,
+                          ),
+                          suffixIcon: null,
+                          hintText: "Tìm kiếm",
+                          hintStyle: const TextStyle(
+                            color: hintText,
+                            fontSize: 14
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide.none
+                          )
+                        ),
+                      ),
+                    );
+                  },
+                )          
               ),
             ),  
             title: Text(
