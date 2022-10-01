@@ -4,12 +4,12 @@ import 'package:travelservices/models/signup_model.dart';
 
 class Api {
   final Dio _dio = Dio();
-  static String url = "http://192.168.1.5:8087/";
+  static String url = "http://192.168.1.7:8087/";
 
-  Future<Response> getRequest(String url, String path, bool authorization) async {
+  Future<Response> getRequest(String url, String endpoint) async {
     Response response;
     try {
-      response = await _dio.get(url + path);
+      response = await _dio.get(url + endpoint);
     } on DioError catch (e) {
       throw Exception(e.message);
     }

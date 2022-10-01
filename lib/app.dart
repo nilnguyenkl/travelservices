@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/area_bloc/area_bloc.dart';
+import 'package:travelservices/blocs/area_bloc/area_event.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
+import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
+import 'package:travelservices/repositories/area_repositories.dart';
 import 'package:travelservices/repositories/auth_repositories.dart';
+import 'package:travelservices/repositories/product_repositories.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/pages/route_page.dart';
 import 'package:travelservices/screens/pages/verify_phone_page.dart';
@@ -16,7 +21,13 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider(
           create: (context) => AuthRepository()
-        )
+        ),
+        RepositoryProvider(
+          create: (context) => AreaRepository()
+        ),
+        RepositoryProvider(
+          create: (context) => ProductRepository()
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -25,6 +36,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => NavbarBloc(),
+          ),
+          BlocProvider(
+            create: (context) => AreaBloc()..add(AreaLoadEvent())
+          ),
+          BlocProvider(
+            create: (context) => SearchBloc()
           )
         ],
         child: MaterialApp(
@@ -32,7 +49,7 @@ class MyApp extends StatelessWidget {
             Routes.verifyPhone: (context) => const VerifyPhonePage()
           },
           debugShowCheckedModeBanner: false,
-          home: RoutePage()
+          home: const RoutePage()
         ),
       )
     );
