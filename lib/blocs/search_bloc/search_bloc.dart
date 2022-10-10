@@ -31,7 +31,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(state.copyWith(products: data));
     emit(state.copyWith(statusSearch: true));
 
-    print(data);
+    
 
   }
 

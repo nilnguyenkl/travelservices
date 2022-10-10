@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_nav_bar: ^5.0.6
   badges: ^2.0.3
+  carousel_slider: ^4.1.1
+  flutter_rating_bar: ^4.0.1
   equatable: ^2.0.3
   bloc: ^8.0.3
   flutter_bloc: ^8.0.1
@@ -44,6 +46,7 @@ dependencies:
   pinput: ^2.2.12
   firebase_core: ^1.23.0
   firebase_auth: ^3.10.0
+  google_maps_flutter: ^2.2.1
 
 dev_dependencies:
   flutter_test:

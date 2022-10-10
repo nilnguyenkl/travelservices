@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
+import 'package:travelservices/blocs/category_bloc/category_state.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_event.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_state.dart';
@@ -15,60 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map<String,String>> listCategory = [
-    {
-      "url" : "assets/images/categories/ticket.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/mountain.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/spa.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/event.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/balloon.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/ticket.png",
-      "name" : "Tham quan"
-    },
-    {
-      "url" : "assets/images/categories/mountain.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/spa.png",
-      "name" :"Tham quan"
-    },
-    {
-      "url" : "assets/images/categories/event.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/balloon.png",
-      "name" : "Tham quan"
-    },
-    {
-      "url" : "assets/images/categories/ticket.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/mountain.png",
-      "name" : "Vé vui chơi, tham quan"
-    },
-    {
-      "url" : "assets/images/categories/mountain.png",
-      "name" : "Vé vui chơi, tham quan"
-    }
-  ];
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -176,127 +124,93 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget categoriesOption() {
-    return SizedBox(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 200,
-            child: PageView(
-              onPageChanged: (value) {
-                setState(() {
-                  currentIndex = value;
-                });
-              },
-              scrollDirection: Axis.horizontal,
-              children: [
-                SizedBox(
-                  child: GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 4,
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 2,
-                    children: List.generate(8, (index) {
-                      return InkWell(    
-                        onTap: (){
-                          print(index);
-                        },
-                        child: SizedBox(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Image.asset(
-                                  listCategory[index]["url"].toString(), 
-                                  color: Colors.blue.shade600,
-                                  height: 40,
-                                  width: 40,
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  listCategory[index]["name"].toString(),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold
+    return BlocBuilder<CategoryBloc, CategoryState>(
+      builder:(context, state) {
+        return SizedBox(
+          child: Column(
+            children: [
+              SizedBox(
+                height: state.categories.length > 4 ? 200 : 100,
+                child: PageView(
+                  onPageChanged: (value) {
+                    setState(() {
+                      currentIndex = value;
+                    });
+                  },
+                  scrollDirection: Axis.horizontal,
+                  children: List.generate(state.categories.length > 8 ? 2 : 1, (index) {
+                    return SizedBox(
+                      child: GridView.count(
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
+                        children: List.generate(state.categories.length, (index) {
+                          return InkWell(    
+                            onTap: (){
+                              print(index);
+                            },
+                            child: SizedBox(
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Image.network(
+                                      state.categories[index].icon.toString(), 
+                                      color: Colors.blue.shade600,
+                                      height: 40,
+                                      width: 40,
+                                    ),
                                   ),
-                                )
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    })
-                  ),
-                ),
-                SizedBox(
-                  child: GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 4, 
-                    children: List.generate(listCategory.length-8, (index) {
-                      return InkWell(
-                        onTap: (){
-                          print(index);
-                        },
-                        child: SizedBox(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Image.asset(
-                                  listCategory[index+8]["url"].toString(), 
-                                  color: Colors.blue.shade600,
-                                  height: 40,
-                                  width: 40,
-                                ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      state.categories[index].name.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    )
+                                  )
+                                ],
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  listCategory[index+8]["name"].toString(),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    })
-                  ),
+                            ),
+                          );
+                        })
+                      ),
+                    );
+                  })
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Container(
-              width: 30,
-              height: 4,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                color: Colors.grey,
               ),
-              child: AnimatedAlign(
-                alignment: currentIndex == 0 ? Alignment.centerLeft : Alignment.centerRight, 
-                curve: Curves.fastOutSlowIn,
-                duration: const Duration(milliseconds: 400),
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
                 child: Container(
-                  width: 15,
+                  width: state.categories.length > 8 ? 30 : 15,
                   height: 4,
                   decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: Colors.blue.shade600,
+                    borderRadius: BorderRadius.circular(2),
+                    color: Colors.grey,
+                  ),
+                  child: AnimatedAlign(
+                    alignment: currentIndex == 0 ? Alignment.centerLeft : Alignment.centerRight, 
+                    curve: Curves.fastOutSlowIn,
+                    duration: const Duration(milliseconds: 400),
+                    child: Container(
+                      width: 15,
+                      height: 4,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      color: Colors.blue.shade600,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
+      }
+    ); 
   }
 
   Widget areaFavorite(BuildContext context) {

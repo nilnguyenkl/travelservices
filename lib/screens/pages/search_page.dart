@@ -9,6 +9,9 @@ import 'package:travelservices/blocs/search_bloc/search_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/product_model.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/idarguments.dart';
+import 'package:travelservices/screens/pages/product_details.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -101,8 +104,7 @@ class _SearchPageState extends State<SearchPage> {
                   print("Status: ${state.statusSearch}");
                   if (state.statusSearch) {
                     return Column(
-                      children: [
-                        
+                      children: [     
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -230,120 +232,125 @@ class _SearchPageState extends State<SearchPage> {
           children: List.generate(data.length, (index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 5),
-              child: Card(
-                color: Colors.transparent,
-                elevation: 0,
-                child: SizedBox(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.width*2/2.5,
-                  child: Column(
-                    children: [
-                      Stack(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 230,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              image: DecorationImage(
-                                image: NetworkImage(data[index].image ?? productImgDefault),
-                                fit: BoxFit.fitWidth,
-                                opacity: 0.9
-                              )
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].id));     
+                },
+                child: Card(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.width*2/2.5,
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: 230,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                image: DecorationImage(
+                                  image: NetworkImage(data[index].image ?? productImgDefault),
+                                  fit: BoxFit.fitWidth,
+                                  opacity: 0.9
+                                )
+                              ),
                             ),
-                          ),
-                          Positioned(
-                            top: 5,
-                            left: 5,
-                            right: 5,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on_outlined,
+                            Positioned(
+                              top: 5,
+                              left: 5,
+                              right: 5,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.blue.shade600,
+                                        size: 30,
+                                      ),
+                                      Container(
+                                        width: 290,
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: const Text(
+                                          "xa Khanh Lam, huyen U Minh, tinh Ca Mauuuuuuu",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  IconButton(
+                                    onPressed: (){},
+                                    icon: Icon(
+                                      Icons.favorite_outline,
                                       color: Colors.blue.shade600,
                                       size: 30,
                                     ),
-                                    Container(
-                                      width: 290,
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: const Text(
-                                        "xa Khanh Lam, huyen U Minh, tinh Ca Mauuuuuuu",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16
-                                        ),
-                                      ),
-                                    )
-                                  ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(minHeight: 60),
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                child: Text(
+                                  data[index].name ?? productNameDefault,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: titleTextSize),
                                 ),
-                                IconButton(
-                                  onPressed: (){},
-                                  icon: Icon(
-                                    Icons.favorite_outline,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
                                     color: Colors.blue.shade600,
-                                    size: 30,
+                                    size: 18,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(minHeight: 60),
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.only(top: 5, bottom: 5),
-                              child: Text(
-                                data[index].name ?? productNameDefault,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: titleTextSize),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.blue.shade600,
-                                  size: 18,
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(left: 2),
-                                  child: Text(
-                                    "4.5 (${data[index].reviews}) | ${data[index].orders} đã đặt",
-                                    style: const TextStyle(
-                                      fontSize: 14
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 2),
+                                    child: Text(
+                                      "4.5 (${data[index].reviews}) | ${data[index].orders} đã đặt",
+                                      style: const TextStyle(
+                                        fontSize: 14
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "${data[index].ticket.first.value.toString()} VND",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: titleTextSize
+                                  )
+                                ],
                               ),
                             ),
-                          )           
-                        ],
-                      )
-                    ],
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "${data[index].ticket.first.value.toString()} VND",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: titleTextSize
+                                ),
+                              ),
+                            )           
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              )
             );
           })
         ),
