@@ -11,8 +11,7 @@ class NavbarHomePageEvent extends NavbarEvent {
 }
 
 class NavbarSearchPageEvent extends NavbarEvent {
-  final bool status;
-  NavbarSearchPageEvent(this.status);
+  NavbarSearchPageEvent();
 }
 
 class NavbarFavoritePageEvent extends NavbarEvent {
@@ -21,4 +20,8 @@ class NavbarFavoritePageEvent extends NavbarEvent {
 
 class NavbarProfilePageEvent extends NavbarEvent {
   NavbarProfilePageEvent();
+}
+
+class NavbarSearchStatusEvent extends NavbarEvent {
+  NavbarSearchStatusEvent();
 }

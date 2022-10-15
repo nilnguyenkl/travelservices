@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:travelservices/blocs/area_bloc/area_bloc.dart';
 import 'package:travelservices/blocs/area_bloc/area_state.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_state.dart';
 import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
 import 'package:travelservices/blocs/search_bloc/search_event.dart';
 import 'package:travelservices/blocs/search_bloc/search_state.dart';
@@ -11,7 +14,6 @@ import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/product_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/idarguments.dart';
-import 'package:travelservices/screens/pages/product_details.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -21,9 +23,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  
   FocusNode searchClick = FocusNode();
   TextEditingController searchController = TextEditingController();
-  bool status = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ) : Row(
                       children: [
-                        Expanded(
+                        Flexible(
                           child: TextField(
                             autofocus: true,
                             controller: searchController,
@@ -84,6 +86,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             onSubmitted: (value) {
                               context.read<SearchBloc>().add(SearchStringEvent(value));
+                              context.read<SearchBloc>().add(SearchLoadEvent());
                             },
                           ),
                         ),
@@ -101,7 +104,6 @@ class _SearchPageState extends State<SearchPage> {
               ),
               BlocBuilder<SearchBloc, SearchState>(
                 builder:(context, state) {
-                  print("Status: ${state.statusSearch}");
                   if (state.statusSearch) {
                     return Column(
                       children: [     
@@ -185,7 +187,7 @@ class _SearchPageState extends State<SearchPage> {
                                                   title: Text('adasdsd'),
                                                   value: true, 
                                                   onChanged: (value) {
-
+                                                    // 
                                                   }
                                                 ),
                                               ],
@@ -285,14 +287,34 @@ class _SearchPageState extends State<SearchPage> {
                                       )
                                     ],
                                   ),
-                                  IconButton(
-                                    onPressed: (){},
-                                    icon: Icon(
-                                      Icons.favorite_outline,
-                                      color: Colors.blue.shade600,
-                                      size: 30,
-                                    ),
-                                  ),
+                                  BlocBuilder<FavoriteBloc, FavoriteState>(
+                                    builder:(context, state) {
+                                      var contain = state.favorites.where((element) => element.idService == data[index].id);
+                                      if (contain.isEmpty) {
+                                        return IconButton(
+                                          onPressed: (){
+                                            context.read<FavoriteBloc>().add(FavoriteAddEvent(idProduct: data[index].id));
+                                          },
+                                          icon: Icon(
+                                            Icons.favorite_outline,
+                                            color: Colors.blue.shade600,
+                                            size: 30,
+                                          ),
+                                        );
+                                      } else {
+                                        return IconButton(
+                                          onPressed: (){
+                                            context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: data[index].id));
+                                          },
+                                          icon: Icon(
+                                            Icons.favorite,
+                                            color: Colors.blue.shade600,
+                                            size: 30,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  )
                                 ],
                               ),
                             ),

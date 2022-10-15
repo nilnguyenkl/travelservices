@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 
@@ -34,107 +38,113 @@ class _FavoritePageState extends State<FavoritePage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: List.generate(8, (index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: Card(
-                    color: Colors.transparent,
-                    elevation: 0,
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.width*2/2.5,
-                      child: Column(
-                        children: [
-                          Stack(
+        body: BlocBuilder<FavoriteBloc, FavoriteState>(
+          builder:(context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: List.generate(state.favorites.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Card(
+                        color: Colors.transparent,
+                        elevation: 0,
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.width*2/2.5,
+                          child: Column(
                             children: [
-                              Container(
-                                width: double.infinity,
-                                height: 230,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/images/test2.jpg"),
-                                    fit: BoxFit.fitWidth
-                                  )
-                                ),
-                              ),
-                              Positioned(
-                                top: 5,
-                                right: 5,
-                                child: IconButton(
-                                  onPressed: (){},
-                                  icon: Icon(
-                                    Icons.favorite_outline,
-                                    color: Colors.blue.shade600,
-                                    size: 30,
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    height: 230,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      image: DecorationImage(
+                                        image: NetworkImage(state.favorites[index].image),
+                                        fit: BoxFit.fitWidth
+                                      )
+                                    ),
                                   ),
-                                ),
+                                  Positioned(
+                                    top: 5,
+                                    right: 5,
+                                    child: IconButton(
+                                      onPressed: (){
+                                        context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: state.favorites[index].idService));
+                                      },
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        color: Colors.blue.shade600,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              Column(
+                                children: [
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(minHeight: 60),
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                      child: Text(
+                                        state.favorites[index].name,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(fontSize: titleTextSize),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.blue.shade600,
+                                          size: 18,
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.only(left: 2),
+                                          child: Text(
+                                            "${state.favorites[index].pointReviews.toString()} (${state.favorites[index].reviews}) | ${state.favorites[index].orders} đã đặt",
+                                            style: const TextStyle(
+                                              fontSize: 14
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "${state.favorites[index].minPrice} VND",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: titleTextSize
+                                      ),
+                                    ),
+                                  )           
+                                ],
+                              )
                             ],
                           ),
-                          Column(
-                            children: [
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(minHeight: 60),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.only(top: 5, bottom: 5),
-                                  child: const Text(
-                                    "Vé ăn tối thuyền Nữ Hoàng Đông Dương | Hồ Chí Minh | Quận Gò Vấp",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: titleTextSize),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.star,
-                                      color: Colors.blue.shade600,
-                                      size: 18,
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(left: 2),
-                                      child: const Text(
-                                        "4.5 (512) | 230000 đã đặt",
-                                        style: TextStyle(
-                                          fontSize: 14
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: const Text(
-                                  "1.420.000 VND",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: titleTextSize
-                                  ),
-                                ),
-                              )           
-                            ],
-                          )
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              })
-            ),  
-          ),
-        ),
+                    );
+                  })
+                ),  
+              ),
+            );
+          },
+        )
       )
     );  
   }

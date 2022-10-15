@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
+import 'package:travelservices/blocs/login_bloc/login_event.dart';
+import 'package:travelservices/blocs/login_bloc/login_state.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/pages/route_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -8,6 +14,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _keyLoginForm = GlobalKey<FormState>();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,56 +32,90 @@ class _LoginPageState extends State<LoginPage> {
                 height: 200,
               ),
               Form(
+                key: _keyLoginForm,
                 child: Column(
                   children: [
-                    // SizedBox(height: 320,),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        prefixIcon: const Icon(Icons.person),
-                        label: const Text("Username"),
-                      ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(height: 30),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        prefixIcon: const Icon(Icons.key),
-                        suffixIcon: Icon(Icons.remove_red_eye),
-                        label: const Text("Password")
-                      ),
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
-                    ),
-                    const SizedBox(height: 30),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: (){},
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context, state) {
+                        return TextFormField(
+                          controller: usernameController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15)
+                            ),
+                            prefixIcon: const Icon(Icons.person),
+                            label: const Text("Username"),
                           ),
-                          backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
-                        ), 
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15, bottom: 15),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
+                        );
+                      }
+                    ),
+                    const SizedBox(height: 30),
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context, state) {
+                        return TextFormField(
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15)
+                            ),
+                            prefixIcon: const Icon(Icons.key),
+                            suffixIcon: Icon(Icons.remove_red_eye),
+                            label: const Text("Password")
+                          ),
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
+                        );
+                      }
+                    ),
+                    const SizedBox(height: 30),
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context,state) {
+                        if (state.status is SubmittingStatus) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (state.status is FailedStatus) {
+                          
+                        }
+                        if (state.status is SuccessStatus) {
+                          Future.delayed(Duration.zero, () {
+                            Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
+                          });
+                        }
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: (){
+                              if (_keyLoginForm.currentState!.validate()){
+                                
+                                context.read<LoginBloc>().add(LoginUsernameEvent(usernameController.text));
+                                context.read<LoginBloc>().add(LoginPasswordEvent(passwordController.text));
+
+                                context.read<LoginBloc>().add(LoginSubmitEvent());
+                              
+                              }
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                              ),
+                              backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
+                            ), 
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 15, bottom: 15),
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      }
                     ),
                     Container(
                       alignment: Alignment.centerRight,

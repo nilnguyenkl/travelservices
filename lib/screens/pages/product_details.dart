@@ -1,19 +1,20 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_bloc.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_event.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_state.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/product_details_model.dart';
+import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/idarguments.dart';
-import 'package:travelservices/screens/pages/cart_page.dart';
-import 'package:travelservices/screens/pages/test.dart';
+import 'package:travelservices/screens/arguments/list_reviews_details_arguments.dart';
 import 'package:travelservices/screens/widgets/delegate_list_widget.dart';
 import 'package:travelservices/screens/widgets/get_box_offse_widget.dart';
+import 'package:travelservices/screens/widgets/map_custom_widget.dart';
 
 
 
@@ -26,19 +27,10 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
 
-  List<Map<String, String>> list = [
-    {
-      'name' : 'assets/images/ct.jpg'
-    },
-    {
-      'name' : 'assets/images/hcm.jpg'
-    }
-  ];
-
   late List<Map<String, dynamic>> items;
   late ScrollController scrollController;
   ProductDetailsBloc bloc = ProductDetailsBloc();
-
+  late Map<String, double> latlng;
   @override
   void initState() {
     scrollController = ScrollController();
@@ -83,10 +75,11 @@ class _ProductDetailsState extends State<ProductDetails> {
       builder:(context, state) {
         if (state.getLoading) {
           return Text('asdasd');
-        } else {
+        } else { 
           
           List<GalleryDetailsModel> list = state.productDetails?.galleries ?? <GalleryDetailsModel>[];
           List<ReviewProductDetailsModel> listReviews = state.productDetails?.reviews ?? <ReviewProductDetailsModel>[];
+          String address = state.productDetails?.address ?? "";
 
           return Scaffold(
             body: SafeArea(
@@ -133,9 +126,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                         actions: [
                           IconButton(
                             onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return MapSample();
-                              }));
+                              // Navigator.push(context, MaterialPageRoute(builder: (context){
+                              //   return MapSample();
+                              // }));
                             }, 
                             icon: Icon(
                               Icons.shopping_cart_outlined,
@@ -313,7 +306,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 10),
-                                        child: Text('adasdsad')
+                                        child: address.isEmpty ? 
+                                          Text("adasd") : 
+                                          SizedBox(
+                                            height: 400,
+                                            width: double.infinity,
+                                            child: MapCustom(text: state.productDetails!.address.toString(), title: state.productDetails!.address.toString())
+                                          )   
                                       )     
                                     ],
                                   ),
@@ -525,7 +524,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         width: double.infinity,
                                         alignment: Alignment.center,
                                         child: TextButton(
-                                          onPressed: (){}, 
+                                          onPressed: (){
+                                            Navigator.pushNamed(context, Routes.reviewsDetails, arguments: ReviewsDetailsArgument(listReviews));
+                                          }, 
                                           child: const Text('Xem thêm')
                                         ),
                                       )    
@@ -563,6 +564,22 @@ class _ProductDetailsState extends State<ProductDetails> {
         return "$firstname $lastname";
       }
     }
+  }
+
+  Future<Map<String, double>> getAddressFromText(String text) async {
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    List<Location> locations = await locationFromAddress(text);
+    
+    print(locations.first.latitude);
+    print(locations.first.longitude);
+
+    return {
+      "latitude" : locations.first.latitude,
+      "longitude" : locations.first.longitude
+    };
   }
 
   Widget carouselElement(String url){

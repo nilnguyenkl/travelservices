@@ -45,7 +45,7 @@ class _RoutePageState extends State<RoutePage> {
                   context.read<NavbarBloc>().add(NavbarHomePageEvent());
                 }
                 if (value == 1) {
-                  context.read<NavbarBloc>().add(NavbarSearchPageEvent(false));
+                  context.read<NavbarBloc>().add(NavbarSearchPageEvent());
                 }
                 if (value == 2) {
                   context.read<NavbarBloc>().add(NavbarFavoritePageEvent());

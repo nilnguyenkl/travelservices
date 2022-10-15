@@ -24,3 +24,7 @@ class SearchFocusEvent extends SearchEvent {
   final bool focusStatus;
   SearchFocusEvent(this.focusStatus);
 }
+
+class SearchLoadEvent extends SearchEvent {
+  SearchLoadEvent();
+}

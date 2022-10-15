@@ -17,7 +17,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,37 +42,35 @@ class _HomePageState extends State<HomePage> {
                 height: 50,
                 child: BlocBuilder<NavbarBloc, NavbarState>(
                   builder:(context, state) {
-                    return Focus(
-                      onFocusChange: (value) {
-                        if (value) {
-                          context.read<NavbarBloc>().add(NavbarSearchPageEvent(true));
-                        }
+                    return GestureDetector(
+                      onTap: (){
+                        context.read<NavbarBloc>().add(NavbarSearchStatusEvent());
+                        context.read<NavbarBloc>().add(NavbarSearchPageEvent());
                       },
-                      child: TextField(
-                        style: const TextStyle(
-                          fontSize: 14
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: searchbar,
+                          borderRadius: BorderRadius.circular(10)
                         ),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: const EdgeInsets.all(4),
-                          filled: true,
-                          fillColor: searchbar,
-                          prefixIcon: const Icon(
-                            Icons.search_outlined,
-                            color: Colors.black,
-                          ),
-                          suffixIcon: null,
-                          hintText: "Tìm kiếm",
-                          hintStyle: const TextStyle(
-                            color: hintText,
-                            fontSize: 14
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide.none
-                          )
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.search_outlined,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Tim kiem",
+                              style: TextStyle(
+                                color: hintText,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400
+                              ),
+                            )
+                          ],
                         ),
-                      ),
+                      )
                     );
                   },
                 )          

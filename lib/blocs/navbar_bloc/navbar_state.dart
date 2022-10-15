@@ -1,9 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:travelservices/screens/pages/favorite_page.dart';
+import 'package:flutter/material.dart';
 import 'package:travelservices/screens/pages/home_page.dart';
-import 'package:travelservices/screens/pages/profile_page.dart';
-import 'package:travelservices/screens/pages/search_page.dart';
 
 
 class NavbarState extends Equatable {
