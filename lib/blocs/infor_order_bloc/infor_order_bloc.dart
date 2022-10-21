@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:travelservices/blocs/infor_order_bloc/infor_order_event.dart';
 import 'package:travelservices/blocs/infor_order_bloc/infor_order_state.dart';
-import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/repositories/auth_repositories.dart';
 import 'package:travelservices/repositories/product_repositories.dart';
-import 'package:travelservices/utils/totalValueTicket.dart';
+import 'package:travelservices/utils/totalValueOrder.dart';
 
 class InforOrderBloc extends Bloc<InforOrderEvent, InforOrderState> {
   AuthRepository authRepo = AuthRepository();
