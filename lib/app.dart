@@ -6,10 +6,11 @@ import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
+import 'package:travelservices/blocs/infor_order_bloc/infor_order_bloc.dart';
+import 'package:travelservices/blocs/infor_order_bloc/infor_order_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
-import 'package:travelservices/blocs/search_bloc/search_event.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
 import 'package:travelservices/repositories/area_repositories.dart';
 import 'package:travelservices/repositories/auth_repositories.dart';
@@ -17,6 +18,7 @@ import 'package:travelservices/repositories/category_repositories.dart';
 import 'package:travelservices/repositories/favorite_repositories.dart';
 import 'package:travelservices/repositories/product_repositories.dart';
 import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/pages/addtocart_page.dart';
 import 'package:travelservices/screens/pages/login_page.dart';
 import 'package:travelservices/screens/pages/product_details.dart';
 import 'package:travelservices/screens/pages/reviews_details_page.dart';
@@ -78,7 +80,8 @@ class MyApp extends StatelessWidget {
             Routes.verifyPhone: (context) => const VerifyPhonePage(),
             Routes.productDetails: (context) => const ProductDetails(),
             Routes.routesPage: (context) => const RoutePage(),
-            Routes.reviewsDetails: (context) => const ReviewsDetailsPage(),  
+            Routes.reviewsDetails: (context) => const ReviewsDetailsPage(),
+            Routes.addToCart: (context) => const AddToCartPage(),   
           },
           debugShowCheckedModeBanner: false,
           home: const LoginPage()

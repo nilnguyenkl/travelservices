@@ -50,6 +50,7 @@ dependencies:
   geolocator: ^9.0.2
   geocoding: ^2.0.1
   shared_preferences: ^2.0.15
+  table_calendar: ^3.0.0
 
 dev_dependencies:
   flutter_test:

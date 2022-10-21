@@ -11,6 +11,7 @@ import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/product_details_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/idarguments.dart';
+import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/list_reviews_details_arguments.dart';
 import 'package:travelservices/screens/widgets/delegate_list_widget.dart';
 import 'package:travelservices/screens/widgets/get_box_offse_widget.dart';
@@ -31,13 +32,15 @@ class _ProductDetailsState extends State<ProductDetails> {
   late ScrollController scrollController;
   ProductDetailsBloc bloc = ProductDetailsBloc();
   late Map<String, double> latlng;
+  late int idService;
   @override
   void initState() {
     scrollController = ScrollController();
     Future.delayed(Duration.zero, () {
       setState(() {
         IdArguments args = ModalRoute.of(context)!.settings.arguments as IdArguments;
-        bloc.add(ProductDetailsLoadEvent(id: args.getId));
+        idService = args.getId;
+        bloc.add(ProductDetailsLoadEvent(id: idService));
       });
     });
     items = [
@@ -539,15 +542,81 @@ class _ProductDetailsState extends State<ProductDetails> {
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
+              ),
+            ),
+            bottomNavigationBar: Container(
+              height: 80,            
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20)
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    IconButton(
+                      onPressed: (){}, 
+                      icon: Icon(
+                        Icons.favorite_outline,
+                        color: Colors.blue.shade600
+                      )
+                    ),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(idService: idService, status: false));
+                      }, 
+                      child: const SizedBox(
+                        height: 50,
+                        width: 120,
+                        child: Center(
+                          child: Text(
+                            "Add to cart",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16
+                            ),
+                          ),
+                        ),
+                      )
+                    ),
+                    ElevatedButton(
+                      onPressed: (){}, 
+                      child: const SizedBox(
+                        height: 50,
+                        width: 120,
+                        child: Center(
+                          child: Text(
+                            "Order",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16
+                            ),
+                          ),
+                        ),
+                      )
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         }  
       },
     ); 
-    
   }
 
   String getValueName(String? firstname, String? lastname) {

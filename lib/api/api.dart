@@ -6,7 +6,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 
 class Api {
   final Dio _dio = Dio();
-  static String url = "http://192.168.1.6:8089/";
+  static String url = "http://192.168.1.8:8089/";
 
   Future<Response> getRequest(String url, String endpoint) async {
     Response response;

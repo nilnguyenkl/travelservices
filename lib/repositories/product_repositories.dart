@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:travelservices/api/api.dart';
+import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/product_details_model.dart';
 import 'package:travelservices/models/product_model.dart';
 
@@ -17,6 +18,12 @@ class ProductRepository {
     Response response;
     response = await api.getRequest(Api.url, endpoint);
     return ProductDetailsModel.fromJson(response.data);
+  }
+
+  Future<InforOrder> getRangeOrder(String endpoint) async {
+    Response response;
+    response = await api.getRequest(Api.url, endpoint);
+    return InforOrder.fromJson(response.data);
   }
   
 }
