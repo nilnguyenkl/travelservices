@@ -16,5 +16,11 @@ class CategoryReadEvent extends CategoryEvent {
   const CategoryReadEvent({
     required this.categories
   });
+}
 
+class CategoryClickEvent extends CategoryEvent {
+  final CategoryData category;
+  const CategoryClickEvent({
+    required this.category
+  });
 }

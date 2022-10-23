@@ -18,3 +18,11 @@ class AreaReadEvent extends AreaEvent {
   });
 
 }
+
+class AreaClickEvent extends AreaEvent {
+  final AreaData area;
+
+  const AreaClickEvent({
+    required this.area
+  });
+}

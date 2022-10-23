@@ -6,26 +6,35 @@ class AreaState extends Equatable {
   final List<AreaData> areas;
   final bool getLoading;
 
+  final bool statusClick;
+  final AreaData? clickArea;
+
   const AreaState({
     required this.areas,
-    required this.getLoading
+    required this.getLoading,
+    required this.statusClick,
+    this.clickArea
   });
 
   factory AreaState.empty() {
-    return const AreaState(areas: <AreaData>[], getLoading: false);
+    return const AreaState(areas: <AreaData>[], getLoading: false, statusClick: false);
   }
 
   AreaState copyWith ({
     List<AreaData>? areas,
-    bool? getLoading
+    bool? getLoading,
+    bool? statusClick,
+    AreaData? clickArea
   }) {
     return AreaState(
       areas: areas ?? this.areas, 
-      getLoading: getLoading ?? this.getLoading
+      getLoading: getLoading ?? this.getLoading,
+      clickArea: clickArea ?? this.clickArea,
+      statusClick: statusClick ?? this.statusClick
     );
   }
 
   @override
-  List<Object?> get props => [areas, getLoading];
+  List<Object?> get props => [areas, getLoading, clickArea, statusClick];
 
 }

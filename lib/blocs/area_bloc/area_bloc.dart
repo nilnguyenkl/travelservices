@@ -11,6 +11,7 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
   AreaBloc() : super(AreaState.empty()){
     on<AreaLoadEvent>(onAreaLoad);
     on<AreaReadEvent>(onAreaRead);
+    on<AreaClickEvent>(onAreaClick);
   }  
 
   void onAreaLoad(AreaLoadEvent event, Emitter<AreaState> emit) async {
@@ -23,5 +24,11 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
 
   void onAreaRead(AreaReadEvent event, Emitter<AreaState> emit) {
     emit(state.copyWith(areas: event.areas));
+  }
+
+
+
+  void onAreaClick(AreaClickEvent event, Emitter<AreaState> emit) {
+    emit(state.copyWith(clickArea: event.area, statusClick: true));
   }
 }

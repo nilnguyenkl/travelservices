@@ -20,6 +20,11 @@ class SearchStringEvent extends SearchEvent {
   SearchStringEvent(this.strSearch);
 }
 
+class SearchSortEvent extends SearchEvent {
+  final String sort;
+  SearchSortEvent(this.sort);
+}
+
 class SearchFocusEvent extends SearchEvent {
   final bool focusStatus;
   SearchFocusEvent(this.focusStatus);
@@ -27,4 +32,18 @@ class SearchFocusEvent extends SearchEvent {
 
 class SearchLoadEvent extends SearchEvent {
   SearchLoadEvent();
+}
+
+class SearchByClickCategoryIconEvent extends SearchEvent{
+  final int idCategory;
+  SearchByClickCategoryIconEvent(this.idCategory);
+}
+
+class SearchByClickAreaIconEvent extends SearchEvent{
+  final int idArea;
+  SearchByClickAreaIconEvent(this.idArea);
+}
+
+class SearchResetEvent extends SearchEvent {
+  SearchResetEvent();
 }

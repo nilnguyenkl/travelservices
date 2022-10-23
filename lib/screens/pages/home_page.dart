@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
+import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/category_bloc/category_state.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_event.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_state.dart';
+import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
+import 'package:travelservices/blocs/search_bloc/search_event.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
@@ -130,7 +133,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               SizedBox(
-                height: state.categories.length > 4 ? 200 : 100,
+                height: state.categories!.length > 4 ? 200 : 100,
                 child: PageView(
                   onPageChanged: (value) {
                     setState(() {
@@ -138,17 +141,19 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   scrollDirection: Axis.horizontal,
-                  children: List.generate(state.categories.length > 8 ? 2 : 1, (index) {
+                  children: List.generate(state.categories!.length > 8 ? 2 : 1, (index) {
                     return SizedBox(
                       child: GridView.count(
                         physics: const NeverScrollableScrollPhysics(),
                         crossAxisCount: 4,
                         mainAxisSpacing: 2,
                         crossAxisSpacing: 2,
-                        children: List.generate(state.categories.length, (index) {
+                        children: List.generate(state.categories!.length, (index) {
                           return InkWell(    
                             onTap: (){
-                              print(index);
+                              context.read<NavbarBloc>().add(NavbarSearchPageEvent());
+                              context.read<SearchBloc>().add(SearchByClickCategoryIconEvent(state.categories![index].id));
+                              context.read<CategoryBloc>().add(CategoryClickEvent(category: state.categories![index]));
                             },
                             child: SizedBox(
                               child: Column(
@@ -156,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                                   Expanded(
                                     flex: 1,
                                     child: Image.network(
-                                      state.categories[index].icon.toString(), 
+                                      state.categories![index].icon.toString(), 
                                       color: Colors.blue.shade600,
                                       height: 40,
                                       width: 40,
@@ -165,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                                   Expanded(
                                     flex: 1,
                                     child: Text(
-                                      state.categories[index].name.toString(),
+                                      state.categories![index].name.toString(),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold
@@ -185,7 +190,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: Container(
-                  width: state.categories.length > 8 ? 30 : 15,
+                  width: state.categories!.length > 8 ? 30 : 15,
                   height: 4,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),

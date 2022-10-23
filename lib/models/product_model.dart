@@ -5,10 +5,11 @@ class ProductData {
 
   final int id;
   final String? name;
+  final String address;
   final String? description;
   final String? image;
-  final CategoryData category;
-  final AreaData area;
+  final CategoryDataP category;
+  final AreaDataP area;
   final List<TicketModel> ticket;
   List<ScheduleModel> schedule;
   final int reviews;
@@ -21,6 +22,7 @@ class ProductData {
     this.name,
     this.description,
     this.image,
+    required this.address,
     required this.category,
     required this.area,
     required this.ticket,
@@ -34,10 +36,11 @@ class ProductData {
     factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
       id: json["id"],
       name: json["name"],
+      address: json["address"],
       description: json["description"],
       image: json["image"],
-      category: CategoryData.fromJson(json["category"]),
-      area: AreaData.fromJson(json["area"]),
+      category: CategoryDataP.fromJson(json["category"]),
+      area: AreaDataP.fromJson(json["area"]),
       ticket: List<TicketModel>.from(json["ticket"].map((x) => TicketModel.fromJson(x))),
       schedule: json["schedule"] != null ? List<ScheduleModel>.from(json["schedule"].map((x) => ScheduleModel.fromJson(x))) : [],
       reviews: json["reviews"],
@@ -49,6 +52,7 @@ class ProductData {
     Map<String, dynamic> toJson() => {
       "id": id,
       "name": name,
+      "address" : address,
       "description": description,
       "image": image,
       "category": category,
@@ -64,17 +68,17 @@ class ProductData {
 }
 
 
-class AreaData {
+class AreaDataP {
   
   final int id;
   final String? name;
   
-  AreaData({
+  AreaDataP({
     required this.id,
     this.name,
   });
 
-  factory AreaData.fromJson(Map<String, dynamic> json) => AreaData(
+  factory AreaDataP.fromJson(Map<String, dynamic> json) => AreaDataP(
     id: json["id"],
     name: json["name"],
   );
@@ -85,17 +89,17 @@ class AreaData {
   };
 }
 
-class CategoryData {
+class CategoryDataP {
   
   final int id;
   final String? name;
   
-  CategoryData({
+  CategoryDataP({
     required this.id,
     this.name,
   });
 
-  factory CategoryData.fromJson(Map<String, dynamic> json) => CategoryData(
+  factory CategoryDataP.fromJson(Map<String, dynamic> json) => CategoryDataP(
     id: json["id"],
     name: json["name"],
   );
