@@ -109,7 +109,23 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   void _onSearchReset(SearchResetEvent event, Emitter<SearchState> emit) {
-    print("asdasdas");
+    emit(state.copyWith(
+      getLoading: false, 
+      statusBar: false, 
+      statusSearch: false,
+      statusAreaSearch: false,
+      statusCategorySearch: false,
+      statusStrSearch: false,
+      statusSearchSort: false,
+      products: const <ProductData>[], 
+      strSearch: '',
+      area: 0,
+      category: 0,
+      sortSearch: '',
+      categoryIsvisible: false,
+      areaIsvisible: false,
+      optionSort: List.generate(4, (index) => false)
+    ));
   }
 
   void _onSeachLoad(SearchLoadEvent event, Emitter<SearchState> emit) async {

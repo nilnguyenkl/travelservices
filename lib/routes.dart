@@ -4,4 +4,5 @@ class Routes{
   static const productDetails = '/productDetails';
   static const reviewsDetails = '/reviewsDetails';
   static const addToCart = '/addToCart';
+  static const login = '/login';
 }

@@ -9,18 +9,13 @@ class CategoryEvent extends Equatable {
 
 class CategoryLoadEvent extends CategoryEvent {}
 
-class CategoryReadEvent extends CategoryEvent {
-  
-  final List<CategoryData> categories;
-
-  const CategoryReadEvent({
-    required this.categories
-  });
-}
-
 class CategoryClickEvent extends CategoryEvent {
   final CategoryData category;
   const CategoryClickEvent({
     required this.category
   });
+}
+
+class CategoryResetEvent extends CategoryEvent{
+  const CategoryResetEvent();
 }

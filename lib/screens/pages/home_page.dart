@@ -10,6 +10,7 @@ import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
 import 'package:travelservices/blocs/search_bloc/search_event.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -129,91 +130,101 @@ class _HomePageState extends State<HomePage> {
   Widget categoriesOption() {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder:(context, state) {
-        return SizedBox(
-          child: Column(
-            children: [
-              SizedBox(
-                height: state.categories!.length > 4 ? 200 : 100,
-                child: PageView(
-                  onPageChanged: (value) {
-                    setState(() {
-                      currentIndex = value;
-                    });
-                  },
-                  scrollDirection: Axis.horizontal,
-                  children: List.generate(state.categories!.length > 8 ? 2 : 1, (index) {
-                    return SizedBox(
-                      child: GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 2,
-                        crossAxisSpacing: 2,
-                        children: List.generate(state.categories!.length, (index) {
-                          return InkWell(    
-                            onTap: (){
-                              context.read<NavbarBloc>().add(NavbarSearchPageEvent());
-                              context.read<SearchBloc>().add(SearchByClickCategoryIconEvent(state.categories![index].id));
-                              context.read<CategoryBloc>().add(CategoryClickEvent(category: state.categories![index]));
-                            },
-                            child: SizedBox(
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Image.network(
-                                      state.categories![index].icon.toString(), 
-                                      color: Colors.blue.shade600,
-                                      height: 40,
-                                      width: 40,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Text(
-                                      state.categories![index].name.toString(),
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold
+        if (state.getLoading) {
+          return const SizedBox.shrink();
+        } else {
+          List<CategoryData> listItems = state.categories!;
+          if (listItems.isNotEmpty) {
+            if (listItems[0].name == "All") {
+              listItems.removeAt(0);
+            }
+          }
+          return SizedBox(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: listItems.length > 4 ? 200 : 100,
+                  child: PageView(
+                    onPageChanged: (value) {
+                      setState(() {
+                        currentIndex = value;
+                      });
+                    },
+                    scrollDirection: Axis.horizontal,
+                    children: List.generate(listItems.length > 8 ? 2 : 1, (index) {
+                      return SizedBox(
+                        child: GridView.count(
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 2,
+                          crossAxisSpacing: 2,
+                          children: List.generate(listItems.length, (index) {
+                            return InkWell(    
+                              onTap: (){
+                                context.read<NavbarBloc>().add(NavbarSearchPageEvent());
+                                context.read<SearchBloc>().add(SearchByClickCategoryIconEvent(listItems[index].id));
+                                context.read<CategoryBloc>().add(CategoryClickEvent(category: listItems[index]));
+                              },
+                              child: SizedBox(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Image.network(
+                                        listItems[index].icon.toString(), 
+                                        color: Colors.blue.shade600,
+                                        height: 40,
+                                        width: 40,
                                       ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        listItems[index].name.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      )
                                     )
-                                  )
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        })
-                      ),
-                    );
-                  })
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Container(
-                  width: state.categories!.length > 8 ? 30 : 15,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2),
-                    color: Colors.grey,
+                            );
+                          })
+                        ),
+                      );
+                    })
                   ),
-                  child: AnimatedAlign(
-                    alignment: currentIndex == 0 ? Alignment.centerLeft : Alignment.centerRight, 
-                    curve: Curves.fastOutSlowIn,
-                    duration: const Duration(milliseconds: 400),
-                    child: Container(
-                      width: 15,
-                      height: 4,
-                      decoration: BoxDecoration(
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Container(
+                    width: listItems.length > 8 ? 30 : 15,
+                    height: 4,
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(2),
-                      color: Colors.blue.shade600,
+                      color: Colors.grey,
+                    ),
+                    child: AnimatedAlign(
+                      alignment: currentIndex == 0 ? Alignment.centerLeft : Alignment.centerRight, 
+                      curve: Curves.fastOutSlowIn,
+                      duration: const Duration(milliseconds: 400),
+                      child: Container(
+                        width: 15,
+                        height: 4,
+                        decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        color: Colors.blue.shade600,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        }
       }
     ); 
   }

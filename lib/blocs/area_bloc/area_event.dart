@@ -9,20 +9,14 @@ class AreaEvent extends Equatable {
 
 class AreaLoadEvent extends AreaEvent {}
 
-class AreaReadEvent extends AreaEvent {
-  
-  final List<AreaData> areas;
-
-  const AreaReadEvent({
-    required this.areas
-  });
-
-}
-
 class AreaClickEvent extends AreaEvent {
   final AreaData area;
 
   const AreaClickEvent({
     required this.area
   });
+}
+
+class AreaResetEvent extends AreaEvent{
+  const AreaResetEvent();
 }

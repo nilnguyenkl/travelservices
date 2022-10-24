@@ -6,8 +6,6 @@ import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
-import 'package:travelservices/blocs/infor_order_bloc/infor_order_bloc.dart';
-import 'package:travelservices/blocs/infor_order_bloc/infor_order_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
@@ -82,9 +80,10 @@ class MyApp extends StatelessWidget {
             Routes.routesPage: (context) => const RoutePage(),
             Routes.reviewsDetails: (context) => const ReviewsDetailsPage(),
             Routes.addToCart: (context) => const AddToCartPage(),   
+            Routes.login: (context) => const LoginPage()
           },
           debugShowCheckedModeBanner: false,
-          home: const LoginPage()
+          home: const RoutePage()
         ),
       )
     );

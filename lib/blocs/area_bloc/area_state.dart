@@ -17,7 +17,12 @@ class AreaState extends Equatable {
   });
 
   factory AreaState.empty() {
-    return const AreaState(areas: <AreaData>[], getLoading: false, statusClick: false);
+    return const AreaState(
+      areas: <AreaData>[], 
+      getLoading: false, 
+      statusClick: false,
+      clickArea: null
+    );
   }
 
   AreaState copyWith ({

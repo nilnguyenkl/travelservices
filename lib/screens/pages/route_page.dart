@@ -40,7 +40,7 @@ class _RoutePageState extends State<RoutePage> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: GNav(
               selectedIndex: state.indexItem,
-              onTabChange: (value) {
+              onTabChange: (value) async {
                 if (value == 0) {
                   context.read<NavbarBloc>().add(NavbarHomePageEvent());
                 }

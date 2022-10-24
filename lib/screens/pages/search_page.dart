@@ -108,7 +108,11 @@ class _SearchPageState extends State<SearchPage> {
                     onFocusChange: (hasFocus) {
                       context.read<SearchBloc>().add(SearchFocusEvent(hasFocus));
                     },
-                    child: !state.statusBar ? searchBar(state.statusSearch, ()=> context.read<SearchBloc>().add(SearchResetEvent())) : Row(
+                    child: !state.statusBar ? searchBar(state.statusSearch, () {
+                      context.read<SearchBloc>().add(SearchResetEvent());
+                      context.read<AreaBloc>().add(const AreaResetEvent());
+                      searchController.clear();
+                    }) : Row(
                       children: [
                         Flexible(
                           child: TextField(
@@ -349,6 +353,9 @@ class _SearchPageState extends State<SearchPage> {
     return BlocBuilder<AreaBloc, AreaState>(
       builder: (context, state) {
         List<AreaData> listItems = state.areas;
+        if (listItems[0].name != "All") {
+          listItems.insert(0, AreaData(id: 0, name: 'All', url: ''));
+        }
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
           child: Container(
@@ -391,6 +398,9 @@ class _SearchPageState extends State<SearchPage> {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         List<CategoryData> listItems = state.categories!;
+        if (listItems[0].name != "All") {
+          listItems.insert(0, CategoryData(id: 0, name: 'All', icon: ''));
+        }
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
           child: Container(
@@ -589,48 +599,58 @@ class _SearchPageState extends State<SearchPage> {
     return Expanded(
       child: BlocBuilder<AreaBloc, AreaState>(
         builder: (context, state) {
-          return StaggeredGridView.countBuilder(
-            physics: const BouncingScrollPhysics(),
-            crossAxisCount: 2,
-            itemCount: state.areas.length,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            itemBuilder: (context, index) => GestureDetector(
-              onTap: () {
-                context.read<SearchBloc>().add(SearchByClickAreaIconEvent(state.areas[index].id));
-                context.read<AreaBloc>().add(AreaClickEvent(area: state.areas[index]));
-              },
-              child: Card(
-                color: Colors.black,
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Container(
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(state.areas[index].url ?? areaImgDefault),
-                      fit: BoxFit.fitHeight,
-                      alignment: Alignment.topCenter,
-                    ),
+          if (state.getLoading) {
+            return const SizedBox.shrink();
+          } else {
+            List<AreaData> listItems = state.areas;
+            if (listItems.isNotEmpty) {
+              if (listItems[0].name == "All") {
+                listItems.removeAt(0);
+              }
+            }
+            return StaggeredGridView.countBuilder(
+              physics: const BouncingScrollPhysics(),
+              crossAxisCount: 2,
+              itemCount: listItems.length,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  context.read<SearchBloc>().add(SearchByClickAreaIconEvent(listItems[index].id));
+                  context.read<AreaBloc>().add(AreaClickEvent(area: listItems[index]));
+                },
+                child: Card(
+                  color: Colors.black,
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      state.areas[index].name ?? "",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18
+                  child: Container(
+                    alignment: Alignment.bottomLeft,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(listItems[index].url ?? areaImgDefault),
+                        fit: BoxFit.fitHeight,
+                        alignment: Alignment.topCenter,
                       ),
                     ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        listItems[index].name ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18
+                        ),
+                      ),
+                    )
                   )
-                )
-              ),
-            ), 
-            staggeredTileBuilder: (index) => StaggeredTile.count(1, index == 0 ? 1.2 : 1)
-          );
+                ),
+              ), 
+              staggeredTileBuilder: (index) => StaggeredTile.count(1, index == 0 ? 1.2 : 1)
+            );
+          }
         }
       )
     );   

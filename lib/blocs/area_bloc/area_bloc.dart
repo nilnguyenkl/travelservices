@@ -10,25 +10,28 @@ class AreaBloc extends Bloc<AreaEvent, AreaState> {
 
   AreaBloc() : super(AreaState.empty()){
     on<AreaLoadEvent>(onAreaLoad);
-    on<AreaReadEvent>(onAreaRead);
     on<AreaClickEvent>(onAreaClick);
+    on<AreaResetEvent>(onAreaReset);
   }  
 
   void onAreaLoad(AreaLoadEvent event, Emitter<AreaState> emit) async {
     emit(state.copyWith(getLoading: true));
 
     List<AreaData> data = await areaRepository.getListArea("public/area");
-    emit(state.copyWith(areas: data));
 
+    emit(state.copyWith(areas: data, getLoading: false));
   }
-
-  void onAreaRead(AreaReadEvent event, Emitter<AreaState> emit) {
-    emit(state.copyWith(areas: event.areas));
-  }
-
-
 
   void onAreaClick(AreaClickEvent event, Emitter<AreaState> emit) {
     emit(state.copyWith(clickArea: event.area, statusClick: true));
+  }
+
+  void onAreaReset(AreaResetEvent event, Emitter<AreaState> emit) {
+    emit(state.copyWith(
+      areas: state.areas, 
+      getLoading: false, 
+      statusClick: false,
+      clickArea: null
+    ));
   }
 }

@@ -8,6 +8,11 @@ class Api {
   final Dio _dio = Dio();
   static String url = "http://192.168.1.8:8089/";
 
+
+  static Future<String> getToken() async {
+    return await SharedPreferencesCustom.getStringCustom('accessToken');
+  }
+
   Future<Response> getRequest(String url, String endpoint) async {
     Response response;
     try {

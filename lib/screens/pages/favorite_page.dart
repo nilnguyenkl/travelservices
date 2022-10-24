@@ -14,6 +14,7 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,7 +22,7 @@ class _FavoritePageState extends State<FavoritePage> {
         appBar: AppBar(
           title: const Center(
             child: Text(
-              "Mục yêu thích",
+              "Favorite",
               style: TextStyle(
                 color: Colors.black
               ),

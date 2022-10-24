@@ -6,8 +6,8 @@ class AreaData {
   
   AreaData({
     required this.id,
-    this.name,
-    this.url,
+    required this.name,
+    required this.url,
   });
 
   factory AreaData.fromJson(Map<String, dynamic> json) => AreaData(

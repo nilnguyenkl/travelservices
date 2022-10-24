@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
 import 'package:travelservices/blocs/login_bloc/login_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_state.dart';
+import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/routes.dart';
-import 'package:travelservices/screens/pages/route_page.dart';
+import 'package:travelservices/screens/arguments/typeloginarguments.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,182 +15,226 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   final _keyLoginForm = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  final type = true;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height*0.04),
-          child: Column(
-            children: [
-              Image.asset(
-                "assets/images/logo.jpg",
-                height: 200,
-              ),
-              Form(
-                key: _keyLoginForm,
-                child: Column(
-                  children: [
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context, state) {
-                        return TextFormField(
-                          controller: usernameController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)
-                            ),
-                            prefixIcon: const Icon(Icons.person),
-                            label: const Text("Username"),
-                          ),
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.next,
-                        );
-                      }
-                    ),
-                    const SizedBox(height: 30),
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context, state) {
-                        return TextFormField(
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)
-                            ),
-                            prefixIcon: const Icon(Icons.key),
-                            suffixIcon: Icon(Icons.remove_red_eye),
-                            label: const Text("Password")
-                          ),
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.done,
-                        );
-                      }
-                    ),
-                    const SizedBox(height: 30),
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context,state) {
-                        if (state.status is SubmittingStatus) {
-                          return const CircularProgressIndicator();
-                        }
-                        if (state.status is FailedStatus) {
-                          
-                        }
-                        if (state.status is SuccessStatus) {
-                          Future.delayed(Duration.zero, () {
-                            Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
-                          });
-                        }
-                        return SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: (){
-                              if (_keyLoginForm.currentState!.validate()){
-                                
-                                context.read<LoginBloc>().add(LoginUsernameEvent(usernameController.text));
-                                context.read<LoginBloc>().add(LoginPasswordEvent(passwordController.text));
-
-                                context.read<LoginBloc>().add(LoginSubmitEvent());
-                              
-                              }
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+    final args = ModalRoute.of(context)!.settings.arguments as TypeLogin;
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text(
+            "Sign In",
+            style: TextStyle(
+              color: Colors.black
+            ),
+          ),
+          leading: IconButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1), 
+            child: Container(
+              color: searchbar, 
+              width: double.infinity, 
+              height: 1
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height*0.04),
+            child: Column(
+              children: [
+                Image.asset(
+                  "assets/images/logo.jpg",
+                  height: 200,
+                ),
+                Form(
+                  key: _keyLoginForm,
+                  child: Column(
+                    children: [
+                      BlocBuilder<LoginBloc, LoginState>(
+                        builder: (context, state) {
+                          return TextFormField(
+                            controller: usernameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)
                               ),
-                              backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
-                            ), 
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 15, bottom: 15),
-                              child: Text(
-                                "Login",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold
+                              prefixIcon: const Icon(Icons.person),
+                              label: const Text("Username"),
+                            ),
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.next,
+                          );
+                        }
+                      ),
+                      const SizedBox(height: 30),
+                      BlocBuilder<LoginBloc, LoginState>(
+                        builder: (context, state) {
+                          return TextFormField(
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)
+                              ),
+                              prefixIcon: const Icon(Icons.key),
+                              suffixIcon: Icon(Icons.remove_red_eye),
+                              label: const Text("Password")
+                            ),
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.done,
+                          );
+                        }
+                      ),
+                      const SizedBox(height: 30),
+                      BlocBuilder<LoginBloc, LoginState>(
+                        builder: (context,state) {
+                          if (state.status is SubmittingStatus) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (state.status is FailedStatus) {
+                            
+                          }
+                          if (state.status is SuccessStatus) {
+                            Future.delayed(Duration.zero, () {
+                              Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
+                            });
+                          }
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: (){
+                                if (_keyLoginForm.currentState!.validate()){
+                                  
+                                  context.read<LoginBloc>().add(LoginUsernameEvent(usernameController.text));
+                                  context.read<LoginBloc>().add(LoginPasswordEvent(passwordController.text));
+    
+                                  context.read<LoginBloc>().add(LoginSubmitEvent());
+                                
+                                }
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                                ),
+                                backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)
+                              ), 
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 15, bottom: 15),
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: const Text(
+                            "Forgot Password",
+                            style: TextStyle(
+                              color: Colors.black87
+                            ),
+                          )
+                        ),
+                      ),
+                      !args.type ? Column(
+                        children: [
+                          Row(
+                            children: const [
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 60),
+                                  child: Divider(color: Colors.black),
+                                )
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Text("OR"),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 60),
+                                  child: Divider(color: Colors.black),
+                                )
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: (){},
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                                ),
+                                backgroundColor: MaterialStateProperty.all(Colors.red.shade400)
+                              ), 
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 15, bottom: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset("assets/images/google.png"),
+                                    const SizedBox(width: 15),
+                                    const Text(
+                                      "Sign in with google",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                        );
-                      }
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: (){}, 
-                        child: const Text(
-                          "Forgot Password",
-                          style: TextStyle(
-                            color: Colors.black87
-                          ),
-                        )
+                        ],
+                      ) : const SizedBox.shrink(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account?"),
+                          TextButton(
+                            onPressed: (){}, 
+                            child: const Text("Sign Up")
+                          )
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      children: const [
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 60),
-                            child: Divider(color: Colors.black),
-                          )
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Text("OR"),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 60),
-                            child: Divider(color: Colors.black),
-                          )
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: (){}, 
-                          icon: Image.asset("assets/images/google.png"),
-                          iconSize: 50,
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          onPressed: (){}, 
-                          icon: Image.asset("assets/images/facebook.png"),
-                          iconSize: 50,
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          onPressed: (){}, 
-                          icon: Image.asset("assets/images/twitter.png"),
-                          iconSize: 50,
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Don't have an account?"),
-                        TextButton(
-                          onPressed: (){}, 
-                          child: const Text("Sign Up")
-                        )
-                      ],
-                    ),
-                  ],
-                )
-              ),
-            ],
+                    ],
+                  )
+                ),
+              ],
+            ),
           ),
-        ),
-      )
+        )
+      ),
     );
   }
 }
