@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_state.dart';
+import 'package:travelservices/configs/colors.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/signupform.dart';
+import 'package:travelservices/screens/arguments/typeloginarguments.dart';
 import 'package:travelservices/utils/validate.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -26,9 +31,38 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as TypeLogin;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Sign Up",
+          style: TextStyle(
+            color: Colors.black
+          ),
+        ),
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1), 
+          child: Container(
+            color: searchbar, 
+            width: double.infinity, 
+            height: 1
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.04),
             child: Column(
@@ -44,15 +78,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       BlocBuilder<SignUpBloc, SignUpState>(
                         builder: (context, state) {
                           return TextFormField(
-                            controller: usernameController,
-                            validator: (value) => ValidateForm.isValidUsername(value),
+                            controller: phoneController,
+                            validator: (value) => ValidateForm.isValidPhone(value),
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)
                               ),
-                              errorText: state.errorUsername,
-                              prefixIcon: const Icon(Icons.person),
-                              label: const Text("Username"),
+                              prefixIcon: const Icon(Icons.phone),
+                              label: const Text("Phone"),
+                              errorText: state.errorPhone
                             ),
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
@@ -115,25 +149,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               prefixIcon: const Icon(Icons.email),
                               label: const Text("Email"),
                               errorText: state.errorEmail
-                            ),
-                            keyboardType: TextInputType.text,
-                            textInputAction: TextInputAction.next,
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      BlocBuilder<SignUpBloc, SignUpState>(
-                        builder: (context, state) {
-                          return TextFormField(
-                            controller: phoneController,
-                            validator: (value) => ValidateForm.isValidPhone(value),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15)
-                              ),
-                              prefixIcon: const Icon(Icons.phone),
-                              label: const Text("Phone"),
-                              errorText: state.errorPhone
                             ),
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
@@ -274,19 +289,38 @@ class _SignUpPageState extends State<SignUpPage> {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: (){
-                                
+                              onPressed: () async {
                                 if (_keySignUpForm.currentState!.validate()) {
-                                
-                                  context.read<SignUpBloc>().add(SignUpUsernameEvent(usernameController.text));
-                                  context.read<SignUpBloc>().add(SignUpEmailEvent(emailController.text));
-                                  context.read<SignUpBloc>().add(SignUpPhoneEvent(phoneController.text));
-                                  context.read<SignUpBloc>().add(SignUpLastnameEvent(lastnameController.text));
-                                  context.read<SignUpBloc>().add(SignUpFirstnameEvent(firstnameController.text));
-                                  context.read<SignUpBloc>().add(SignUpPasswordEvent(passwordController.text));
+                                  await FirebaseAuth.instance.verifyPhoneNumber(
+                                    phoneNumber: phoneController.text,
+                                    verificationCompleted: (PhoneAuthCredential credential){}, 
+                                    verificationFailed: (FirebaseAuthException e){}, 
+                                    codeSent: (String verificationId, int? resendToken) {
+                                      Navigator.pushNamed(
+                                        context, 
+                                        Routes.verifyPhone, 
+                                        arguments: SignUpForm(
+                                          verify: verificationId, 
+                                          phone: phoneController.text, 
+                                          lastname: lastnameController.text, 
+                                          firstname: firstnameController.text, 
+                                          gender: state.gender, 
+                                          password: passwordController.text, 
+                                          role: args.type ? 2 : 1
+                                        )
+                                      );
+                                    }, 
+                                    codeAutoRetrievalTimeout: (String verificationId){}
+                                  );
 
-                                  context.read<SignUpBloc>().add(SignUpSubmitEvent());
-                                
+                                //   context.read<SignUpBloc>().add(SignUpUsernameEvent(usernameController.text));
+                                //   context.read<SignUpBloc>().add(SignUpEmailEvent(emailController.text));
+                                //   context.read<SignUpBloc>().add(SignUpPhoneEvent(phoneController.text));
+                                //   context.read<SignUpBloc>().add(SignUpLastnameEvent(lastnameController.text));
+                                //   context.read<SignUpBloc>().add(SignUpFirstnameEvent(firstnameController.text));
+                                //   context.read<SignUpBloc>().add(SignUpPasswordEvent(passwordController.text));
+
+                                //   context.read<SignUpBloc>().add(SignUpSubmitEvent());
                                 }
                               },
                               style: ButtonStyle(
@@ -295,11 +329,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                     borderRadius: BorderRadius.circular(15)
                                   )
                                 ),
-                                backgroundColor: MaterialStateProperty.all(Colors.green.shade400)),
+                                backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)),
                                 child: const Padding(
                                   padding: EdgeInsets.only(top: 15, bottom: 15),
                                   child: Text(
-                                    "SignUp",
+                                    "Next",
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold
@@ -309,7 +343,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           );
                         }
-                      )
+                      ),
                     ]
                   )
                 )

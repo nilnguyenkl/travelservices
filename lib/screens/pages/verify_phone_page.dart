@@ -49,7 +49,9 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
-          onPressed: (){}
+          onPressed: (){
+            Navigator.pop(context);
+          }
         ),
         title: const Text(
           "Verification",
@@ -90,15 +92,14 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
               Container(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: const Text(
-                  "+094*****70",
-                  style: TextStyle(
+                child: Text(
+                  formData.phone,
+                  style: const TextStyle(
                     fontSize: 16
                   ),
                 )
               ),
               const SizedBox(height: 40),
-              
               Column(
                 children: [
                   Pinput(
@@ -108,10 +109,7 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                     submittedPinTheme: submittedPinTheme,
                     showCursor: true,
                     onChanged: (value) {
-                      setState(() {
-                        codeSMS = value;
-                        print("${codeSMS.toString()}");
-                      });
+                      codeSMS = value;
                     },
                   ),
                   const SizedBox(height: 100),
@@ -146,17 +144,14 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () async {
-                            print("======== ${formData.codeSMS}");
-                            print("===== ${codeSMS.toString()}");
-                            PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: formData.codeSMS, smsCode: codeSMS);
-                            
-                            // await auth.signInWithCredential(credential).then((value) {
-                            //   if (value.user != null) {
-                            //     print("Success");
-                            //   } else {
-                            //     print("Failed");
-                            //   }
-                            // });
+                            PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: formData.verify, smsCode: codeSMS);
+                            await auth.signInWithCredential(credential).then((value) {
+                              if (value.user != null) {
+                                print("Success");
+                              } else {
+                                print("Failed");
+                              }
+                            });
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(

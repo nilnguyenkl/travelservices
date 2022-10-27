@@ -14,7 +14,6 @@ class InforOrderState extends Equatable {
   final String schedule;
 
   final bool statusTicket;
-  // final List<TicketInforOrder> tickets;
 
   final List<int> counts;
   final int total;
@@ -32,7 +31,6 @@ class InforOrderState extends Equatable {
     required this.focusDay,
     required this.rangeOrderService,
     required this.schedule,
-    // required this.tickets,
     required this.statusTicket,
     required this.total,
     required this.counts,
@@ -46,7 +44,6 @@ class InforOrderState extends Equatable {
       events: const <EventCalender>[],
       selectDay: DateTime.now(),
       focusDay: DateTime.now(),
-      // tickets: const <TicketInforOrder>[],
       schedule: "",
       statusTicket: false,
       total: 0,
@@ -63,7 +60,6 @@ class InforOrderState extends Equatable {
     DateTime? focusDay,
     DateTime? selectDay,
     String? schedule,
-    // List<TicketInforOrder>? tickets,
     InforOrder? rangeOrderService,
     int? total,
     bool? statusTicket,
@@ -77,7 +73,6 @@ class InforOrderState extends Equatable {
       focusDay: focusDay ?? this.focusDay,
       selectDay: selectDay ?? this.selectDay,
       schedule: schedule ?? this.schedule,
-      // tickets: tickets ?? this.tickets,
       statusTicket: statusTicket ?? this.statusTicket,
       rangeOrderService: rangeOrderService ?? this.rangeOrderService,
       total: total ?? this.total,
@@ -95,7 +90,6 @@ class InforOrderState extends Equatable {
     selectDay, 
     rangeOrderService, 
     schedule, 
-    // tickets,
     statusTicket,
     total,
     counts,

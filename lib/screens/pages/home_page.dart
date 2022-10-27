@@ -1,5 +1,8 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/category_bloc/category_state.dart';
@@ -11,6 +14,7 @@ import 'package:travelservices/blocs/search_bloc/search_event.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/category_model.dart';
+import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -87,16 +91,22 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             actions: [
-              IconButton(
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context){
-                    return const CartPage();
-                  }));
-                }, 
-                icon: Icon(
-                  Icons.shopping_cart_outlined,
-                  color: Colors.blue.shade600,
-                )
+              BlocBuilder<CartBloc, CartState>(
+                builder:(context, state) {
+                  return Badge(
+                    badgeContent: Text(state.items.length.toString()),
+                    position: BadgePosition.bottomEnd(bottom: 4, end: 5),
+                    child: IconButton(
+                      onPressed: (){
+                        Navigator.pushNamed(context, Routes.cartPage);
+                      }, 
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.blue.shade600,
+                      )
+                    ),
+                  );
+                },
               ),
               IconButton(
                 onPressed: (){}, 

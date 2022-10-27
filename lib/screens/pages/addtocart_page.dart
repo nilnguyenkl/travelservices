@@ -7,7 +7,10 @@ import 'package:travelservices/blocs/infor_order_bloc/infor_order_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/infor_order_model.dart';
+import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
+import 'package:travelservices/screens/arguments/order_arguments.dart';
 
 class AddToCartPage extends StatefulWidget {
   const AddToCartPage({Key? key}) : super(key: key);
@@ -20,6 +23,11 @@ class _AddToCartPageState extends State<AddToCartPage> {
 
   DateTime focusDay = DateTime.now();
   late int idService;
+  
+  late bool status;
+  late String nameProduct;
+  late String description;
+  late int minPrice;
 
   InforOrderBloc bloc = InforOrderBloc();
 
@@ -29,6 +37,11 @@ class _AddToCartPageState extends State<AddToCartPage> {
       setState(() {
         InforOrderArgument args = ModalRoute.of(context)!.settings.arguments as InforOrderArgument;
         idService = args.idService;
+        status = args.status;
+        nameProduct = args.nameProduct;
+        description = args.description;
+        minPrice = args.minPrice;
+
         bloc.add(InforOrderReadCalendarEvent(idService: idService));
       });
     });
@@ -509,14 +522,51 @@ class _AddToCartPageState extends State<AddToCartPage> {
                         textAlign: TextAlign.start,
                       ),
                       ElevatedButton(
-                        onPressed: (){}, 
-                        child: const SizedBox(
+                        onPressed: (){
+                          if (status) {
+                            // Order
+                            // Declare
+                            List<TicketsOrder> tickets = [];
+                            List<TicketInforOrder> temps = state.rangeOrderService.tickets;
+                            for(int i = 0; i < temps.length; i++) {
+                              if (state.counts[i] != 0) {
+                                tickets.add(TicketsOrder(
+                                idTicket: temps[i].idTicket, 
+                                valueTicket: temps[i].valueTicket, 
+                                typeTicket: temps[i].typeTicket, 
+                                amountTicket: state.counts[i], 
+                                note: temps[i].note
+                                ));
+                              }
+                            } 
+                            List<ItemsTicket> itemsTicket = [
+                              ItemsTicket(
+                                idCartItem: 0, 
+                                idService: idService, 
+                                bookDay: "${state.focusDay.year}-${state.focusDay.month}-${state.focusDay.day}", 
+                                bookTime: state.schedule, 
+                                note: "", 
+                                tickets: tickets
+                            )];
+
+                            Navigator.pushNamed(context, Routes.orderDetails, arguments: OrderArguments(
+                              statusOrder: true, 
+                              items: itemsTicket, 
+                              nameProduct: nameProduct, 
+                              description: description, 
+                              minPrice: minPrice
+                            ));
+                          } else {
+                            // Add to cart
+                          }
+                        }, 
+                        child: SizedBox(
                           height: 50,
                           width: 100,
                           child: Center(
                             child: Text(
-                              "Đặt hàng",
-                              style: TextStyle(
+                              status ? "Order" : "Add to cart",
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16
                               ),

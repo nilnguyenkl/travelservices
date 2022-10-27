@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/login_model.dart';
@@ -22,6 +24,17 @@ class AuthRepository {
     Response response;
     response = await api.getRequestAuth(Api.url, endPoint);
     return (response.data as List).map((e) => EventCalender.fromJson(e)).toList();
+  }
+
+  Future<User> loginWithProvider() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken
+    );
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    return userCredential.user!;
   }
 
 } 

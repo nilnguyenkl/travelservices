@@ -2,8 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_bloc.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_event.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_state.dart';
@@ -530,7 +528,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           onPressed: (){
                                             Navigator.pushNamed(context, Routes.reviewsDetails, arguments: ReviewsDetailsArgument(listReviews));
                                           }, 
-                                          child: const Text('Xem thêm')
+                                          child: const Text('See more')
                                         ),
                                       )    
                                     ],
@@ -577,7 +575,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                     ElevatedButton(
                       onPressed: (){
-                        Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(idService: idService, status: false));
+                        Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(
+                          idService: idService, 
+                          status: false, 
+                          description: state.productDetails!.description ?? "", 
+                          minPrice: state.productDetails!.minPrice ?? 0,
+                          nameProduct: state.productDetails!.name ?? ""
+                        ));
                       }, 
                       child: const SizedBox(
                         height: 50,
@@ -594,7 +598,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                       )
                     ),
                     ElevatedButton(
-                      onPressed: (){}, 
+                      onPressed: (){
+                        Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(
+                          idService: idService, 
+                          status: true, 
+                          description: state.productDetails!.description ?? "", 
+                          minPrice: state.productDetails!.minPrice ?? 0,
+                          nameProduct: state.productDetails!.name ?? ""
+                        ));
+                      }, 
                       child: const SizedBox(
                         height: 50,
                         width: 120,
@@ -635,21 +647,18 @@ class _ProductDetailsState extends State<ProductDetails> {
     }
   }
 
-  Future<Map<String, double>> getAddressFromText(String text) async {
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    List<Location> locations = await locationFromAddress(text);
-    
-    print(locations.first.latitude);
-    print(locations.first.longitude);
+  // Future<Map<String, double>> getAddressFromText(String text) async {
+  //   var permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //   }
+  //   List<Location> locations = await locationFromAddress(text);
 
-    return {
-      "latitude" : locations.first.latitude,
-      "longitude" : locations.first.longitude
-    };
-  }
+  //   return {
+  //     "latitude" : locations.first.latitude,
+  //     "longitude" : locations.first.longitude
+  //   };
+  // }
 
   Widget carouselElement(String url){
     return Container(

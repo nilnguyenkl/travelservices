@@ -13,6 +13,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginPasswordEvent>(loginPassword);
     on<LoginEyePasswordEvent>(loginEyePassword);
     on<LoginSubmitEvent>(loginSubmit);
+    on<LoginByProvider>(loginProvider);
   }
 
 
@@ -29,17 +30,61 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void loginSubmit(LoginSubmitEvent event, Emitter<LoginState> emit) async {
-
     emit(state.copyWith(status: SubmittingStatus()));
     var auth = await authRepo.loginRepo(state.username, state.password);
     if (auth is MessageModel) {
       emit(state.copyWith(status: FailedStatus()));
-      print("1");  
     }
     if (auth is LoginResponseModel) {
-      emit(state.copyWith(status: SuccessStatus()));
+      emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
       SharedPreferencesCustom.setStringCustom('accessToken', auth.accessToken.toString());
-      print("2");
+      SharedPreferencesCustom.setBoolCustom('isLogined', true);
+      SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
+      await Future.delayed(const Duration(seconds: 3));
+      emit(state.copyWith(status: const InitialStatus()));
+    }
+  }
+
+  void loginProvider(LoginByProvider event, Emitter<LoginState> emit) async {
+    
+    var user = await authRepo.loginWithProvider();
+
+    await authRepo.signUpRepo(
+      user.email!, 
+      user.email!, 
+      user.phoneNumber ?? "", 
+      user.uid, 
+      user.displayName!, 
+      "", 
+      "",
+      2
+    ).then((value){
+      switch (value.message) {
+        case "Username already exists":
+          emit(state.copyWith(statusProvider: 1));
+          break;
+        case "Success":
+          emit(state.copyWith(statusProvider: 1));
+          break;
+      }
+    });
+
+    if (state.statusProvider == 1) {
+      var auth = await authRepo.loginRepo(user.email!, user.uid);
+      if (auth is MessageModel) {
+        emit(state.copyWith(status: FailedStatus()));
+      }
+      if (auth is LoginResponseModel) {
+        emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
+        SharedPreferencesCustom.setStringCustom('accessToken', auth.accessToken.toString());
+        SharedPreferencesCustom.setBoolCustom('isLogined', true);
+        SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
+        await Future.delayed(const Duration(seconds: 3));
+        emit(state.copyWith(status: const InitialStatus()));
+      }
+    }
+    if (state.statusProvider == -1) {
+       emit(state.copyWith(status: FailedStatus()));
     }
   }
 }

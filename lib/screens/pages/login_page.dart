@@ -20,8 +20,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  final type = true;
-
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as TypeLogin;
@@ -109,25 +107,28 @@ class _LoginPageState extends State<LoginPage> {
                             return const CircularProgressIndicator();
                           }
                           if (state.status is FailedStatus) {
-                            
+                            // return const InitialStatus();
                           }
                           if (state.status is SuccessStatus) {
-                            Future.delayed(Duration.zero, () {
-                              Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
-                            });
+                            if (state.typeObject == "ADMIN") {
+                              Future.delayed(Duration.zero, () {
+                                Navigator.of(context).pushNamedAndRemoveUntil(Routes.routePageAdmin, (route) => false);
+                              });
+                            } else {
+                              Future.delayed(Duration.zero, () {
+                                Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
+                              });
+                            }
                           }
                           return SizedBox(
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
                               onPressed: (){
-                                if (_keyLoginForm.currentState!.validate()){
-                                  
+                                if (_keyLoginForm.currentState!.validate()){ 
                                   context.read<LoginBloc>().add(LoginUsernameEvent(usernameController.text));
-                                  context.read<LoginBloc>().add(LoginPasswordEvent(passwordController.text));
-    
+                                  context.read<LoginBloc>().add(LoginPasswordEvent(passwordController.text));   
                                   context.read<LoginBloc>().add(LoginSubmitEvent());
-                                
                                 }
                               },
                               style: ButtonStyle(
@@ -162,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                           )
                         ),
                       ),
-                      !args.type ? Column(
+                      args.type ? Column(
                         children: [
                           Row(
                             children: const [
@@ -185,35 +186,41 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           const SizedBox(height: 20),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: (){},
-                              style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
-                                ),
-                                backgroundColor: MaterialStateProperty.all(Colors.red.shade400)
-                              ), 
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 15, bottom: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset("assets/images/google.png"),
-                                    const SizedBox(width: 15),
-                                    const Text(
-                                      "Sign in with google",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold
-                                      ),
+                          BlocBuilder<LoginBloc, LoginState>(
+                            builder:(context, state) {
+                              return SizedBox(
+                                width: double.infinity,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: (){
+                                    context.read<LoginBloc>().add(LoginByProvider());
+                                  },
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
                                     ),
-                                  ],
+                                    backgroundColor: MaterialStateProperty.all(Colors.red.shade400)
+                                  ), 
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 15, bottom: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/images/google.png"),
+                                        const SizedBox(width: 15),
+                                        const Text(
+                                          "Sign in with google",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         ],
                       ) : const SizedBox.shrink(),
@@ -222,7 +229,9 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const Text("Don't have an account?"),
                           TextButton(
-                            onPressed: (){}, 
+                            onPressed: (){
+                              Navigator.pushNamed(context, Routes.register, arguments: TypeLogin(args.type, args.typeName));
+                            }, 
                             child: const Text("Sign Up")
                           )
                         ],

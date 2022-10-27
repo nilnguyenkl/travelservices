@@ -5,4 +5,14 @@ class Routes{
   static const reviewsDetails = '/reviewsDetails';
   static const addToCart = '/addToCart';
   static const login = '/login';
+  static const register = '/register';
+  static const orderDetails = '/orderDetails';
+  static const cartPage = '/cartPage';
+
+
+
+
+
+
+  static const routePageAdmin = '/routePageAdmin';
 }

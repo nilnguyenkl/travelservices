@@ -25,8 +25,8 @@ class ValidateForm {
   }
 
   static String? isValidEmail(String? email) {
-    final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    // RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+    // final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (email!.isNotEmpty) {
       if (emailRegExp.hasMatch(email)) {
         return "Please enter the correct format of an email";

@@ -23,3 +23,7 @@ class LoginEyePasswordEvent extends LoginEvent {
 class LoginSubmitEvent extends LoginEvent {
   LoginSubmitEvent();
 }
+
+class LoginByProvider extends LoginEvent {
+  LoginByProvider();
+}

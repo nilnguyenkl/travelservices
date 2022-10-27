@@ -3,15 +3,19 @@ import 'package:equatable/equatable.dart';
 class LoginState extends Equatable {
   final String username;
   final String password;
+  final String? typeObject;
   final bool eyeStatus;
   final SubmitStatus status;
+  final int statusProvider;
 
 
   const LoginState({
     required this.username,
     required this.password,
     required this.eyeStatus,
-    required this.status
+    required this.status,
+    required this.statusProvider,
+    required this.typeObject
   });
 
   factory LoginState.empty() {
@@ -19,7 +23,9 @@ class LoginState extends Equatable {
       username: "", 
       password: "", 
       eyeStatus: false, 
-      status: InitialStatus()
+      status: InitialStatus(),
+      statusProvider: 0,
+      typeObject: null
     );
   }
 
@@ -27,18 +33,22 @@ class LoginState extends Equatable {
     String? username,
     String? password,
     bool? eyeStatus,
-    SubmitStatus? status
+    SubmitStatus? status,
+    int? statusProvider,
+    String? typeObject
   }) {
     return LoginState(
       username: username ?? this.username, 
       password: password ?? this.password, 
       eyeStatus: eyeStatus ?? this.eyeStatus,
-      status: status ?? this.status
+      status: status ?? this.status,
+      statusProvider: statusProvider ?? this.statusProvider,
+      typeObject: typeObject ?? this.typeObject
     );
   }
   
   @override
-  List<Object?> get props => [username, password, eyeStatus, status];
+  List<Object?> get props => [username, password, eyeStatus, status, statusProvider, typeObject];
 }
 
 class SubmitStatus {

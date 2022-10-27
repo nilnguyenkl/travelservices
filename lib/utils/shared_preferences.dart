@@ -12,4 +12,14 @@ class SharedPreferencesCustom {
     return prefs.getString(key);
   }
 
+  static setBoolCustom(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+  }
+
+  static getBoolCustom(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(key);
+  }
+
 }

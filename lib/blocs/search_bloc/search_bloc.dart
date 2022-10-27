@@ -184,7 +184,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           } else {
             data = await productRepository.getListProduct("public/service?page=1&limit=99&search=${state.strSearch}");
           }
-        }
+        } else {
+          if (state.statusSearchSort) {
+            data = await productRepository.getListProduct("public/service?page=1&limit=99&sort=${state.sortSearch}");
+          } else {
+            data = await productRepository.getListProduct("public/service?page=1&limit=99");
+          }
+        } 
       }
     }
     emit(state.copyWith(getLoading: false, products: data, statusSearch: true));

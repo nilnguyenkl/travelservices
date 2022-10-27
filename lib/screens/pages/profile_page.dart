@@ -3,6 +3,7 @@ import 'package:travelservices/api/api.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/utils/bottom_sheet.dart';
+import 'package:travelservices/utils/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -37,10 +38,10 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0,
       ),
       body: FutureBuilder(
-        future: Api.getToken(),
+        future: Api.getTokenLogin(),
         builder: (context, snap) {
           if (snap.hasData) {
-            if (snap.data.toString().isNotEmpty) {
+            if (snap.data == false) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -202,14 +203,61 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       menuProfile("My Profile", Icons.person, (){}),
                       menuProfile("Change Password", Icons.key, (){}),
-                      menuProfile("Logout", Icons.logout, (){})
+                      menuProfile(
+                        "Logout", 
+                        Icons.logout, 
+                        () async {
+                          SharedPreferencesCustom.setBoolCustom("isLogined", false);
+                      })
                     ],
                   ),
                 ),
               );
             }
           } else {
-            return const SizedBox.shrink();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                  child: Text(
+                    "Sign in to use more features. Moreover, it makes your experience even better.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 17
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(paddingWidth),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        BottomSheetCustom.requestLoginFunction(context);
+                      },
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                        ),
+                        backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)
+                      ), 
+                      child: const Padding(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        child: Text(
+                          "Sign In/Sign Up",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ),
+              ],
+            );
           }
         }
       ),

@@ -76,6 +76,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                     right: 5,
                                     child: IconButton(
                                       onPressed: (){
+                                        print("1111");
                                         context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: state.favorites[index].idService));
                                       },
                                       icon: Icon(
