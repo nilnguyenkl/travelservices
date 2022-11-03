@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/infor_order_bloc/infor_order_bloc.dart';
 import 'package:travelservices/blocs/infor_order_bloc/infor_order_event.dart';
 import 'package:travelservices/blocs/infor_order_bloc/infor_order_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/order_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/order_arguments.dart';
+import 'package:travelservices/utils/convert_model.dart';
+import 'package:travelservices/utils/shared_preferences.dart';
+import 'package:travelservices/utils/totalValueOrder.dart';
 
 class AddToCartPage extends StatefulWidget {
   const AddToCartPage({Key? key}) : super(key: key);
@@ -22,12 +30,19 @@ class AddToCartPage extends StatefulWidget {
 class _AddToCartPageState extends State<AddToCartPage> {
 
   DateTime focusDay = DateTime.now();
-  late int idService;
   
-  late bool status;
+  bool status = false;
+  bool way = false;
+
+  late int idService;
+  late int idCartItem;
   late String nameProduct;
   late String description;
-  late int minPrice;
+  late String url;
+  late String dayBook;
+  late String timeBook;
+  late List<TicketInforOrder>? tickets;
+
 
   InforOrderBloc bloc = InforOrderBloc();
 
@@ -40,9 +55,38 @@ class _AddToCartPageState extends State<AddToCartPage> {
         status = args.status;
         nameProduct = args.nameProduct;
         description = args.description;
-        minPrice = args.minPrice;
+        url = args.url ?? "";
+        way = args.way;
+        
+        if (!way) {
+          
+          timeBook = args.timeBook!;
+          tickets = args.tickets;
+          idCartItem = args.idCartItem ?? 0;
 
-        bloc.add(InforOrderReadCalendarEvent(idService: idService));
+          List<int> count = List.generate(10, (index) => 0);
+          for (int i = 0; i < tickets!.length; i++) {
+            count[i] = tickets![i].amountTicket;
+          }
+          bloc.add(InforOrderReadCalendarEvent(
+            idService: idService, 
+            focusDay: DateTime.parse(args.dayBook!), 
+            selectDay: DateTime.parse(args.dayBook!), 
+            count: count,
+            schedule: timeBook, 
+            total: TotalValueOrder.totalValue(tickets!, count)
+          ));
+          focusDay = DateTime.parse(args.dayBook!);
+        } else {
+          bloc.add(InforOrderReadCalendarEvent(
+            idService: idService, 
+            focusDay: DateTime.now(), 
+            selectDay: DateTime.now(),
+            count: List.generate(10, (index) => 0),
+            schedule: "", 
+            total: 0
+          ));
+        }
       });
     });
     super.initState();
@@ -118,6 +162,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                             selectedDayPredicate: (day) {
                               return isSameDay(state.selectDay, day);
                             },
+                            
                             onDaySelected: (selectedDay, focusedDay) {     
                               bloc.add(InforOrderSelectDayEvent(
                                 focusDay: focusedDay, 
@@ -152,6 +197,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                             ),
                             calendarStyle: CalendarStyle(
                               isTodayHighlighted: true,
+                              outsideDaysVisible: false,
                               selectedDecoration: BoxDecoration(
                                 color: Colors.blue.shade600,
                                 shape: BoxShape.rectangle,
@@ -507,77 +553,139 @@ class _AddToCartPageState extends State<AddToCartPage> {
                 ],
                 color: Colors.white,
               ),
-              child: BlocBuilder<InforOrderBloc, InforOrderState>(
-                bloc: bloc,
-                builder:(context, state) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BlocBuilder<InforOrderBloc, InforOrderState>(
+                    bloc: bloc,
+                    builder:(context, state) {
+                      return Text(
                         "Total\n${state.total} VND",
                         style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 20,
                         ),
                         textAlign: TextAlign.start,
-                      ),
-                      ElevatedButton(
+                      );
+                    },
+                  ),
+                  status ? BlocBuilder<InforOrderBloc, InforOrderState>(
+                    bloc: bloc,
+                    builder:(context, state) {
+                      return ElevatedButton(
                         onPressed: (){
-                          if (status) {
-                            // Order
-                            // Declare
-                            List<TicketsOrder> tickets = [];
-                            List<TicketInforOrder> temps = state.rangeOrderService.tickets;
-                            for(int i = 0; i < temps.length; i++) {
-                              if (state.counts[i] != 0) {
-                                tickets.add(TicketsOrder(
-                                idTicket: temps[i].idTicket, 
-                                valueTicket: temps[i].valueTicket, 
-                                typeTicket: temps[i].typeTicket, 
-                                amountTicket: state.counts[i], 
-                                note: temps[i].note
-                                ));
-                              }
-                            } 
-                            List<ItemsTicket> itemsTicket = [
-                              ItemsTicket(
-                                idCartItem: 0, 
-                                idService: idService, 
-                                bookDay: "${state.focusDay.year}-${state.focusDay.month}-${state.focusDay.day}", 
-                                bookTime: state.schedule, 
-                                note: "", 
-                                tickets: tickets
-                            )];
-
-                            Navigator.pushNamed(context, Routes.orderDetails, arguments: OrderArguments(
-                              statusOrder: true, 
-                              items: itemsTicket, 
-                              nameProduct: nameProduct, 
+                          // Order
+                          // Declare
+                          List<TicketsOrder> tickets = [];
+                          List<TicketInforOrder> temps = state.rangeOrderService.tickets;
+                          for(int i = 0; i < temps.length; i++) {
+                            if (state.counts[i] != 0) {
+                              tickets.add(TicketsOrder(
+                              idTicket: temps[i].idTicket, 
+                              valueTicket: temps[i].valueTicket, 
+                              typeTicket: temps[i].typeTicket, 
+                              amountTicket: state.counts[i], 
+                              note: temps[i].note
+                              ));
+                            }
+                          } 
+                          List<ItemsTicket> itemsTicket = [
+                            ItemsTicket(
+                              idCartItem: 0, 
+                              idService: idService, 
+                              bookDay: "${state.focusDay.year}-${state.focusDay.month}-${state.focusDay.day}", 
+                              bookTime: state.schedule, 
+                              note: "", 
+                              tickets: tickets, 
                               description: description, 
-                              minPrice: minPrice
-                            ));
-                          } else {
-                            // Add to cart
-                          }
+                              name: nameProduct, 
+                              url: url
+                            )
+                          ];
+                          Navigator.pushNamed(context, Routes.orderDetails, arguments: OrderArguments(
+                            statusOrder: true, 
+                            items: itemsTicket, 
+                            nameProduct: nameProduct, 
+                            description: description, 
+                          ));
                         }, 
-                        child: SizedBox(
+                        child: const SizedBox(
                           height: 50,
                           width: 100,
                           child: Center(
                             child: Text(
-                              status ? "Order" : "Add to cart",
-                              style: const TextStyle(
+                              "Order",
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16
                               ),
                             ),
                           ),
                         )
-                      )
-                    ],
-                  );
-                },
-              )
+                      ); 
+                    }
+                  ) : BlocBuilder<InforOrderBloc, InforOrderState>(
+                    bloc: bloc,
+                    builder:(context, stateC) {
+                      return BlocBuilder<CartBloc, CartState>(
+                        builder:(context, state) {
+                          return ElevatedButton(
+                            onPressed: () {                  
+                              // Cart
+                              // Declare
+                              List<TicketCartRequest> ticketsRequest = [];
+
+                              for (int i = 0; i < stateC.counts.length; i++) {
+                                if (stateC.counts[i] != 0) {
+                                  List<TicketInforOrder> temps = stateC.rangeOrderService.tickets;
+                                  TicketInforOrder ticket = TicketInforOrder(
+                                    idTicket: temps[i].idTicket, 
+                                    valueTicket: temps[i].valueTicket, 
+                                    typeTicket: temps[i].typeTicket, 
+                                    amountTicket: stateC.counts[i], 
+                                    note: temps[i].note
+                                  );
+                                  ticketsRequest.add(ConvertModel.convertToTicketCartRequest(ticket));
+                                }
+                              }
+                              NumberFormat formatter = NumberFormat("00");
+                              CartRequestModel model = CartRequestModel(
+                                idService: idService, 
+                                name: nameProduct, 
+                                url: url, 
+                                description: description, 
+                                bookDay: "${stateC.focusDay.year}-${formatter.format(stateC.focusDay.month)}-${formatter.format(stateC.focusDay.day)}", 
+                                bookTime: stateC.schedule, 
+                                tickets: ticketsRequest
+                              ); 
+                              if (!way) {
+                                // Change
+                                context.read<CartBloc>().add(CartUpdateEvent(idCartItem: idCartItem, data: model));
+                              } else {
+                                // Add
+                                context.read<CartBloc>().add(CartAddEvent(data: model));
+                              }
+                            }, 
+                            child: SizedBox(
+                              height: 50,
+                              width: 100,
+                              child: Center(
+                                child: Text(
+                                  way ? "Add to cart" : "Change",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16
+                                  ),
+                                ),
+                              ),
+                            )
+                          ); 
+                        },
+                      );
+                    },
+                  )
+                ],
+              ),
             )
           ],
         ),

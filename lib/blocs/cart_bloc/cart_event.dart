@@ -33,3 +33,12 @@ class CartDeleteEvent extends CartEvent {
   });
 }
 
+class CartChooseItemEvent extends CartEvent {
+  final int index;
+  final bool? status;
+  CartChooseItemEvent({
+    required this.index,
+    required this.status
+  }); 
+}
+

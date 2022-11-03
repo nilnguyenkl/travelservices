@@ -278,13 +278,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(height: 20),
                       BlocBuilder<SignUpBloc, SignUpState>(
                         builder: (context, state){
-                          print(state.status);
-                          if (state.status is SubmittingStatus) {
-                            return const CircularProgressIndicator();
-                          }
-                          if (state.status is SuccessStatus) {
-                            print("successsssssssssssssssss");
-                          }
                           return SizedBox(
                             width: double.infinity,
                             height: 50,
@@ -303,7 +296,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                           verify: verificationId, 
                                           phone: phoneController.text, 
                                           lastname: lastnameController.text, 
-                                          firstname: firstnameController.text, 
+                                          firstname: firstnameController.text,
+                                          email: emailController.text, 
                                           gender: state.gender, 
                                           password: passwordController.text, 
                                           role: args.type ? 2 : 1
@@ -312,15 +306,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                     }, 
                                     codeAutoRetrievalTimeout: (String verificationId){}
                                   );
-
-                                //   context.read<SignUpBloc>().add(SignUpUsernameEvent(usernameController.text));
-                                //   context.read<SignUpBloc>().add(SignUpEmailEvent(emailController.text));
-                                //   context.read<SignUpBloc>().add(SignUpPhoneEvent(phoneController.text));
-                                //   context.read<SignUpBloc>().add(SignUpLastnameEvent(lastnameController.text));
-                                //   context.read<SignUpBloc>().add(SignUpFirstnameEvent(firstnameController.text));
-                                //   context.read<SignUpBloc>().add(SignUpPasswordEvent(passwordController.text));
-
-                                //   context.read<SignUpBloc>().add(SignUpSubmitEvent());
                                 }
                               },
                               style: ButtonStyle(

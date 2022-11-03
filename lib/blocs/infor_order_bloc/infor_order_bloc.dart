@@ -18,12 +18,23 @@ class InforOrderBloc extends Bloc<InforOrderEvent, InforOrderState> {
   void onReadCalendar(InforOrderReadCalendarEvent event, Emitter<InforOrderState> emit) async {
     emit(state.copyWith(getLoading: true, haveTicket: false, haveSchedule: false));
     var listCalendar = await authRepo.getListEvent("order/calender");
-    emit(state.copyWith(events: listCalendar, getLoading: false));
+    
+    emit(state.copyWith(
+      events: listCalendar, 
+      getLoading: false, 
+      focusDay: event.focusDay, 
+      selectDay: event.selectDay,
+      counts: event.count,
+      schedule: event.schedule,
+      total: event.total
+    ));
+    
     add(InforOrderSelectDayEvent(
-      focusDay: DateTime.now(), 
-      selectDay: DateTime.now(), 
+      focusDay: event.focusDay, 
+      selectDay: event.selectDay, 
       idService: event.idService
     ));
+
   }
 
   void onSelectDay(InforOrderSelectDayEvent event, Emitter<InforOrderState> emit) async {

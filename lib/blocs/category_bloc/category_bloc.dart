@@ -25,6 +25,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
   void onCategoryClick(CategoryClickEvent event, Emitter<CategoryState> emit) {
     emit(state.copyWith(statusClick: true, clickCategory: event.category));
+
+    state.categories.map((e) => print(e.id));
   }
 
 

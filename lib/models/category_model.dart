@@ -1,3 +1,5 @@
+import 'package:travelservices/configs/constants.dart';
+
 class CategoryData {
     
   final int id;
@@ -6,8 +8,8 @@ class CategoryData {
   
   CategoryData({
     required this.id,
-    this.name,
-    this.icon,
+    required this.name,
+    required this.icon,
   });
 
   factory CategoryData.fromJson(Map<String, dynamic> json) => CategoryData(

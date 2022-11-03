@@ -22,4 +22,9 @@ class SharedPreferencesCustom {
     return prefs.getBool(key);
   }
 
+  static existsKey(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey(key);
+  }
+
 }

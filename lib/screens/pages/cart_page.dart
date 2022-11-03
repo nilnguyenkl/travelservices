@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
+import 'package:travelservices/blocs/order_bloc/order_bloc.dart';
+import 'package:travelservices/blocs/order_bloc/order_event.dart';
+import 'package:travelservices/blocs/order_bloc/order_state.dart';
 import 'package:travelservices/configs/colors.dart';
+import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/models/cart_model.dart';
+import 'package:travelservices/models/infor_order_model.dart';
+import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
+import 'package:travelservices/utils/convert_model.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -12,7 +23,16 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  bool? status = false;
+  
+  // bool? status = false;
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
+  List<TextEditingController> notesController = List.generate(20, (index) => TextEditingController());
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,7 +82,6 @@ class _CartPageState extends State<CartPage> {
             if (state.getLoading) {
               return Text("adsadasdsa");
             } else {
-              print("${state.items.length}");
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -82,35 +101,72 @@ class _CartPageState extends State<CartPage> {
                                     child: Container(
                                       padding: const EdgeInsets.only(right: 20),
                                       width: double.infinity,
-                                      height: MediaQuery.of(context).size.height/3.5,
                                       color: Colors.white,
                                       child: Column(
                                         children: [
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 5),
-                                                child: Checkbox(
-                                                  activeColor: Colors.blue.shade600,
-                                                  value: status, 
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      status = value;
-                                                      print(value);
-                                                    });
-                                                  }
-                                                ),
+                                              BlocBuilder<CartBloc, CartState>(
+                                                buildWhen: (previous, current) {
+                                                  return previous.statusClick != current.statusClick;
+                                                },
+                                                builder:(context, state) {
+                                                  return Padding(
+                                                    padding: const EdgeInsets.only(left: 5),
+                                                    child: Checkbox(
+                                                      activeColor: Colors.blue.shade600,
+                                                      value: state.itemsChoose[index], 
+                                                      onChanged: (value) {
+                                                        context.read<CartBloc>().add(CartChooseItemEvent(index: index, status: value));
+                                                      }
+                                                    ),
+                                                  );
+                                                },
                                               ),
-                                              GestureDetector(
-                                                onTap: (){},
-                                                child: const Text(
-                                                  "Thay đổi",
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: hintText
+                                              Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      context.read<CartBloc>().add(CartDeleteEvent(idCartItem: state.items[index].idCartItem));
+                                                    },
+                                                    child: const Text(
+                                                      "Delete",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.red
+                                                      ),
+                                                    )
                                                   ),
-                                                )
+                                                  const SizedBox(width: 10),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      List<TicketInforOrder> list = [];
+                                                      for (TicketCartResponse ticket in state.items[index].tickets) {
+                                                        list.add(ConvertModel.convertToTicketInforOrder(ticket));
+                                                      }                                                
+                                                      Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(
+                                                        description: '', 
+                                                        idService: state.items[index].idService, 
+                                                        nameProduct: state.items[index].name ?? "", 
+                                                        status: false, 
+                                                        way: false,
+                                                        dayBook: state.items[index].bookDay,
+                                                        timeBook: state.items[index].bookTime,
+                                                        tickets: list,
+                                                        idCartItem: state.items[index].idCartItem,
+                                                        url: state.items[index].url
+                                                      ));
+                                                    },
+                                                    child: const Text(
+                                                      "Change",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: hintText
+                                                      ),
+                                                    )
+                                                  )
+                                                ],
                                               )
                                             ],
                                           ),
@@ -131,8 +187,8 @@ class _CartPageState extends State<CartPage> {
                                                       width: 110,
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(10),
-                                                        image: const DecorationImage(
-                                                          image: AssetImage("assets/images/ct.jpg"),
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(state.items[index].url ?? productImgDefault),
                                                           fit: BoxFit.fitHeight,
                                                           alignment: Alignment.topCenter,
                                                         ),
@@ -147,17 +203,19 @@ class _CartPageState extends State<CartPage> {
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        const Text(
-                                                          "Vé VinWonders Nam Hội An",
-                                                          style: TextStyle(
+                                                        Text(
+                                                          state.items[index].name ?? "",
+                                                          style: const TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 17
                                                           ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
                                                         ),
                                                         Padding(
                                                           padding: const EdgeInsets.only(top: 5),
                                                           child: Text(
-                                                            "Vé VinWonders Nam Hội An Vé VinWonders Nam Hội An Vé VinWonders Nam Hội An Vé VinWonders Nam Hội An Vé VinWonders Nam Hội An",
+                                                            state.items[index].description ?? "",
                                                             maxLines: 3,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
@@ -169,7 +227,7 @@ class _CartPageState extends State<CartPage> {
                                                         Padding(
                                                           padding: const EdgeInsets.only(top: 5),
                                                           child: Text(
-                                                            "2022-09-27",
+                                                            "${state.items[index].bookDay} ${state.items[index].bookTime}",
                                                             maxLines: 3,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
@@ -181,7 +239,7 @@ class _CartPageState extends State<CartPage> {
                                                         Padding(
                                                           padding: const EdgeInsets.only(top: 5),
                                                           child: Text(
-                                                            "Trẻ em x1",
+                                                            ticketAllType(state.items[index].tickets),
                                                             maxLines: 3,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
@@ -198,14 +256,29 @@ class _CartPageState extends State<CartPage> {
                                               ],
                                             ),
                                           ),
+                                          const SizedBox(height: 5),
+                                          Container(
+                                            padding: const EdgeInsets.only(left: 20),
+                                            child: TextFormField(
+                                              controller: notesController[index],
+                                              autofocus: false,
+                                              decoration: InputDecoration(
+                                                hintText: 'Note',
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(15)
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                           const Padding(
                                             padding: EdgeInsets.only(left: 20),
                                             child: Divider(thickness: 1),
                                           ),
                                           Container(
                                             alignment: Alignment.centerRight,
+                                            padding: const EdgeInsets.symmetric(vertical: 5),
                                             child: Text(
-                                              "1700000 VDN",
+                                              "${totalValue(state.items[index].tickets)} VND",
                                               style: TextStyle(
                                                 color: Colors.blue.shade600,
                                                 fontSize: 22
@@ -255,6 +328,7 @@ class _CartPageState extends State<CartPage> {
                                     ),  
                                   ),
                                   TextFormField(
+                                    controller: nameController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       hintText: "Tên người đặt hàng"
@@ -268,6 +342,7 @@ class _CartPageState extends State<CartPage> {
                                     ),  
                                   ),
                                   TextFormField(
+                                    controller: emailController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       hintText: "Email người đặt hàng"
@@ -282,6 +357,7 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   const Divider(thickness: 1),
                                   TextFormField(
+                                    controller: phoneController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       hintText: "Số điện thoại người đặt hàng"
@@ -314,35 +390,76 @@ class _CartPageState extends State<CartPage> {
                       ],
                       color: Colors.white,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Total\n3200000 VND",
-                          style: TextStyle(
-                            color: Colors.orange,
-                            fontSize: 20,
-                          ),
-                          textAlign: TextAlign.start,
-                        ),
-                        ElevatedButton(
-                          onPressed: (){}, 
-                          child: const SizedBox(
-                            height: 50,
-                            width: 100,
-                            child: Center(
-                              child: Text(
-                                "Đặt hàng (1)",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16
-                                ),
+                    child: BlocBuilder<OrderBloc, OrderState>(
+                      builder:(context, stateO) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Total\n${totalOrder(state.itemsChoose, state.items)} VND",
+                              style: const TextStyle(
+                                color: Colors.orange,
+                                fontSize: 20,
                               ),
+                              textAlign: TextAlign.start,
                             ),
-                          )
-                        )
-                      ],
-                    ),
+                            ElevatedButton(
+                              onPressed: (){
+                                List<bool> itemsChoose = state.itemsChoose;
+                                List<ItemsTicket> items = [];
+                                for (int i = 0; i < itemsChoose.length; i++) {
+                                  if (itemsChoose[i]) {
+                                    print(notesController[i].text);
+                                    print(notesController[i]);
+                                    List<TicketsOrder> tickets = [];
+                                    for (TicketCartResponse response in state.items[i].tickets) {
+                                      tickets.add(ConvertModel.convertToTicketOrder(response));
+                                    }
+                                    items.add(ItemsTicket(
+                                      idCartItem: state.items[i].idCartItem, 
+                                      idService: state.items[i].idService, 
+                                      bookDay: state.items[i].bookDay ?? "", 
+                                      bookTime: state.items[i].bookTime ?? "", 
+                                      note: notesController[i].text, 
+                                      tickets: tickets, 
+                                      name: state.items[i].name, 
+                                      description: state.items[i].description, 
+                                      url: state.items[i].url
+                                    ));
+                                  }
+                                }
+
+                                OrderRequestModel model = OrderRequestModel(
+                                  infor: InforUserOrder(
+                                    fullname: nameController.text, 
+                                    email: emailController.text,
+                                    phone: phoneController.text
+                                  ), 
+                                  statusOrder: false, 
+                                  items: items
+                                );
+
+                                context.read<OrderBloc>().add(OrderSubmitEvent(orderData: model));
+
+                              }, 
+                              child: SizedBox(
+                                height: 50,
+                                width: 100,
+                                child: Center(
+                                  child: Text(
+                                    "Order ${state.itemsChoose.where((element) => element == true).isEmpty ? "" : "(${state.itemsChoose.where((element) => element == true).length})"}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16
+                                    ),
+                                  ),
+                                ),
+                              )
+                            )
+                          ],
+                        );
+                      },
+                    )
                   )
 
                 ],
@@ -353,4 +470,34 @@ class _CartPageState extends State<CartPage> {
       )
     );   
   }
+
+  String ticketAllType(List<TicketCartResponse> items) {
+
+    String temp = "";
+
+    for (int i = 0; i < items.length; i++) {
+      temp = "$temp${items[i].typeTicket} x ${items[i].amountTicket}, ";
+    }
+    return temp.substring(0, temp.length - 2);
+  }
+
+  int totalValue(List<TicketCartResponse> items) {
+    int temp = 0;
+    for (int i = 0; i < items.length; i++) {
+      temp = temp + items[i].amountTicket!*items[i].valueTicket!;
+    }
+    return temp;
+  }
+
+  int totalOrder(List<bool> itemsChoose, List<CartResponseModel> items) {
+    int total = 0;
+    for (int i = 0; i < items.length; i++) {
+      if (itemsChoose[i]) {
+        total = total + totalValue(items[i].tickets);
+      }
+    }
+    return total;
+  }
+
+
 }

@@ -3,6 +3,7 @@ import 'package:travelservices/blocs/login_bloc/login_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_state.dart';
 import 'package:travelservices/models/login_model.dart';
 import 'package:travelservices/models/message_model.dart';
+import 'package:travelservices/models/signup_model.dart';
 import 'package:travelservices/repositories/auth_repositories.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
@@ -42,6 +43,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
       await Future.delayed(const Duration(seconds: 3));
       emit(state.copyWith(status: const InitialStatus()));
+
+      // Handle firebase
+      authRepo.updateStatusUser(true, auth.id.toString());
+      
     }
   }
 
@@ -49,7 +54,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     
     var user = await authRepo.loginWithProvider();
 
-    await authRepo.signUpRepo(
+    var model = await authRepo.signUpRepo(
       user.email!, 
       user.email!, 
       user.phoneNumber ?? "", 
@@ -58,16 +63,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       "", 
       "",
       2
-    ).then((value){
-      switch (value.message) {
-        case "Username already exists":
-          emit(state.copyWith(statusProvider: 1));
-          break;
-        case "Success":
-          emit(state.copyWith(statusProvider: 1));
-          break;
-      }
-    });
+    );
+
+    if (model is MessageModel) {
+      emit(state.copyWith(statusProvider: 1));
+    } 
+    if (model is SignUpResponse) {
+      emit(state.copyWith(statusProvider: 1));
+
+      // Handle Firebase
+
+
+    }
 
     if (state.statusProvider == 1) {
       var auth = await authRepo.loginRepo(user.email!, user.uid);

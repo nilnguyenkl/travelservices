@@ -3,7 +3,7 @@ import 'package:travelservices/models/category_model.dart';
 
 class CategoryState extends Equatable {
 
-  final List<CategoryData>? categories;
+  final List<CategoryData> categories;
   final bool getLoading;
 
   final bool statusClick;

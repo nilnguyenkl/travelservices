@@ -7,14 +7,12 @@ class OrderArguments {
   
   final String nameProduct;
   final String description;
-  final int minPrice;
 
   OrderArguments({
     required this.statusOrder,
     required this.items,
     required this.nameProduct,
     required this.description,
-    required this.minPrice
   });
 
 }

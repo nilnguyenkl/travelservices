@@ -1,16 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:travelservices/api/api.dart';
+import 'package:travelservices/models/firebase_user_model.dart';
 import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/login_model.dart';
-import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/signup_model.dart';
 
 class AuthRepository {
   Api api = Api();
 
-  Future<MessageModel> signUpRepo(String username, String email, String phone, String password, String lastname, String firstname, String gender, int idRole) {
+  Future<Object> signUpRepo(String username, String email, String phone, String password, String lastname, String firstname, String gender, int idRole) {
     SignUpRequest request = SignUpRequest(username, email, phone, password, lastname, firstname, gender, idRole); 
     return api.postSignUp(Api.url, "auth/register", request);
   }
@@ -37,4 +38,15 @@ class AuthRepository {
     return userCredential.user!;
   }
 
+  Future createUser(UserRequestFirebase model) async {
+    final docUser = FirebaseFirestore.instance.collection("users").doc(model.id.toString());
+    await docUser.set(model.toJson());
+  }
+
+  Future updateStatusUser(bool status, String doc) async {
+    final docUser = FirebaseFirestore.instance.collection("users").doc(doc);
+    await docUser.update({
+      "status" : status
+    });
+  }
 } 

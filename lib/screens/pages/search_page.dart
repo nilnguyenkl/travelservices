@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -353,8 +354,8 @@ class _SearchPageState extends State<SearchPage> {
     return BlocBuilder<AreaBloc, AreaState>(
       builder: (context, state) {
         List<AreaData> listItems = state.areas;
-        if (listItems[0].name != "All") {
-          listItems.insert(0, AreaData(id: 0, name: 'All', url: ''));
+        if (listItems[0].name != "All Areas") {
+          listItems.insert(0, AreaData(id: 0, name: 'All Areas', url: ''));
         }
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
@@ -397,9 +398,9 @@ class _SearchPageState extends State<SearchPage> {
   Widget optionCategory() {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
-        List<CategoryData> listItems = state.categories!;
-        if (listItems[0].name != "All") {
-          listItems.insert(0, CategoryData(id: 0, name: 'All', icon: ''));
+        List<CategoryData> listItems = state.categories;
+        if (listItems[0].name != "All Categories") {
+          listItems.insert(0, CategoryData(id: 0, name: 'All Categories', icon: categoryDefault));
         }
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
@@ -416,7 +417,7 @@ class _SearchPageState extends State<SearchPage> {
               underline: const SizedBox.shrink(),
               value: state.clickCategory,
               hint: const Text("Category"),
-              onChanged: (CategoryData? value) {
+              onChanged: (value) {
                 context.read<CategoryBloc>().add(CategoryClickEvent(category: value!));
                 context.read<SearchBloc>().add(SearchCategoryEvent(value.id));
               },
@@ -604,7 +605,7 @@ class _SearchPageState extends State<SearchPage> {
           } else {
             List<AreaData> listItems = state.areas;
             if (listItems.isNotEmpty) {
-              if (listItems[0].name == "All") {
+              if (listItems[0].name == "All Areas") {
                 listItems.removeAt(0);
               }
             }

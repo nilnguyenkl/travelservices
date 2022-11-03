@@ -3,13 +3,36 @@ import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/login_model.dart';
 import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/models/refresh_token_model.dart';
 import 'package:travelservices/models/signup_model.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
 class Api {
   
-  final Dio _dio = Dio();
-  static String url = "http://192.168.1.10:8089/";
+  Dio dio = Dio();
+  static String url = "http://192.168.1.66:8089/";
+  
+  
+  Api() {
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        return handler.next(options);
+      },
+      onError: (error, handler) async {
+        if (error.response?.statusCode == 403) {
+          if (await SharedPreferencesCustom.existsKey('refreshToken')) {
+            if (await refreshToken()) {
+              print("1111111111111111");
+              return handler.resolve(await _retry(error.requestOptions));
+            }
+          }
+        }
+        return handler.next(error);
+      }
+    ));
+  }
+  
+  
   
   static Future<String> getTokenAccess() async {
     return await SharedPreferencesCustom.getStringCustom('accessToken');
@@ -19,30 +42,49 @@ class Api {
     return await SharedPreferencesCustom.getBoolCustom('isLogined');
   }
 
-  // Future<void> refreshToken() async {
-  //   final refreshToken = await SharedPreferencesCustom.getStringCustom('refreshToken');
-  //   Response response;
-  //   try {
-  //     response = await _dio.post(
-  //       'auth/refreshtoken',
-  //       data: {
-  //         'refreshToken' : refreshToken
-  //       }
-  //     );
+  
 
-  //     SharedPreferencesCustom.setStringCustom("accessToken", RefreshTokenModel.fromJson(response.data).accessToken);
-  //     SharedPreferencesCustom.setStringCustom("refreshToken", RefreshTokenModel.fromJson(response.data).refreshToken);
+  Future<bool> refreshToken() async {
+    final refreshToken = await SharedPreferencesCustom.getStringCustom('refreshToken');
+    Response response;
+    try {
+      response = await dio.post(
+        'auth/refreshtoken',
+        data: {
+          'refreshToken' : refreshToken
+        }
+      );
 
-  //   } on DioError catch (e) {
-  //     throw Exception(e.message);
-  //   }
+      print(refreshToken);
+      
+      SharedPreferencesCustom.setStringCustom("accessToken", RefreshTokenModel.fromJson(response.data).accessToken);
+      SharedPreferencesCustom.setStringCustom("refreshToken", RefreshTokenModel.fromJson(response.data).refreshToken);
+
+      return true;
+      
+    } on DioError catch (e) {
+      return false;
+    }
     
-  // }
+  }
+
+  Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
+    final options = Options(
+      method: requestOptions.method,
+      headers: requestOptions.headers,
+    );
+    return dio.request<dynamic>(
+      requestOptions.path,
+      data: requestOptions.data,
+      queryParameters: requestOptions.queryParameters,
+      options: options
+    );
+  }
 
   Future<Response> getRequest(String url, String endpoint) async {
     Response response;
     try {
-      response = await _dio.get(url + endpoint);
+      response = await dio.get(url + endpoint);
     } on DioError catch (e) {
 
       throw Exception(e.message);
@@ -54,7 +96,7 @@ class Api {
     String token = await SharedPreferencesCustom.getStringCustom('accessToken');
     Response response;
     try {
-      response = await _dio.get(
+      response = await dio.get(
         url + endpoint,
         options:  Options(
           headers: {
@@ -82,14 +124,18 @@ class Api {
     }
   }
 
-  Future<MessageModel> postSignUp(String url, String endpoint, SignUpRequest request) async {
+  Future<Object> postSignUp(String url, String endpoint, SignUpRequest request) async {
     Response response;
     try {
       response = await Dio().post(
         url + endpoint,
         data:  request.toJson()
       );
-      return MessageModel.fromJson(response.data);
+      if (response.data['status'].toString() == "Success") {
+        return SignUpResponse.fromJson(response.data['data']);
+      } else {
+        return MessageModel.fromJson(response.data['data']);
+      }
     } on DioError catch (e) {
       return MessageModel(message: '');
     }
@@ -98,7 +144,7 @@ class Api {
   Future<void> deleteFavorite (String url, String path, String id) async {
     String token = await SharedPreferencesCustom.getStringCustom('accessToken');
     try {
-      await _dio.delete(
+      await dio.delete(
         url + path + id,
         options: Options(
           headers: {
@@ -188,6 +234,23 @@ class Api {
       return CartResponseModel.fromJson(response.data);
     } on DioError catch (e) {
       return MessageModel(message: '');
+    }
+  }
+
+  Future<void> deleteCartItem (String url, String path, String id) async {
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      await dio.delete(
+        url + path + id,
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+    } on DioError catch (e) {
+      throw Exception(e.message);
     }
   }
   

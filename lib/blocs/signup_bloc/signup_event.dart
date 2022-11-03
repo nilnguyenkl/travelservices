@@ -46,6 +46,7 @@ class SignUpCnfPasswordEvent extends SignUpEvent {
 }
 
 class SignUpSubmitEvent extends SignUpEvent {
+  
   SignUpSubmitEvent();
 }
 

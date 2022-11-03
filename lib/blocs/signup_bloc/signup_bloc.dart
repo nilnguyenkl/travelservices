@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_state.dart';
+import 'package:travelservices/models/firebase_user_model.dart';
+import 'package:travelservices/models/message_model.dart';
+import 'package:travelservices/models/signup_model.dart';
 import 'package:travelservices/repositories/auth_repositories.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
@@ -63,7 +66,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
   void _onSignUpSubmit(SignUpSubmitEvent event, Emitter<SignUpState> emit) async {
     emit(state.copyWith(status: SubmittingStatus()));
-    await authRepo.signUpRepo(
+    var model = await authRepo.signUpRepo(
       state.username, 
       state.email, 
       state.phone, 
@@ -72,21 +75,26 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       state.firstname, 
       state.gender,
       2
-    ).then((value){
-      switch (value.message) {
-        case "Username already exists":
-          emit(state.copyWith(status: FailedStatus(), errorUsername: "Username already exists"));
-          break;
-        case "Email already exists":
-          emit(state.copyWith(status: FailedStatus(), errorEmail: "Email already exists"));
-          break;
-        case "Phone already exists":
-          emit(state.copyWith(status: FailedStatus(), errorPhone: "Phone already exists"));
-          break;
-        case "Success":
-          emit(state.copyWith(status: SuccessStatus()));
-          break;
-      }
-    });
+    );
+    if (model is MessageModel) {
+      emit(state.copyWith(status: FailedStatus(), errorUsername: "Username already exists"));
+    }
+    if (model is SignUpResponse) {
+      emit(state.copyWith(status: SuccessStatus()));
+      authRepo.createUser(UserRequestFirebase(
+        id: model.id, 
+        username: model.username, 
+        firstname: model.firstname, 
+        lastname: model.lastname, 
+        phone: model.phone, 
+        email: model.phone, 
+        avatar: model.avatar, 
+        sex: model.sex, 
+        role: model.role, 
+        createDate: model.createDate, 
+        modifiedDate: model.modifiedDate, 
+        status: false
+      ));
+    }
   }
 }

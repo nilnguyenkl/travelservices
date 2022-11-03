@@ -6,6 +6,7 @@ class SignUpForm {
   final String firstname;
   final String gender;
   final String password;
+  final String email;
   final int role;
 
   SignUpForm({
@@ -15,7 +16,8 @@ class SignUpForm {
     required this.firstname,
     required this.gender,
     required this.password,
-    required this.role
+    required this.role,
+    required this.email
   });
 
 }

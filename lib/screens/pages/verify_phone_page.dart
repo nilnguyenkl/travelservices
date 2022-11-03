@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
+import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
+import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
 import 'package:travelservices/screens/arguments/signupform.dart';
 
 class VerifyPhonePage extends StatefulWidget {
@@ -147,7 +150,14 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                             PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: formData.verify, smsCode: codeSMS);
                             await auth.signInWithCredential(credential).then((value) {
                               if (value.user != null) {
-                                print("Success");
+                                  context.read<SignUpBloc>().add(SignUpUsernameEvent(formData.phone));
+                                  context.read<SignUpBloc>().add(SignUpEmailEvent(formData.email));
+                                  context.read<SignUpBloc>().add(SignUpPhoneEvent(formData.phone));
+                                  context.read<SignUpBloc>().add(SignUpLastnameEvent(formData.lastname));
+                                  context.read<SignUpBloc>().add(SignUpFirstnameEvent(formData.firstname));
+                                  context.read<SignUpBloc>().add(SignUpPasswordEvent(formData.password));
+                                  context.read<SignUpBloc>().add(SignUpGenderEvent(formData.gender));
+                                  context.read<SignUpBloc>().add(SignUpSubmitEvent());
                               } else {
                                 print("Failed");
                               }

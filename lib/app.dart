@@ -24,6 +24,7 @@ import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/pages/addtocart_page.dart';
 import 'package:travelservices/screens/pages/admin/route_page_admin.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
+import 'package:travelservices/screens/pages/chat_page.dart';
 import 'package:travelservices/screens/pages/login_page.dart';
 import 'package:travelservices/screens/pages/order_details.dart';
 import 'package:travelservices/screens/pages/product_details.dart';
@@ -105,7 +106,8 @@ class MyApp extends StatelessWidget {
             Routes.register: (context) => const SignUpPage(),
             Routes.routePageAdmin: (context) => const RoutePageAdmin(),
             Routes.orderDetails: (context) => const OrderDetails(),
-            Routes.cartPage: (context) => const CartPage()
+            Routes.cartPage: (context) => const CartPage(),
+            Routes.chatPage: (context) => const ChatPage() 
           },
           debugShowCheckedModeBanner: false,
           home: const RoutePage()

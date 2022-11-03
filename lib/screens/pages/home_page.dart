@@ -109,6 +109,15 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               IconButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, Routes.chatPage);
+                }, 
+                icon: Icon(
+                  Icons.sms_outlined,
+                  color: Colors.blue.shade600,
+                )
+              ),
+              IconButton(
                 onPressed: (){}, 
                 icon: Icon(
                   Icons.notifications_outlined,
@@ -124,10 +133,10 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   categoriesOption(),
-                  title("Các thành được yêu thích"),
-                  areaFavorite(context),
-                  title("Top 10 trải nghiệm hot nhất"),
-                  serviceTravelHot(context)
+                  // title("Các thành được yêu thích"),
+                  // areaFavorite(context),
+                  // title("Top 10 trải nghiệm hot nhất"),
+                  // serviceTravelHot(context)
                 ],
               ),
             ),
@@ -143,17 +152,19 @@ class _HomePageState extends State<HomePage> {
         if (state.getLoading) {
           return const SizedBox.shrink();
         } else {
-          List<CategoryData> listItems = state.categories!;
-          if (listItems.isNotEmpty) {
-            if (listItems[0].name == "All") {
-              listItems.removeAt(0);
+          List<CategoryData> listItemsCate = state.categories;
+          if (listItemsCate.isNotEmpty) {
+            for (int i = 0; i < listItemsCate.length; i++) {
+              if (listItemsCate[i].name == "All Categories") {
+                listItemsCate.removeAt(i);
+              } 
             }
           }
           return SizedBox(
             child: Column(
               children: [
                 SizedBox(
-                  height: listItems.length > 4 ? 200 : 100,
+                  height: listItemsCate.length > 4 ? 200 : 100,
                   child: PageView(
                     onPageChanged: (value) {
                       setState(() {
@@ -161,19 +172,19 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     scrollDirection: Axis.horizontal,
-                    children: List.generate(listItems.length > 8 ? 2 : 1, (index) {
+                    children: List.generate(listItemsCate.length > 8 ? 2 : 1, (index) {
                       return SizedBox(
                         child: GridView.count(
                           physics: const NeverScrollableScrollPhysics(),
                           crossAxisCount: 4,
                           mainAxisSpacing: 2,
                           crossAxisSpacing: 2,
-                          children: List.generate(listItems.length, (index) {
+                          children: List.generate(listItemsCate.length, (index) {
                             return InkWell(    
                               onTap: (){
                                 context.read<NavbarBloc>().add(NavbarSearchPageEvent());
-                                context.read<SearchBloc>().add(SearchByClickCategoryIconEvent(listItems[index].id));
-                                context.read<CategoryBloc>().add(CategoryClickEvent(category: listItems[index]));
+                                context.read<SearchBloc>().add(SearchByClickCategoryIconEvent(listItemsCate[index].id));
+                                context.read<CategoryBloc>().add(CategoryClickEvent(category: listItemsCate[index]));
                               },
                               child: SizedBox(
                                 child: Column(
@@ -181,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                                     Expanded(
                                       flex: 1,
                                       child: Image.network(
-                                        listItems[index].icon.toString(), 
+                                        listItemsCate[index].icon.toString(), 
                                         color: Colors.blue.shade600,
                                         height: 40,
                                         width: 40,
@@ -190,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                     Expanded(
                                       flex: 1,
                                       child: Text(
-                                        listItems[index].name.toString(),
+                                        listItemsCate[index].name.toString(),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold
@@ -210,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 15),
                   child: Container(
-                    width: listItems.length > 8 ? 30 : 15,
+                    width: listItemsCate.length > 8 ? 30 : 15,
                     height: 4,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(2),

@@ -78,6 +78,9 @@ class ItemsTicket {
   String bookDay;
   String bookTime;
   String? note;
+  String? name;
+  String? description;
+  String? url;
   List<TicketsOrder> tickets;
   
   ItemsTicket({
@@ -87,6 +90,9 @@ class ItemsTicket {
     required this.bookTime,
     required this.note,
     required this.tickets,
+    required this.name,
+    required this.description,
+    required this.url
   });
 
   factory ItemsTicket.fromJson(Map<String, dynamic> json) => ItemsTicket(
@@ -95,6 +101,9 @@ class ItemsTicket {
     bookDay: json["bookDay"],
     bookTime: json["bookTime"],
     note: json["note"] ?? "",
+    name: json["name"] ?? "",
+    description: json["description"] ?? "",
+    url: json["url"] ?? "",
     tickets: List<TicketsOrder>.from(json["tickets"].map((x) => TicketsOrder.fromJson(x))),
   );
 
@@ -103,6 +112,10 @@ class ItemsTicket {
     "idService": idService,
     "bookDay": bookDay,
     "bookTime": bookTime,
+    "name": name,
+    "description": description,
+    "url": url,
+    "note": note,
     "tickets": List<dynamic>.from(tickets.map((x) => x.toJson())),
   };
 

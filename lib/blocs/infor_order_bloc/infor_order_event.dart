@@ -7,8 +7,20 @@ class InforOrderEvent extends Equatable {
 
 class InforOrderReadCalendarEvent extends InforOrderEvent {
   final int idService;
+  final DateTime focusDay;
+  final DateTime selectDay; 
+
+  final List<int> count;
+  final String schedule;
+  final int total;
+
   InforOrderReadCalendarEvent({
-    required this.idService
+    required this.idService,
+    required this.focusDay,
+    required this.selectDay,
+    required this.count,
+    required this.schedule,
+    required this.total
   });
 }
 

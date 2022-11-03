@@ -330,7 +330,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ElevatedButton(
                         onPressed: (){
                           OrderRequestModel model = OrderRequestModel(
-                            infor: InforUserOrder(email: emailController.text, fullname: nameController.text, phone: phoneController.text), 
+                            infor: InforUserOrder(
+                              email: emailController.text, 
+                              fullname: nameController.text, 
+                              phone: phoneController.text
+                            ), 
                             statusOrder: true, 
                             items: setNote(args.items, noteController.text)
                           );
@@ -385,4 +389,5 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
     return tickets;
   }
+  
 }

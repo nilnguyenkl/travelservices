@@ -67,11 +67,11 @@ class TicketInforOrder {
     required this.note,
   });
 
-  final int idTicket;
-  final int valueTicket;
-  final String typeTicket;
-  final int amountTicket;
-  final String note;
+  int idTicket;
+  int valueTicket;
+  String typeTicket;
+  int amountTicket;
+  String note;
 
   factory TicketInforOrder.fromJson(Map<String, dynamic> json) => TicketInforOrder(
     idTicket: json["idTicket"],

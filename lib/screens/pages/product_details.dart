@@ -1,7 +1,10 @@
+import 'package:badges/badges.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_bloc.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_event.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_state.dart';
@@ -14,6 +17,7 @@ import 'package:travelservices/screens/arguments/list_reviews_details_arguments.
 import 'package:travelservices/screens/widgets/delegate_list_widget.dart';
 import 'package:travelservices/screens/widgets/get_box_offse_widget.dart';
 import 'package:travelservices/screens/widgets/map_custom_widget.dart';
+import 'package:travelservices/utils/shared_preferences.dart';
 
 
 
@@ -125,16 +129,22 @@ class _ProductDetailsState extends State<ProductDetails> {
                           )
                         ),
                         actions: [
-                          IconButton(
-                            onPressed: (){
-                              // Navigator.push(context, MaterialPageRoute(builder: (context){
-                              //   return MapSample();
-                              // }));
-                            }, 
-                            icon: Icon(
-                              Icons.shopping_cart_outlined,
-                              color: scrolled ? Colors.blue.shade600 : Colors.white,
-                            )
+                          BlocBuilder<CartBloc, CartState>(
+                            builder:(context, state) {
+                              return Badge(
+                                badgeContent: Text(state.items.length.toString()),
+                                position: BadgePosition.bottomEnd(bottom: 4, end: 5),
+                                child: IconButton(
+                                  onPressed: (){
+                                    Navigator.pushNamed(context, Routes.cartPage);
+                                  }, 
+                                  icon: Icon(
+                                    Icons.shopping_cart_outlined,
+                                    color: scrolled ? Colors.blue.shade600 : Colors.white,
+                                  )
+                                ),
+                              );
+                            },
                           ),               
                         ],
                       );
@@ -574,13 +584,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                       )
                     ),
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: () async {
                         Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(
                           idService: idService, 
                           status: false, 
                           description: state.productDetails!.description ?? "", 
-                          minPrice: state.productDetails!.minPrice ?? 0,
-                          nameProduct: state.productDetails!.name ?? ""
+                          nameProduct: state.productDetails!.name ?? "", 
+                          way: true
                         ));
                       }, 
                       child: const SizedBox(
@@ -603,8 +613,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           idService: idService, 
                           status: true, 
                           description: state.productDetails!.description ?? "", 
-                          minPrice: state.productDetails!.minPrice ?? 0,
-                          nameProduct: state.productDetails!.name ?? ""
+                          nameProduct: state.productDetails!.name ?? "", 
+                          way: true
                         ));
                       }, 
                       child: const SizedBox(
