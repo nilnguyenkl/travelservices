@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:travelservices/blocs/product_details_bloc/product_details_state.
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/product_details_model.dart';
 import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/chat_arguments.dart';
 import 'package:travelservices/screens/arguments/idarguments.dart';
 import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/list_reviews_details_arguments.dart';
@@ -35,9 +37,14 @@ class _ProductDetailsState extends State<ProductDetails> {
   ProductDetailsBloc bloc = ProductDetailsBloc();
   late Map<String, double> latlng;
   late int idService;
+
+  late int idAuth1;
+  late String username1;
+
   @override
-  void initState() {
+  void initState() { 
     scrollController = ScrollController();
+    getValueShared();
     Future.delayed(Duration.zero, () {
       setState(() {
         IdArguments args = ModalRoute.of(context)!.settings.arguments as IdArguments;
@@ -73,6 +80,19 @@ class _ProductDetailsState extends State<ProductDetails> {
     ];
     super.initState();
   }
+
+  // Future<Map<String, dynamic>> getValueShared () async {
+  //   return {
+  //     "idAuth" : await SharedPreferencesCustom.getIntCustom('idAuth'),
+  //     "username" : await SharedPreferencesCustom.getStringCustom('username')
+  //   };
+  // }
+
+  void getValueShared() async {
+    idAuth1 = await SharedPreferencesCustom.getIntCustom('idAuth');
+    username1 = await SharedPreferencesCustom.getStringCustom('username');
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
@@ -129,6 +149,25 @@ class _ProductDetailsState extends State<ProductDetails> {
                           )
                         ),
                         actions: [
+                          Badge(
+                            badgeContent: Text("1"),
+                            position: BadgePosition.bottomEnd(bottom: 4, end: 5),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, Routes.chatContentPage, arguments: ChatArgument(
+                                  idRoom: chatRoomId(username1, state.productDetails?.usernameAuth ?? ""), 
+                                  id1: idAuth1, 
+                                  id2: state.productDetails?.createByAuthId ?? 0, 
+                                  username1: username1, 
+                                  username2: state.productDetails?.usernameAuth ?? ""
+                                ));
+                              }, 
+                              icon: Icon(
+                                Icons.chat_outlined,
+                                color: scrolled ? Colors.blue.shade600 : Colors.white,
+                              )
+                            ),
+                          ),   
                           BlocBuilder<CartBloc, CartState>(
                             builder:(context, state) {
                               return Badge(
@@ -145,7 +184,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 ),
                               );
                             },
-                          ),               
+                          ),         
                         ],
                       );
                     },
@@ -669,6 +708,14 @@ class _ProductDetailsState extends State<ProductDetails> {
   //     "longitude" : locations.first.longitude
   //   };
   // }
+
+  String chatRoomId(String user1, String user2) {
+    if (user1.toLowerCase().codeUnits[0] > user2.toLowerCase().codeUnits[0]) {
+      return "${user1}lamlam$user2";
+    } else {
+      return "${user2}lamlam$user1";
+    }
+  }
 
   Widget carouselElement(String url){
     return Container(

@@ -81,7 +81,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
     if (model is SignUpResponse) {
       emit(state.copyWith(status: SuccessStatus()));
-      authRepo.createUser(UserRequestFirebase(
+      authRepo.createUser(UserFirebase(
         id: model.id, 
         username: model.username, 
         firstname: model.firstname, 

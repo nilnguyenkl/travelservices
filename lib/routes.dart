@@ -9,6 +9,7 @@ class Routes{
   static const orderDetails = '/orderDetails';
   static const cartPage = '/cartPage';
   static const chatPage = '/chatPage';
+  static const chatContentPage = '/chatContentPage';
 
 
 

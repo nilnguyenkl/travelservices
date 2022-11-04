@@ -15,7 +15,9 @@ import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/current_user_arguments.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
+import 'package:travelservices/utils/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,6 +29,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   
   int currentIndex = 0;
+
+  late int idAuth;
+  late String username;
+  
+  @override
+  void initState() {
+    getValueShared();  
+    super.initState();
+  }
+
+  void getValueShared() async {
+    idAuth = await SharedPreferencesCustom.getIntCustom('idAuth');
+    username = await SharedPreferencesCustom.getStringCustom('username');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +126,7 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: (){
-                  Navigator.pushNamed(context, Routes.chatPage);
+                  Navigator.pushNamed(context, Routes.chatPage, arguments: CurrentArguments(id: idAuth));
                 }, 
                 icon: Icon(
                   Icons.sms_outlined,

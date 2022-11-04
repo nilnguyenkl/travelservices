@@ -10,8 +10,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://192.168.1.66:8089/";
-  
+  static String url = "http://192.168.1.14:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -31,8 +30,6 @@ class Api {
       }
     ));
   }
-  
-  
   
   static Future<String> getTokenAccess() async {
     return await SharedPreferencesCustom.getStringCustom('accessToken');

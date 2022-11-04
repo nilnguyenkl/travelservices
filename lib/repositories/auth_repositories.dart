@@ -38,7 +38,7 @@ class AuthRepository {
     return userCredential.user!;
   }
 
-  Future createUser(UserRequestFirebase model) async {
+  Future createUser(UserFirebase model) async {
     final docUser = FirebaseFirestore.instance.collection("users").doc(model.id.toString());
     await docUser.set(model.toJson());
   }

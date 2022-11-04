@@ -1,6 +1,8 @@
 class ProductDetailsModel {
 
   final int? id;
+  final int? createByAuthId;
+  final String? usernameAuth;
   String? name;
   String? address;
   String? description;
@@ -12,6 +14,8 @@ class ProductDetailsModel {
 
   ProductDetailsModel({
     required this.id,
+    required this.createByAuthId,
+    required this.usernameAuth,
     required this.name,
     this.address = '',
     this.description = '',
@@ -24,6 +28,8 @@ class ProductDetailsModel {
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) => ProductDetailsModel(
     id: json["id"],
+    createByAuthId: json["createByAuthId"],
+    usernameAuth: json["usernameAuth"],
     name: json["name"],
     address: json["address"],
     description: json["description"],
@@ -37,6 +43,8 @@ class ProductDetailsModel {
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
+    "createByAuthId": createByAuthId,
+    "usernameAuth": usernameAuth,
     "address": address,
     "description": description,
     "event": event,

@@ -38,9 +38,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
     if (auth is LoginResponseModel) {
       emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
+      
+      // Set local data
       SharedPreferencesCustom.setStringCustom('accessToken', auth.accessToken.toString());
       SharedPreferencesCustom.setBoolCustom('isLogined', true);
       SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
+      SharedPreferencesCustom.setStringCustom('username', auth.username);
+      SharedPreferencesCustom.setIntCustom('idAuth', auth.id);
+      
+      
       await Future.delayed(const Duration(seconds: 3));
       emit(state.copyWith(status: const InitialStatus()));
 
@@ -83,9 +89,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }
       if (auth is LoginResponseModel) {
         emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
+        
+        // Set local data
         SharedPreferencesCustom.setStringCustom('accessToken', auth.accessToken.toString());
         SharedPreferencesCustom.setBoolCustom('isLogined', true);
         SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
+        SharedPreferencesCustom.setStringCustom('username', auth.username);
+        SharedPreferencesCustom.setIntCustom('idAuth', auth.id);
+        
         await Future.delayed(const Duration(seconds: 3));
         emit(state.copyWith(status: const InitialStatus()));
       }

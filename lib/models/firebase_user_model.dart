@@ -1,4 +1,4 @@
-class UserRequestFirebase {
+class UserFirebase {
 
   final int id;
   final String username;
@@ -13,7 +13,7 @@ class UserRequestFirebase {
   final DateTime modifiedDate;
   final bool status;
 
-  UserRequestFirebase({
+  UserFirebase({
     required this.id,
     required this.username,
     required this.firstname,
@@ -38,8 +38,23 @@ class UserRequestFirebase {
     "avatar": avatar,
     "sex": sex,
     "role": role,
-    "createDate": createDate.toIso8601String(),
-    "modifiedDate": modifiedDate.toIso8601String(),
+    "createDate": createDate,
+    "modifiedDate": modifiedDate,
     "status" : status
   };
+
+  factory UserFirebase.fromJson(Map<String, dynamic> json) => UserFirebase(
+    id: json["id"],
+    username: json["username"],
+    firstname: json["firstname"],
+    lastname: json["lastname"],
+    phone: json["phone"],
+    email: json["email"],
+    avatar: json["avatar"],
+    sex: json["sex"],
+    role: json["role"],
+    createDate: DateTime.parse(json["createDate"]),
+    modifiedDate: DateTime.parse(json["modifiedDate"]),
+    status: json["status"],
+  );
 }
