@@ -10,6 +10,10 @@ class CartReadEvent extends CartEvent {
   CartReadEvent();
 }
 
+class CartResetEvent extends CartEvent {
+  CartResetEvent();
+}
+
 class CartAddEvent extends CartEvent {
   final CartRequestModel data;
   CartAddEvent({
@@ -41,4 +45,6 @@ class CartChooseItemEvent extends CartEvent {
     required this.status
   }); 
 }
+
+
 

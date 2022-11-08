@@ -11,6 +11,8 @@ import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/order_bloc/order_bloc.dart';
+import 'package:travelservices/blocs/profile_bloc/profile_bloc.dart';
+import 'package:travelservices/blocs/profile_bloc/profile_event.dart';
 import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
 import 'package:travelservices/repositories/area_repositories.dart';
@@ -24,9 +26,11 @@ import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/pages/addtocart_page.dart';
 import 'package:travelservices/screens/pages/admin/route_page_admin.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
+import 'package:travelservices/screens/pages/change_password_page.dart';
 import 'package:travelservices/screens/pages/chat_content_page.dart';
 import 'package:travelservices/screens/pages/chat_page.dart';
 import 'package:travelservices/screens/pages/login_page.dart';
+import 'package:travelservices/screens/pages/myprofile_page.dart';
 import 'package:travelservices/screens/pages/order_details.dart';
 import 'package:travelservices/screens/pages/product_details.dart';
 import 'package:travelservices/screens/pages/reviews_details_page.dart';
@@ -95,6 +99,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => OrderBloc(),
           ),
+          BlocProvider(
+            create: (context) => ProfileBloc()..add(ProfileReadEvent())
+          ),
         ],
         child: MaterialApp(
           routes: {
@@ -109,7 +116,9 @@ class MyApp extends StatelessWidget {
             Routes.orderDetails: (context) => const OrderDetails(),
             Routes.cartPage: (context) => const CartPage(),
             Routes.chatPage: (context) => const ChatPage(),
-            Routes.chatContentPage: (context) => const ChatContentPage() 
+            Routes.chatContentPage: (context) => const ChatContentPage(),
+            Routes.myprofilePage: (context) => const MyProfile(),
+            Routes.changepasswordPage: (context) => const ChangePasswordPage() 
           },
           debugShowCheckedModeBanner: false,
           home: const RoutePage()

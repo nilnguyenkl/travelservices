@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_event.dart';
+import 'package:travelservices/blocs/navbar_bloc/navbar_state.dart';
 import 'package:travelservices/blocs/order_bloc/order_bloc.dart';
 import 'package:travelservices/blocs/order_bloc/order_event.dart';
 import 'package:travelservices/blocs/order_bloc/order_state.dart';
@@ -12,7 +15,10 @@ import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/order_model.dart';
 import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/idarguments.dart';
 import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
+import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
+import 'package:travelservices/screens/widgets/loading_widget.dart';
 import 'package:travelservices/utils/convert_model.dart';
 
 class CartPage extends StatefulWidget {
@@ -24,17 +30,15 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   
-  // bool? status = false;
-
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
   List<TextEditingController> notesController = List.generate(20, (index) => TextEditingController());
 
-
   @override
   Widget build(BuildContext context) {
+    WayCartArguments args = ModalRoute.of(context)!.settings.arguments as WayCartArguments;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -47,19 +51,31 @@ class _CartPageState extends State<CartPage> {
             textAlign: TextAlign.center,
           ),
           actions: [
-            TextButton(
-              onPressed: (){}, 
-              child: const Text(
-                "Tiếp tục mua hàng",
-                style: TextStyle(
-                  fontSize: 18
-                ),
-              )
+            BlocBuilder<NavbarBloc, NavbarState> (
+              builder:(context, state) {
+                return TextButton(
+                  onPressed: (){
+                    context.read<NavbarBloc>().add(NavbarSearchStatusEvent());
+                    context.read<NavbarBloc>().add(NavbarSearchPageEvent());
+                    Navigator.pushNamed(context, Routes.routesPage);
+                  }, 
+                  child: const Text(
+                    "Continue to buy",
+                    style: TextStyle(
+                      fontSize: 18
+                    ),
+                  )
+                ); 
+              },
             )
           ],
           leading: IconButton(
             onPressed: (){
-              Navigator.pop(context);
+              if (args.way) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(args.idService ?? 0));
+              }
             },
             icon: Icon(
               Icons.close,
@@ -80,7 +96,7 @@ class _CartPageState extends State<CartPage> {
         body: BlocBuilder<CartBloc, CartState>(
           builder:(context, state) {
             if (state.getLoading) {
-              return Text("adsadasdsa");
+              return const LoadingWidget();
             } else {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -409,8 +425,6 @@ class _CartPageState extends State<CartPage> {
                                 List<ItemsTicket> items = [];
                                 for (int i = 0; i < itemsChoose.length; i++) {
                                   if (itemsChoose[i]) {
-                                    print(notesController[i].text);
-                                    print(notesController[i]);
                                     List<TicketsOrder> tickets = [];
                                     for (TicketCartResponse response in state.items[i].tickets) {
                                       tickets.add(ConvertModel.convertToTicketOrder(response));

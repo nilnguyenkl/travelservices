@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
@@ -16,6 +18,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartUpdateEvent>(onCartUpdate);
     on<CartDeleteEvent>(onCartDelete);
     on<CartChooseItemEvent>(onCartChooseItems);
+    on<CartResetEvent>(onCartResetItems);
   }
 
   void onCartRead(CartReadEvent event, Emitter<CartState> emit) async {
@@ -31,12 +34,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (data is CartResponseModel) {
       emit(state.copyWith(statusProccess: 1, statusCreate: false));
       add(CartReadEvent());
-      print("Create success");
+      emit(state.copyWith(statusProccess: 0));
     }
 
     if (data is MessageModel) {
       emit(state.copyWith(statusProccess: -1, statusCreate: false));
-      print("Create failed");
+      emit(state.copyWith(statusProccess: 0));
     }
 
   }
@@ -69,5 +72,18 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     List<bool> list = state.itemsChoose;
     list[event.index] = event.status!;
     emit(state.copyWith(itemsChoose: list, statusClick: false));
+  }
+
+  void onCartResetItems(CartResetEvent event, Emitter<CartState> emit) {
+    emit(state.copyWith(
+      getLoading: false, 
+      items: const <CartResponseModel>[], 
+      itemsChoose: List.generate(20, (index) => false),
+      statusCreate: false, 
+      statusDelete: false, 
+      statusUpdate: false,
+      statusClick: false,
+      statusProccess: 0
+    ));
   }
 }

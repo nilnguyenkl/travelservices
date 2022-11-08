@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/api/api.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
+import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
+import 'package:travelservices/blocs/login_bloc/login_state.dart';
+import 'package:travelservices/blocs/profile_bloc/profile_bloc.dart';
+import 'package:travelservices/blocs/profile_bloc/profile_event.dart';
+import 'package:travelservices/blocs/profile_bloc/profile_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/change_profile_arguments.dart';
 import 'package:travelservices/utils/bottom_sheet.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
@@ -13,11 +23,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Center(
           child: Text(
             "Profile",
@@ -87,131 +97,277 @@ class _ProfilePageState extends State<ProfilePage> {
               );
             } else {
               return SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        height: 250,
-                        width: double.infinity,
-                        child: Stack(
+                child: BlocBuilder<ProfileBloc, ProfileState>(
+                  builder:(context, state) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 1,
-                                child: SizedBox(
-                                  height: 180,
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          "Nguyen Quoc Nil",
-                                          style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.blue.shade400
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 250,
+                              width: double.infinity,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 1,
+                                      child: SizedBox(
+                                        height: 180,
+                                        width: double.infinity,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                "${state.user?.infor.firstname ?? ""} ${state.user?.infor.lastname ?? ""}",
+                                                style: TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.blue.shade400
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      const Text(
+                                                        "Experienced",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          color: hintText,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "${state.user?.numOrderExperienced ?? 0}",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.blue.shade400
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 15,
+                                                      vertical: 8,
+                                                    ),
+                                                    child: Container(
+                                                      height: 35,
+                                                      width: 3,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(100),
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      const Text(
+                                                        "Approved",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          color: hintText,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "${state.user?.numOrderApproved ?? 0}",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.blue.shade400
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 15,
+                                                      vertical: 8,
+                                                    ),
+                                                    child: Container(
+                                                      height: 35,
+                                                      width: 3,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(100),
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      const Text(
+                                                        "Pending",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          color: hintText,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "${state.user?.numOrderWaiting ?? 0}",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.blue.shade400
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            ],
                                           ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Column(
-                                              children: [
-                                                const Text(
-                                                  "Orders",
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: hintText,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "15",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.blue.shade400
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 8,
-                                              ),
-                                              child: Container(
-                                                height: 35,
-                                                width: 3,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(100),
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ),
-                                            Column(
-                                              children: [
-                                                const Text(
-                                                  "Pending",
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: hintText,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "1",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.blue.shade400
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ],
                                         )
-                                      ],
+                                      ),
                                     ),
-                                  )
+                                  ),
+                                  Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: 120,
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 4, color: Colors.white),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            spreadRadius: 2,
+                                            blurRadius: 10,
+                                            color: Colors.black.withOpacity(0.1)
+                                          )
+                                        ],
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: NetworkImage(state.user?.infor.avatar ?? avatarDefault)
+                                        )
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: paddingWidth),
+                              child: SizedBox(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
+                                      child: Row(
+                                        children: const [
+                                          Expanded(
+                                            child: Divider(
+                                              thickness: 2,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: paddingWidth),
+                                            child: Text(
+                                              "About the app",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.blue
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Divider(
+                                              thickness: 2,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      child: Column(
+                                        children: [
+                                          menuProfile("Introduce", Icons.info, (){}),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                            const Positioned(
-                              bottom: 130,
-                              left: 0,
-                              right: 0,
-                              child: Center(
-                                child: CircleAvatar(
-                                  radius: 60,
-                                  backgroundImage: AssetImage(
-                                    'assets/images/test.jpg',
+                            SizedBox(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
+                                    child: Row(
+                                      children: const [
+                                        Expanded(
+                                          child: Divider(
+                                            thickness: 2,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: paddingWidth),
+                                          child: Text(
+                                            "Manage",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.blue
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Divider(
+                                            thickness: 2,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
+                                  SizedBox(
+                                    child: Column(
+                                      children: [
+                                        menuProfile("My Profile", Icons.person, (){
+                                          Navigator.pushNamed(context, Routes.myprofilePage, arguments: ChangeProfileArguments(
+                                            firstname: state.user?.infor.firstname, 
+                                            lastname: state.user?.infor.lastname, 
+                                            email: state.user?.infor.email, 
+                                            phone: state.user?.infor.phone ?? "", 
+                                            gender: state.user?.infor.sex ?? ""
+                                          ));
+                                        }),
+                                        menuProfile("Change Password", Icons.key, (){
+                                          Navigator.pushNamed(context, Routes.changepasswordPage);
+                                        }),
+                                        menuProfile(
+                                          "Logout", 
+                                          Icons.logout, 
+                                          () async {
+                                            // context.read<CartBloc>().add(CartResetEvent());
+                                            SharedPreferencesCustom.setBoolCustom("isLogined", false);
+                                            SharedPreferencesCustom.setStringCustom("accessToken", "");
+                                        })
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ]
                         ),
                       ),
-                      menuProfile("My Profile", Icons.person, (){}),
-                      menuProfile("Change Password", Icons.key, (){}),
-                      menuProfile(
-                        "Logout", 
-                        Icons.logout, 
-                        () async {
-                          SharedPreferencesCustom.setBoolCustom("isLogined", false);
-                      })
-                    ],
-                  ),
-                ),
+                    );
+                  },
+                )
               );
             }
           } else {

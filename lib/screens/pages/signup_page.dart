@@ -314,17 +314,18 @@ class _SignUpPageState extends State<SignUpPage> {
                                     borderRadius: BorderRadius.circular(15)
                                   )
                                 ),
-                                backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)),
-                                child: const Padding(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                                  child: Text(
-                                    "Next",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold
-                                    ),
+                                backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 15, bottom: 15),
+                                child: Text(
+                                  "Next",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold
                                   ),
                                 ),
+                              ),
                             ),
                           );
                         }

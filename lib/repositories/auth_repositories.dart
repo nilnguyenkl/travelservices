@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,8 @@ import 'package:travelservices/api/api.dart';
 import 'package:travelservices/models/firebase_user_model.dart';
 import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/login_model.dart';
+import 'package:travelservices/models/message_model.dart';
+import 'package:travelservices/models/profile_model.dart';
 import 'package:travelservices/models/signup_model.dart';
 
 class AuthRepository {
@@ -22,9 +26,12 @@ class AuthRepository {
   }
 
   Future<List<EventCalender>> getListEvent(String endPoint) async {
-    Response response;
-    response = await api.getRequestAuth(Api.url, endPoint);
-    return (response.data as List).map((e) => EventCalender.fromJson(e)).toList();
+    var object = await api.getRequestAuth(Api.url, endPoint);
+    if (object is Response) {
+      return (object.data as List).map((e) => EventCalender.fromJson(e)).toList();
+    } else {
+      return <EventCalender>[];
+    }
   }
 
   Future<User> loginWithProvider() async {
@@ -49,4 +56,32 @@ class AuthRepository {
       "status" : status
     });
   }
+
+  Future<Object> updateProfile(String endPoint, ProfileRequest request) async {
+    var object = await api.updateProfile(request, endPoint);
+    if (object is Response) {
+      return ProfileResponse.fromJson(object.data);
+    } else {
+      return MessageModel(message: "Failed");
+    }
+  }
+
+  Future<Object> getProfileUser(String endPoint) async {
+    var object = await api.getRequestAuth(Api.url, endPoint);
+    if (object is Response) {
+      return ProfileResponse.fromJson(object.data);
+    } else {
+      return MessageModel(message: "Failed");
+    }
+  } 
+
+  Future<Object> uploadAvatar(String endPoint, File imageFile) async {
+    var object = await api.uploadAvatar(endPoint, imageFile);
+    if (object is Response) {
+      return ProfileResponse.fromJson(object.data);
+    } else {
+      return MessageModel(message: "Failed");
+    }
+  }
+  
 } 

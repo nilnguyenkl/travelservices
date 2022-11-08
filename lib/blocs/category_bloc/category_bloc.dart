@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/category_bloc/category_state.dart';
@@ -20,19 +18,18 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     emit(state.copyWith(getLoading: true));
     List<CategoryData> data = await categoryRepository.getListCategories("public/category");
     emit(state.copyWith(categories: data, getLoading: false));
-
   }
 
   void onCategoryClick(CategoryClickEvent event, Emitter<CategoryState> emit) {
-    emit(state.copyWith(statusClick: true, clickCategory: event.category));
-
-    state.categories.map((e) => print(e.id));
+    emit(state.copyWith(clickCategory: event.category, statusClick: true));
   }
-
 
   void onCategoryReset(CategoryResetEvent event, Emitter<CategoryState> emit) {
     emit(state.copyWith(
-      categories: state.categories, getLoading: false, statusClick: false, clickCategory: null
+      categories: state.categories, 
+      getLoading: false, 
+      statusClick: false,
+      clickCategory: null
     ));
   }
 }

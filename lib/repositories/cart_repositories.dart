@@ -14,8 +14,11 @@ class CartRepository {
   }
 
   Future<List<CartResponseModel>> getCart(String enpoint) async {
-    Response response;
-    response = await api.getRequestAuth(Api.url, enpoint);
-    return (response.data['data'] as List).map((e) => CartResponseModel.fromJson(e)).toList();
+    var object = await api.getRequestAuth(Api.url, enpoint);
+    if (object is Response) {
+      return (object.data['data'] as List).map((e) => CartResponseModel.fromJson(e)).toList();
+    } else {
+      return <CartResponseModel>[];
+    }
   } 
 }

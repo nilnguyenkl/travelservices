@@ -8,13 +8,30 @@ class FavoriteRepository {
   Api api = Api();
 
   Future<List<FavoriteResponseModel>> getListFavorite(String endPoint) async {
-    Response response;
-    response = await api.getRequestAuth(Api.url, endPoint);
-    return (response.data as List).map((e) => FavoriteResponseModel.fromJson(e)).toList();
+    var object = await api.getRequestAuth(Api.url, endPoint);
+    if (object is Response) {
+      return (object.data as List).map((e) => FavoriteResponseModel.fromJson(e)).toList();
+    } else {
+      return <FavoriteResponseModel>[];
+    }
   }
 
-  Future<MessageModel> insertFavorite(String endPoint, String id) async {
-    return await api.postFavorite(Api.url, endPoint, id);
+  Future<Object> insertFavorite(String endPoint, String id) async {
+    var object = await api.postFavorite(Api.url, endPoint, id);
+    if (object is Response) {
+      return (object.data as List).map((e) => FavoriteResponseModel.fromJson(e)).toList();
+    } else {
+      return object;
+    }
+  }
+
+  Future<Object> deleteFavorite(String endPoint, String id) async {
+    var object = await api.deleteFavorite(Api.url, endPoint, id);
+    if (object is Response) {
+      return (object.data as List).map((e) => FavoriteResponseModel.fromJson(e)).toList();
+    } else {
+      return object;
+    }
   }
   
 }

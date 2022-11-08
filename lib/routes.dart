@@ -10,6 +10,8 @@ class Routes{
   static const cartPage = '/cartPage';
   static const chatPage = '/chatPage';
   static const chatContentPage = '/chatContentPage';
+  static const myprofilePage = '/myprofilePage';
+  static const changepasswordPage = '/changepasswordPage';
 
 
 

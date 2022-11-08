@@ -17,11 +17,17 @@ class CategoryState extends Equatable {
   });
 
   factory CategoryState.empty() {
-    return const CategoryState(categories: <CategoryData>[], getLoading: false, statusClick: false, clickCategory: null);
+    return const CategoryState(
+      categories: <CategoryData>[], 
+      getLoading: false, 
+      statusClick: false, 
+      clickCategory: null
+    );
   }
 
   CategoryState copyWith ({
     List<CategoryData>? categories,
+    bool? stateCategories,
     bool? getLoading,
     bool? statusClick,
     CategoryData? clickCategory

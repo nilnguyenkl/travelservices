@@ -8,11 +8,14 @@ class FavoriteState extends Equatable {
   final bool statusDelete;
   final List<FavoriteResponseModel> favorites;
 
+  final bool reload;
+
   const FavoriteState({
     required this.getLoading,
     required this.statusAdd,
     required this.statusDelete,
-    required this.favorites
+    required this.favorites,
+    required this.reload
   });
 
   factory FavoriteState.empty() {
@@ -20,7 +23,8 @@ class FavoriteState extends Equatable {
       statusAdd: false,
       statusDelete: false,
       favorites: <FavoriteResponseModel>[], 
-      getLoading: false
+      getLoading: false,
+      reload: false
     );
   }
 
@@ -28,17 +32,19 @@ class FavoriteState extends Equatable {
     bool? getLoading,
     bool? statusAdd,
     bool? statusDelete,
-    List<FavoriteResponseModel>? favorites
+    List<FavoriteResponseModel>? favorites,
+    bool? reload,
   }) {
     return FavoriteState(
       getLoading: getLoading ?? this.getLoading, 
       favorites: favorites ?? this.favorites, 
       statusAdd: statusAdd?? this.statusAdd, 
-      statusDelete: statusDelete ?? this.statusDelete
+      statusDelete: statusDelete ?? this.statusDelete,
+      reload: reload ?? this.reload
     );
   }
 
   @override
-  List<Object?> get props => [getLoading, favorites, statusAdd, statusDelete];
+  List<Object?> get props => [getLoading, favorites, statusAdd, statusDelete, reload];
 
 }

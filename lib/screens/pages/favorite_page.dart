@@ -5,6 +5,7 @@ import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/screens/widgets/loading_widget.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class _FavoritePageState extends State<FavoritePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Center(
             child: Text(
               "Favorite",
@@ -41,7 +43,10 @@ class _FavoritePageState extends State<FavoritePage> {
         ),
         body: BlocBuilder<FavoriteBloc, FavoriteState>(
           builder:(context, state) {
-            return Padding(
+            if (state.getLoading) {
+              return const LoadingWidget();
+            } else {
+              return Padding(
               padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -76,7 +81,6 @@ class _FavoritePageState extends State<FavoritePage> {
                                     right: 5,
                                     child: IconButton(
                                       onPressed: (){
-                                        print("1111");
                                         context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: state.favorites[index].idService));
                                       },
                                       icon: Icon(
@@ -145,6 +149,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 ),  
               ),
             );
+            }
           },
         )
       )

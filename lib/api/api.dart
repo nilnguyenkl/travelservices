@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/login_model.dart';
 import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/models/profile_model.dart';
 import 'package:travelservices/models/refresh_token_model.dart';
 import 'package:travelservices/models/signup_model.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
@@ -21,7 +25,6 @@ class Api {
         if (error.response?.statusCode == 403) {
           if (await SharedPreferencesCustom.existsKey('refreshToken')) {
             if (await refreshToken()) {
-              print("1111111111111111");
               return handler.resolve(await _retry(error.requestOptions));
             }
           }
@@ -51,8 +54,6 @@ class Api {
           'refreshToken' : refreshToken
         }
       );
-
-      print(refreshToken);
       
       SharedPreferencesCustom.setStringCustom("accessToken", RefreshTokenModel.fromJson(response.data).accessToken);
       SharedPreferencesCustom.setStringCustom("refreshToken", RefreshTokenModel.fromJson(response.data).refreshToken);
@@ -89,7 +90,7 @@ class Api {
     return response;
   }
 
-  Future<Response> getRequestAuth(String url, String endpoint) async {
+  Future<Object> getRequestAuth(String url, String endpoint) async {
     String token = await SharedPreferencesCustom.getStringCustom('accessToken');
     Response response;
     try {
@@ -103,7 +104,7 @@ class Api {
         ),
       );
     } on DioError catch (e) {
-      throw Exception(e.message);
+      return MessageModel(message: "Error 403");
     }
     return response; 
   }
@@ -138,10 +139,11 @@ class Api {
     }
   }
 
-  Future<void> deleteFavorite (String url, String path, String id) async {
+  Future<Object> deleteFavorite (String url, String path, String id) async {
+    Response response;
     String token = await SharedPreferencesCustom.getStringCustom('accessToken');
     try {
-      await dio.delete(
+      response = await dio.delete(
         url + path + id,
         options: Options(
           headers: {
@@ -150,12 +152,13 @@ class Api {
           },
         )
       );
+      return response;
     } on DioError catch (e) {
-      throw Exception(e.message);
+      return MessageModel(message: "Error 403");
     }
   }
 
-  Future<MessageModel> postFavorite(String url, String endpoint, String id) async {
+  Future<Object> postFavorite(String url, String endpoint, String id) async {
     Response response;
     String token = await SharedPreferencesCustom.getStringCustom('accessToken');
     try {
@@ -168,9 +171,9 @@ class Api {
           },
         )
       );
-      return MessageModel.fromJson(response.data);
+      return response;
     } on DioError catch (e) {
-      return MessageModel(message: '');
+      return MessageModel(message: "Error 403");
     }
   }
 
@@ -248,6 +251,55 @@ class Api {
       );
     } on DioError catch (e) {
       throw Exception(e.message);
+    }
+  }
+
+  Future<Object> updateProfile(ProfileRequest request, String endpoint) async {
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    Response response;
+    try {
+      response = await Dio().put(
+        "$url$endpoint",
+        data: request.toJson(),
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return response;
+    } on DioError catch (e) {
+      return MessageModel(message: '');
+    }
+  }
+
+  Future<Object> uploadAvatar(String endPoint, File imageFile) async {
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    Response response;
+    try {
+      String fileName = imageFile.path.split('/').last;
+      FormData formData = FormData.fromMap({
+        "file" : await MultipartFile.fromFile(
+          imageFile.path,
+          filename: fileName,
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      });
+      response = await dio.post(
+        "$url$endPoint",
+        data: formData,
+        options:  Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+            "Content-Type" : "multipart/form-data"
+          },
+        ),
+      );
+      return response;
+    } on DioError catch(e) {
+      return MessageModel(message: '');
     }
   }
   

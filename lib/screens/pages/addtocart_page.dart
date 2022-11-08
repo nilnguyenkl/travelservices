@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
@@ -16,6 +17,7 @@ import 'package:travelservices/models/order_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/order_arguments.dart';
+import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
 import 'package:travelservices/utils/convert_model.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 import 'package:travelservices/utils/totalValueOrder.dart';
@@ -627,7 +629,24 @@ class _AddToCartPageState extends State<AddToCartPage> {
                   ) : BlocBuilder<InforOrderBloc, InforOrderState>(
                     bloc: bloc,
                     builder:(context, stateC) {
-                      return BlocBuilder<CartBloc, CartState>(
+                      return BlocConsumer<CartBloc, CartState>(
+                        listener: (context, state) {
+                          if (state.statusProccess == 1) {
+                            Navigator.pushNamed(context, Routes.cartPage, arguments: WayCartArguments(way: false, idService: idService));
+                          }
+                          if (state.statusProccess == -1) {
+                            MotionToast.error(
+                              height: 60,
+                              title: const Text(
+                                "Failed",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              description: const Text("Someting was wrong")
+                            ).show(context);
+                          }
+                        },
                         builder:(context, state) {
                           return ElevatedButton(
                             onPressed: () {                  

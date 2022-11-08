@@ -157,7 +157,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           if (state.statusSearchSort) {
             data = await productRepository.getListProduct("public/service?page=1&limit=99&sort=${state.sortSearch}&area=${state.area}");
           } else {
-            print(state.area);
             data = await productRepository.getListProduct("public/service?page=1&limit=99&area=${state.area}");
           }
         }

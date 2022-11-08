@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -55,8 +54,7 @@ class _SearchPageState extends State<SearchPage> {
                   Icons.search_outlined,
                   color: Colors.black,
                 ),
-                suffixIcon: null,
-                hintText: "Tìm kiếm",
+                hintText: "Search where to go or what to do",
                 hintStyle: const TextStyle(
                   color: hintText
                 ),
@@ -79,8 +77,7 @@ class _SearchPageState extends State<SearchPage> {
             Icons.search_outlined,
             color: Colors.black,
           ),
-          suffixIcon: null,
-          hintText: "Tìm kiếm",
+          hintText: "Search where to go or what to do",
           hintStyle: const TextStyle(
             color: hintText
           ),
@@ -112,6 +109,7 @@ class _SearchPageState extends State<SearchPage> {
                     child: !state.statusBar ? searchBar(state.statusSearch, () {
                       context.read<SearchBloc>().add(SearchResetEvent());
                       context.read<AreaBloc>().add(const AreaResetEvent());
+                      context.read<CategoryBloc>().add(const CategoryResetEvent());
                       searchController.clear();
                     }) : Row(
                       children: [
@@ -127,7 +125,7 @@ class _SearchPageState extends State<SearchPage> {
                                 color: Colors.black,
                               ),
                               suffixIcon: null,
-                              hintText: "Tìm kiếm",
+                              hintText: "Search where to go or what to do",
                               hintStyle: const TextStyle(
                                 color: hintText
                               ),
@@ -354,9 +352,6 @@ class _SearchPageState extends State<SearchPage> {
     return BlocBuilder<AreaBloc, AreaState>(
       builder: (context, state) {
         List<AreaData> listItems = state.areas;
-        if (listItems[0].name != "All Areas") {
-          listItems.insert(0, AreaData(id: 0, name: 'All Areas', url: ''));
-        }
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
           child: Container(
@@ -398,10 +393,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget optionCategory() {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
-        List<CategoryData> listItems = state.categories;
-        if (listItems[0].name != "All Categories") {
-          listItems.insert(0, CategoryData(id: 0, name: 'All Categories', icon: categoryDefault));
-        }
+        final List<CategoryData> listItems = state.categories;
         return Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
           child: Container(
@@ -504,32 +496,26 @@ class _SearchPageState extends State<SearchPage> {
                                     ],
                                   ),
                                   BlocBuilder<FavoriteBloc, FavoriteState>(
+                                    buildWhen: (previous, current) {
+                                      return previous.statusAdd != current.statusAdd || previous.statusDelete != current.statusDelete;
+                                    },
                                     builder:(context, state) {
                                       var contain = state.favorites.where((element) => element.idService == data[index].id);
-                                      if (contain.isEmpty) {
-                                        return IconButton(
-                                          onPressed: (){
+                                      return IconButton(
+                                        onPressed: (){
+                                          if (contain.isEmpty) {
                                             context.read<FavoriteBloc>().add(FavoriteAddEvent(idProduct: data[index].id));
-                                          },
-                                          icon: Icon(
-                                            Icons.favorite_outline,
-                                            color: Colors.blue.shade600,
-                                            size: 30,
-                                          ),
-                                        );
-                                      } else {
-                                        return IconButton(
-                                          onPressed: (){
+                                          } else {
                                             context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: data[index].id));
-                                          },
-                                          icon: Icon(
-                                            Icons.favorite,
-                                            color: Colors.blue.shade600,
-                                            size: 30,
-                                          ),
-                                        );
-                                      }
-                                    },
+                                          }
+                                        },
+                                        icon: Icon(
+                                          contain.isEmpty ? Icons.favorite_outline : Icons.favorite,
+                                          color: Colors.blue.shade600,
+                                          size: 30,
+                                        ),
+                                      );
+                                    }
                                   )
                                 ],
                               ),
@@ -604,11 +590,6 @@ class _SearchPageState extends State<SearchPage> {
             return const SizedBox.shrink();
           } else {
             List<AreaData> listItems = state.areas;
-            if (listItems.isNotEmpty) {
-              if (listItems[0].name == "All Areas") {
-                listItems.removeAt(0);
-              }
-            }
             return StaggeredGridView.countBuilder(
               physics: const BouncingScrollPhysics(),
               crossAxisCount: 2,

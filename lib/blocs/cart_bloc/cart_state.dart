@@ -16,6 +16,8 @@ class CartState extends Equatable {
 
   final int statusProccess;
 
+  
+
   const CartState({
     required this.getLoading,
     required this.items,

@@ -6,6 +6,9 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_state.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_bloc.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_event.dart';
 import 'package:travelservices/blocs/product_details_bloc/product_details_state.dart';
@@ -18,6 +21,7 @@ import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/list_reviews_details_arguments.dart';
 import 'package:travelservices/screens/widgets/delegate_list_widget.dart';
 import 'package:travelservices/screens/widgets/get_box_offse_widget.dart';
+import 'package:travelservices/screens/widgets/loading_widget.dart';
 import 'package:travelservices/screens/widgets/map_custom_widget.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
@@ -36,7 +40,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   late ScrollController scrollController;
   ProductDetailsBloc bloc = ProductDetailsBloc();
   late Map<String, double> latlng;
-  late int idService;
+  int idService = 0;
 
   late int idAuth1;
   late String username1;
@@ -81,13 +85,6 @@ class _ProductDetailsState extends State<ProductDetails> {
     super.initState();
   }
 
-  // Future<Map<String, dynamic>> getValueShared () async {
-  //   return {
-  //     "idAuth" : await SharedPreferencesCustom.getIntCustom('idAuth'),
-  //     "username" : await SharedPreferencesCustom.getStringCustom('username')
-  //   };
-  // }
-
   void getValueShared() async {
     idAuth1 = await SharedPreferencesCustom.getIntCustom('idAuth');
     username1 = await SharedPreferencesCustom.getStringCustom('username');
@@ -99,7 +96,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       bloc: bloc,
       builder:(context, state) {
         if (state.getLoading) {
-          return Text('asdasd');
+          return const LoadingWidget();
         } else { 
           
           List<GalleryDetailsModel> list = state.productDetails?.galleries ?? <GalleryDetailsModel>[];
@@ -123,7 +120,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         elevation: 0.5,
                         leading: IconButton(
                           onPressed: (){
-                            Navigator.pop(context);
+                            Navigator.pushNamed(context, Routes.routesPage);
                           }, 
                           icon: Icon(
                             Icons.arrow_back,
@@ -615,12 +612,23 @@ class _ProductDetailsState extends State<ProductDetails> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    IconButton(
-                      onPressed: (){}, 
-                      icon: Icon(
-                        Icons.favorite_outline,
-                        color: Colors.blue.shade600
-                      )
+                    BlocBuilder<FavoriteBloc, FavoriteState>(
+                      builder:(context, state) {
+                        var contain = state.favorites.where((element) => element.idService == idService);
+                        return IconButton(
+                          onPressed: (){
+                            if (contain.isEmpty) {
+                              context.read<FavoriteBloc>().add(FavoriteAddEvent(idProduct: idService));
+                            } else {
+                              context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: idService));
+                            }
+                          },
+                          icon: Icon(
+                            contain.isEmpty ? Icons.favorite_outline : Icons.favorite,
+                            color: Colors.blue.shade600
+                          )
+                        );
+                      },
                     ),
                     ElevatedButton(
                       onPressed: () async {

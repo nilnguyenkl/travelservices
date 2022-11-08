@@ -16,6 +16,7 @@ import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/current_user_arguments.dart';
+import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
@@ -60,6 +61,7 @@ class _HomePageState extends State<HomePage> {
               toolbarHeight: 90,
               backgroundColor: Colors.white,
               elevation: 0,
+              automaticallyImplyLeading: false,
               title: Container(
                 alignment: Alignment.bottomCenter,
                 padding: const EdgeInsets.symmetric(horizontal: paddingWidth/2),
@@ -85,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              "Tim kiem",
+                              "Search where to go or what to do",
                               style: TextStyle(
                                 color: hintText,
                                 fontSize: 14,
@@ -114,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                     position: BadgePosition.bottomEnd(bottom: 4, end: 5),
                     child: IconButton(
                       onPressed: (){
-                        Navigator.pushNamed(context, Routes.cartPage);
+                        Navigator.pushNamed(context, Routes.cartPage, arguments: WayCartArguments(way: true));
                       }, 
                       icon: Icon(
                         Icons.shopping_cart_outlined,
@@ -169,13 +171,6 @@ class _HomePageState extends State<HomePage> {
           return const SizedBox.shrink();
         } else {
           List<CategoryData> listItemsCate = state.categories;
-          if (listItemsCate.isNotEmpty) {
-            for (int i = 0; i < listItemsCate.length; i++) {
-              if (listItemsCate[i].name == "All Categories") {
-                listItemsCate.removeAt(i);
-              } 
-            }
-          }
           return SizedBox(
             child: Column(
               children: [
