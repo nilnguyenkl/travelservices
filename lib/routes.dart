@@ -19,4 +19,5 @@ class Routes{
 
 
   static const routePageAdmin = '/routePageAdmin';
+  static const createProductAdmin = '/createProductAdmin';
 }

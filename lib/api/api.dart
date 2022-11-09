@@ -14,7 +14,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://192.168.1.14:8089/";
+  static String url = "http://172.20.10.3:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -41,9 +41,7 @@ class Api {
   static Future<bool> getTokenLogin() async {
     return await SharedPreferencesCustom.getBoolCustom('isLogined');
   }
-
   
-
   Future<bool> refreshToken() async {
     final refreshToken = await SharedPreferencesCustom.getStringCustom('refreshToken');
     Response response;

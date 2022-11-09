@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/blocs/admin_product_bloc/admin_product_bloc.dart';
 import 'package:travelservices/blocs/area_bloc/area_bloc.dart';
 import 'package:travelservices/blocs/area_bloc/area_event.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
@@ -24,6 +25,7 @@ import 'package:travelservices/repositories/order_repositories.dart';
 import 'package:travelservices/repositories/product_repositories.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/pages/addtocart_page.dart';
+import 'package:travelservices/screens/pages/admin/create_product_admin.dart';
 import 'package:travelservices/screens/pages/admin/route_page_admin.dart';
 import 'package:travelservices/screens/pages/cart_page.dart';
 import 'package:travelservices/screens/pages/change_password_page.dart';
@@ -102,6 +104,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => ProfileBloc()..add(ProfileReadEvent())
           ),
+          BlocProvider(
+            create: (context) => AdminProductBloc()
+          ),
         ],
         child: MaterialApp(
           routes: {
@@ -118,10 +123,11 @@ class MyApp extends StatelessWidget {
             Routes.chatPage: (context) => const ChatPage(),
             Routes.chatContentPage: (context) => const ChatContentPage(),
             Routes.myprofilePage: (context) => const MyProfile(),
-            Routes.changepasswordPage: (context) => const ChangePasswordPage() 
+            Routes.changepasswordPage: (context) => const ChangePasswordPage(),
+            Routes.createProductAdmin: (context) => const CreateProductAdmin() 
           },
           debugShowCheckedModeBanner: false,
-          home: const RoutePage()
+          home: const RoutePageAdmin()
         ),
       )
     );
