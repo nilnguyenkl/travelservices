@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/api/api.dart';
-import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
-import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
-import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
-import 'package:travelservices/blocs/login_bloc/login_state.dart';
 import 'package:travelservices/blocs/profile_bloc/profile_bloc.dart';
-import 'package:travelservices/blocs/profile_bloc/profile_event.dart';
 import 'package:travelservices/blocs/profile_bloc/profile_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/change_profile_arguments.dart';
+import 'package:travelservices/screens/arguments/status_order_arguments.dart';
 import 'package:travelservices/utils/bottom_sheet.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
@@ -142,39 +138,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   Column(
                                                     children: [
                                                       const Text(
-                                                        "Experienced",
-                                                        style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: hintText,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        "${state.user?.numOrderExperienced ?? 0}",
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.blue.shade400
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 8,
-                                                    ),
-                                                    child: Container(
-                                                      height: 35,
-                                                      width: 3,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(100),
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      const Text(
                                                         "Approved",
                                                         style: TextStyle(
                                                           fontSize: 20,
@@ -205,24 +168,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       ),
                                                     ),
                                                   ),
-                                                  Column(
-                                                    children: [
-                                                      const Text(
-                                                        "Pending",
-                                                        style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: hintText,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pushNamed(context, Routes.productByStatus, arguments: StatusOrderArguments(status: "waiting"));
+                                                    },
+                                                    child: Column(
+                                                      children: [
+                                                        const Text(
+                                                          "Pending",
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                            color: hintText,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Text(
-                                                        "${state.user?.numOrderWaiting ?? 0}",
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.blue.shade400
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
+                                                        Text(
+                                                          "${state.user?.numOrderWaiting ?? 0}",
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.blue.shade400
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
                                                 ],
                                               )
                                             ],
@@ -293,7 +261,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     SizedBox(
                                       child: Column(
                                         children: [
-                                          menuProfile("Introduce", Icons.info, (){}),
+                                          menuProfile("Introduce", Icons.info, (){
+                                            Navigator.pushNamed(context, Routes.aboutAppPage);
+                                          }),
                                         ],
                                       ),
                                     ),

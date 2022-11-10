@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:travelservices/api/api.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/models/message_model.dart';
+import 'package:travelservices/models/untils_model.dart';
+import 'package:travelservices/utils/shared_preferences.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
@@ -10,8 +14,16 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
+
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController cnfPasswordController = TextEditingController();
+
+  List<bool> visible = [true, true, true];
+
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -59,49 +71,67 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
                 const SizedBox(height: 70),
                 TextFormField(
+                  controller: oldPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15)
                     ),
                     prefixIcon: const Icon(Icons.key),
                     suffixIcon: IconButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        setState(() {
+                          visible[0] = !visible[0]; 
+                        });
+                      },
                       icon: const Icon(Icons.visibility),
                     ),
                     label: const Text("Old Password"),
                   ),
+                  obscureText: visible[0],
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  controller: newPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15)
                     ),
                     prefixIcon: const Icon(Icons.key),
                     suffixIcon: IconButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        setState(() {
+                          visible[1] = !visible[1];
+                        }); 
+                      },
                       icon: const Icon(Icons.visibility),
                     ),
                     label: const Text("New Password"),
                   ),
+                  obscureText: visible[1],
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  controller: cnfPasswordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15)
                     ),
                     prefixIcon: const Icon(Icons.key),
                     suffixIcon: IconButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        setState(() {
+                          visible[2] = !visible[2];
+                        }); 
+                      },
                       icon: const Icon(Icons.visibility),
                     ),
                     label: const Text("Confirm Password"),
                   ),
+                  obscureText: visible[2],
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
                 ),
@@ -110,8 +140,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {
-        
+                    onPressed: () async {
+                      Api api = Api();
+                      String username = await SharedPreferencesCustom.getStringCustom('username');
+                      MessageModel message = await api.postChangePassword(Api.url, 'auth/changepassword', ChangePasswordModel(
+                        username: username, 
+                        oldPassword: oldPasswordController.text, 
+                        newPassword: newPasswordController.text
+                      ));
+                      if (message.message == "Success") {
+                        print("success");
+                      } else {
+                        print("failed");
+                      }
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(

@@ -12,6 +12,7 @@ class Routes{
   static const chatContentPage = '/chatContentPage';
   static const myprofilePage = '/myprofilePage';
   static const changepasswordPage = '/changepasswordPage';
+  static const productByStatus = '/productStatus';
 
 
 
@@ -20,4 +21,7 @@ class Routes{
 
   static const routePageAdmin = '/routePageAdmin';
   static const createProductAdmin = '/createProductAdmin';
+
+
+  static const aboutAppPage = '/aboutApp';
 }

@@ -9,12 +9,13 @@ import 'package:travelservices/models/order_model.dart';
 import 'package:travelservices/models/profile_model.dart';
 import 'package:travelservices/models/refresh_token_model.dart';
 import 'package:travelservices/models/signup_model.dart';
+import 'package:travelservices/models/untils_model.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://172.20.10.3:8089/";
+  static String url = "http://192.168.1.11:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -132,6 +133,19 @@ class Api {
       } else {
         return MessageModel.fromJson(response.data['data']);
       }
+    } on DioError catch (e) {
+      return MessageModel(message: '');
+    }
+  }
+
+  Future<MessageModel> postChangePassword(String url, String endPoint, ChangePasswordModel model) async {
+    Response response;
+    try {
+      response = await Dio().post(
+        url + endPoint,
+        data:  model.toJson()
+      );
+      return MessageModel.fromJson(response.data);
     } on DioError catch (e) {
       return MessageModel(message: '');
     }

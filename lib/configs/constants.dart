@@ -10,7 +10,7 @@ const areaImgDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v16646
 const avatarDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v1665415300/TravelServiceDefault/Travel.ff88c854_ly9iwn.jpg";
 // chua doi hinh
 const categoryDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v1664616239/TravelServiceDefault/philipp-kammerer-6Mxb_mZ_Q8E-unsplash_ashcgp.jpg";
-const productImgDefault = "";
+const productImgDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v1665415300/TravelServiceDefault/Travel.ff88c854_ly9iwn.jpg";
 const productNameDefault = "";
 const productDescriptDefault = "Liên hệ với người tổ chức để biết thêm chi tiết";
 const productEventDefault = "Liên hệ với người tổ chức để biết thêm chi tiết";
