@@ -13,7 +13,7 @@ class AreaState extends Equatable {
     required this.areas,
     required this.getLoading,
     required this.statusClick,
-    this.clickArea
+    required this.clickArea
   });
 
   factory AreaState.empty() {

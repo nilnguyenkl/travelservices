@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/login_model.dart';
 import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/models/product_admin_model.dart';
 import 'package:travelservices/models/profile_model.dart';
 import 'package:travelservices/models/refresh_token_model.dart';
 import 'package:travelservices/models/signup_model.dart';
@@ -15,7 +17,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://192.168.1.11:8089/";
+  static String url = "http://172.20.10.3:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -311,6 +313,59 @@ class Api {
       );
       return response;
     } on DioError catch(e) {
+      return MessageModel(message: '');
+    }
+  }
+
+
+  // Admin
+  Future<Object> uploadGalleryProduct(String endPoint, List<XFile> images) async {
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    Response response;
+    try {
+      var formData = FormData();
+      for (var image in images) {
+        formData.files.addAll([
+          MapEntry("files", await MultipartFile.fromFile(
+            image.path,
+            filename: image.path.split('/').last,
+            contentType: MediaType('image', 'jpeg'),
+          )),
+        ]);
+      }
+      response = await dio.post(
+        "$url$endPoint",
+        data: formData,
+        options:  Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+            "Content-Type" : "multipart/form-data"
+          },
+        ),
+      );
+      return response;
+    } on DioError catch(e) {
+      return MessageModel(message: '');
+    }
+  }
+
+  Future<MessageModel> postService(String url, String endpoint, CreateProduct model) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      response = await Dio().post(
+        url + endpoint,
+        data: model.toJson(),
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return MessageModel.fromJson(response.data);
+    } on DioError catch (e) {
       return MessageModel(message: '');
     }
   }

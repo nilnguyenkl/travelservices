@@ -1,16 +1,27 @@
 import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travelservices/api/api.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_bloc.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_event.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_state.dart';
+import 'package:travelservices/blocs/area_bloc/area_bloc.dart';
+import 'package:travelservices/blocs/area_bloc/area_event.dart';
+import 'package:travelservices/blocs/area_bloc/area_state.dart';
+import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
+import 'package:travelservices/blocs/category_bloc/category_event.dart';
+import 'package:travelservices/blocs/category_bloc/category_state.dart';
 import 'package:travelservices/configs/colors.dart';
-import 'package:travelservices/screens/widgets/dynamic_schedule_widget.dart';
+import 'package:travelservices/models/area_model.dart';
+import 'package:travelservices/models/category_model.dart';
+import 'package:travelservices/models/product_admin_model.dart';
+import 'package:travelservices/screens/arguments/action_product_by_admin.dart';
 import 'package:travelservices/screens/widgets/dynamic_ticket_widget.dart';
 
 class CreateProductAdmin extends StatefulWidget {
+
   const CreateProductAdmin({Key? key}) : super(key: key);
 
   @override
@@ -19,36 +30,67 @@ class CreateProductAdmin extends StatefulWidget {
 
 class _CreateProductAdminState extends State<CreateProductAdmin> {
   
+  // Controller
+  TextEditingController nameProductController = TextEditingController();
+  TextEditingController addressProductController = TextEditingController();
+  TextEditingController descriptionProductController = TextEditingController();
+  TextEditingController eventProductController = TextEditingController();
+  TextEditingController noteProductController = TextEditingController();
+
   int currentStep = 0;
+  bool? statusAction;
+  
+  List<DynamicTicketWidget> ticketsWidget = [];
 
-  List<DynamicTicketWidget> listTicketWidget = [];
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        ActionProductByAdmin args = ModalRoute.of(context)!.settings.arguments as ActionProductByAdmin;
+        statusAction = args.status;
+        if(args.status) {
+          // Create
+          
+        } else {
+          // Show and update
+          nameProductController.text = args.productDetails?.service.name ?? "";
+          addressProductController.text = args.productDetails?.service.address ?? "";
+          descriptionProductController.text = args.productDetails?.service.description ?? "";
+          eventProductController.text = args.productDetails?.service.event ?? "";
+          noteProductController.text = args.productDetails?.service.note ?? "";
 
-  List<DynamicScheduleTicket> listScheduleWidget = [];
+          final int sizeTicket = args.productDetails?.ticket.length ?? 999999;
+          print(sizeTicket);
+          if (sizeTicket != 999999) {
+            for (int i = 0; i < sizeTicket; i++) {
+              ticketsWidget.add(DynamicTicketWidget());
+            }
+          }
 
-  addTicketWidget () {
-    listTicketWidget.add(DynamicTicketWidget());
-    setState(() {});
-  }
+          if (ticketsWidget.isNotEmpty) {
+            for (int i = 0; i < ticketsWidget.length; i++) {
+              ticketsWidget[i].typeController.text = args.productDetails?.ticket[i].typeTicket ?? "";
+              ticketsWidget[i].noteController.text = args.productDetails?.ticket[i].note ?? "";
+              ticketsWidget[i].amountController.text = args.productDetails?.ticket[i].amountTicket.toString() ?? "0";
+              ticketsWidget[i].valueController.text = args.productDetails?.ticket[i].valueTicket.toString() ?? "0";
+            }
+          } 
 
-  addSchedule () {
-    listScheduleWidget.add(DynamicScheduleTicket());
-    setState(() {
+
+
+        }
+      });
     });
+    super.initState();
   }
 
   
+
 
   @override
   Widget build(BuildContext context) {
 
     AdminProductBloc bloc = context.read<AdminProductBloc>();
-
-    TextEditingController nameProductController = TextEditingController();
-    TextEditingController addressProductController = TextEditingController();
-    TextEditingController descriptionProductController = TextEditingController();
-    TextEditingController eventProductController = TextEditingController();
-    TextEditingController noteProductController = TextEditingController();
-
 
     List<Step> getSteps() => [
       Step(
@@ -82,6 +124,88 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 25),
+              statusAction == true ? Column(
+                children: [
+                  BlocBuilder<AreaBloc, AreaState>(
+                    builder: (context, state) {
+                      List<AreaData> listItems = state.areas;
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue.shade600),
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(10),
+                        height: 55,   
+                        child: DropdownButton<AreaData>(
+                          isDense: true,
+                          isExpanded: true,
+                          underline: const SizedBox.shrink(),
+                          value: state.clickArea,
+                          hint: const Text("Area"),
+                          onChanged: (value) {
+                            context.read<AreaBloc>().add(AreaClickEvent(area: value!));
+                            context.read<AdminProductBloc>().add(AdminIdAreaEvent(idArea: value.id));
+                          },
+                          items: listItems.map<DropdownMenuItem<AreaData>>((value) {
+                            return DropdownMenuItem<AreaData>(
+                              value: value,
+                              child: SizedBox(
+                                width: 500,
+                                child: Text(
+                                  value.name!,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                  BlocBuilder<CategoryBloc, CategoryState>(
+                    builder: (context, state) {
+                      final List<CategoryData> listItems = state.categories;
+                      // currentCate = state.clickCategory;
+                      // print(currentCate?.name ?? "=======");
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue.shade600),
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        height: 55,
+                        alignment: Alignment.center,      
+                        child: DropdownButton<CategoryData>(
+                          isDense: true,
+                          isExpanded: true,
+                          underline: const SizedBox.shrink(),
+                          value: state.clickCategory,
+                          hint: const Text("Category"),
+                          onChanged: (value) {
+                            context.read<CategoryBloc>().add(CategoryClickEvent(category: value!));
+                            context.read<AdminProductBloc>().add(AdminIdCategoryEvent(idCategory: value.id));
+                          },
+                          items: listItems.map<DropdownMenuItem<CategoryData>>((value) {
+                            return DropdownMenuItem<CategoryData>(
+                              value: value,
+                              child: SizedBox(
+                                width: 500,
+                                child: Text(
+                                  value.name!,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                ],
+              ) : const SizedBox.shrink(),
               TextFormField(
                 controller: descriptionProductController,
                 decoration: InputDecoration(
@@ -137,98 +261,112 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
         state: currentStep > 1 ? StepState.complete : StepState.indexed,
         isActive: currentStep >= 1,
         title: const Text("Tickets"), 
-        content: SizedBox(
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: addTicketWidget,
-                  child: const Text("Add ticket"),
-                ),
-              ),
-              SizedBox(
-                child: Column(
-                  children: List.generate(listTicketWidget.length, (index) {
-                    return Column(
-                      children: [
-                        const SizedBox(height: 25),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          width: double.infinity,
-                          child: Text(
-                            "Ticket ${index + 1}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
+        content: BlocBuilder<AdminProductBloc, AdminProductState>(
+          builder:(context, state) {
+            return SizedBox(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<AdminProductBloc>().add(AdminAddDynamicTicketProductEvent());
+                      },
+                      child: const Text("Add ticket"),
+                    ),
+                  ),
+                  SizedBox(
+                    child: Column(
+                      children: List.generate(ticketsWidget.length, (index){
+                        return ticketsWidget[index];
+                      }),
+                    ),
+                  ),
+                  SizedBox(
+                    child: Column(
+                      children: List.generate(state.dynamicTicket.length, (index) {
+                        return Column(
+                          children: [
+                            const SizedBox(height: 25),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              width: double.infinity,
+                              child: Text(
+                                "Ticket ${index + 1}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18
+                                ),
+                              )
                             ),
-                          )
-                        ),
-                        const SizedBox(height: 10),
-                        listTicketWidget[index]
-                      ],
-                    );
-                  })
-                )
-              )
-            ],
-          ),
+                            const SizedBox(height: 10),
+                            state.dynamicTicket[index]
+                          ],
+                        );
+                      })
+                    )
+                  )
+                ],
+              ),
+            );
+          },
         )
       ),
       Step(
         state: currentStep > 2 ? StepState.complete : StepState.indexed,
         isActive: currentStep >= 2,
         title: const Text("Schedules/Picture"), 
-        content: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                onPressed: addSchedule,
-                child: const Text("Add Schedule"),
-              ),
-            ),
-            SizedBox(
-              child: Column(
-                children: List.generate(listScheduleWidget.length, (index) {
-                  return Column(
-                    children: [
-                      const SizedBox(height: 25),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        width: double.infinity,
-                        child: Text(
-                          "Schedule ${index + 1}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18
-                          ),
-                        )
-                      ),
-                      const SizedBox(height: 10),
-                      listScheduleWidget[index]
-                    ],
-                  );
-                })
-              )
-            ),
-            const SizedBox(height: 25),
-            Container(
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              child: const Text(
-                "Picture",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18
+        content: BlocBuilder<AdminProductBloc, AdminProductState>(
+          builder:(context, state) {
+            return Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<AdminProductBloc>().add(AdminAddDynamicScheduleProductEvent());
+                    },
+                    child: const Text("Add Schedule"),
+                  ),
                 ),
-              )
-            ),
-            const SizedBox(height: 10),
-            BlocBuilder<AdminProductBloc, AdminProductState>(
-              bloc: bloc,
-              builder: (context, state) {
-                return InkWell(
+                SizedBox(
+                  child: Column(
+                    children: List.generate(state.dynamicSchedule.length, (index) {
+                      return Column(
+                        children: [
+                          const SizedBox(height: 25),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            width: double.infinity,
+                            child: Text(
+                              "Schedule ${index + 1}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18
+                              ),
+                            )
+                          ),
+                          const SizedBox(height: 10),
+                          state.dynamicSchedule[index]
+                        ],
+                      );
+                    })
+                  )
+                ),
+                const SizedBox(height: 25),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  child: const Text(
+                    "Picture",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18
+                    ),
+                  )
+                ),
+                const SizedBox(height: 10),
+                InkWell(
                   onTap: () async {
                     final ImagePicker picker = ImagePicker();
                     List<XFile> images = await picker.pickMultiImage();
@@ -264,10 +402,46 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                       )
                     )
                   ),
-                );
-              }
-            )
-          ],
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  width: double.infinity,
+                  child: const Text(
+                    "Picture asdasdsa",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18
+                    ),
+                  )
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  alignment: Alignment.center,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child:ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    itemCount: state.images.length,
+                    itemBuilder: (_, i) => Container(
+                      height: 100,
+                      width: 120,
+                      margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(File(state.images[i].path)),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                    )
+                  )
+                )
+              ],
+            );
+          },
         )
       ),
     ];
@@ -302,99 +476,135 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
           backgroundColor: Colors.white,
           elevation: 0,
         ),
-        body: Stepper(
-          currentStep: currentStep,
-          type: StepperType.horizontal,
-          steps: getSteps(),
-          onStepContinue: () {
-            
-            if (currentStep == getSteps().length - 1) {
-              listScheduleWidget.forEach((element) {
-              print(element.timeController.text);
-            });
-            } else {
-              setState(() {
-              currentStep++;
-            });
-            }
-            
-            // print(nameProductController.text);
-            // print(addressProductController.text);
-            // print(descriptionProductController.text);
-            // print(eventProductController.text);
-            // print(noteProductController.text);
+        body: BlocBuilder<AdminProductBloc, AdminProductState>(
+          builder:(context, state) {
+            return Stepper(
+              currentStep: currentStep,
+              type: StepperType.horizontal,
+              steps: getSteps(),
+              onStepContinue: () async {
+                
+                if (currentStep == getSteps().length - 1) {
+                  // Send to server
+                  InforProduct service = InforProduct(
+                    name: nameProductController.text, 
+                    address: addressProductController.text, 
+                    description: descriptionProductController.text, 
+                    event: eventProductController.text, 
+                    note: noteProductController.text, 
+                    idArea: state.idArea, 
+                    idCategory: state.idCategory
+                  );
 
-            // listTicketWidget.forEach((element) {
-            //   print(element.valueController.text);
-            // });
+                  List<TicketForProductForAdd> tickets = [];
 
-            
-          },
-          onStepCancel: () {
-            setState(() {
-              currentStep--;
-            });
-          },
-          controlsBuilder: (BuildContext context, ControlsDetails details) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width/3,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: details.onStepCancel,
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)
-                            )
-                          ),
-                          backgroundColor: MaterialStateProperty.all(Colors.grey.shade200)
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15, bottom: 15),
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black
+                  for (var widget in state.dynamicTicket) {
+                    TicketForProductForAdd ticket = TicketForProductForAdd(
+                      valueTicket: int.parse(widget.valueController.text), 
+                      typeTicket: widget.typeController.text, 
+                      noteTicket: widget.amountController.text, 
+                      amountTicket: int.parse(widget.amountController.text)
+                    );
+                    tickets.add(ticket);
+                  }
+
+                  List<ScheduleProductForAdd> schedules = [];
+                  for (var widget in state.dynamicSchedule) {
+                    ScheduleProductForAdd schedule = ScheduleProductForAdd(
+                      time: widget.timeController.text, 
+                      quantityPerDay: int.parse(widget.perController.text)
+                    );
+                    schedules.add(schedule);
+                  }
+
+                  List<GalleryProduct> galleries = [];
+                  Api api = Api();
+                  var object = await api.uploadGalleryProduct("admin/upload", state.images);
+                  if (object is Response) {
+                    galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
+                  
+                    CreateProduct product = CreateProduct(
+                      service: service, 
+                      ticket: tickets, 
+                      schedule: schedules, 
+                      galleries: galleries
+                    );
+                    bloc.add(AdminAddProductEvent(product: product));
+
+                  } else {
+                    //
+                  }
+                } else {
+                  currentStep = state.curentIndex + 1;
+                  bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));
+                }     
+              },
+              onStepCancel: () {
+                currentStep = state.curentIndex - 1;
+                bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));
+              },
+              controlsBuilder: (BuildContext context, ControlsDetails details) {
+                return Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width/3,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: details.onStepCancel,
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)
+                                )
+                              ),
+                              backgroundColor: MaterialStateProperty.all(Colors.grey.shade200)
                             ),
-                          ),
-                        ),  
-                      )
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 15, bottom: 15),
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black
+                                ),
+                              ),
+                            ),  
+                          )
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width/3,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: details.onStepContinue,
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)
+                                )
+                              ),
+                              backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 15, bottom: 15),
+                              child: Text(
+                                "Continue",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),  
+                          )
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width/3,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: details.onStepContinue,
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)
-                            )
-                          ),
-                          backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 15, bottom: 15),
-                          child: Text(
-                            "Continue",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),  
-                      )
-                    )
-                  ],
-                ),
+                );
+              },
             );
           },
-        ),
+        )
       )
     );   
   }

@@ -10,8 +10,7 @@ class AreaEvent extends Equatable {
 class AreaLoadEvent extends AreaEvent {}
 
 class AreaClickEvent extends AreaEvent {
-  final AreaData area;
-
+  final AreaData? area;
   const AreaClickEvent({
     required this.area
   });

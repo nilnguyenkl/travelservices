@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class DynamicScheduleTicket extends StatefulWidget {
+class DynamicScheduleWidget extends StatefulWidget {
   
   final TextEditingController timeController = TextEditingController();
   final TextEditingController perController = TextEditingController();
   
-  DynamicScheduleTicket({Key? key}) : super(key: key);
+  DynamicScheduleWidget({Key? key}) : super(key: key);
 
   @override
-  State<DynamicScheduleTicket> createState() => _DynamicScheduleTicketState();
+  State<DynamicScheduleWidget> createState() => _DynamicScheduleWidgetState();
 }
 
-class _DynamicScheduleTicketState extends State<DynamicScheduleTicket> {
+class _DynamicScheduleWidgetState extends State<DynamicScheduleWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(

@@ -19,6 +19,117 @@ class CreateProduct {
   };
 }
 
+class ProductDetails {
+  final InforProductDetails service;
+  final List<TicketProductDetails> ticket;
+  final List<ScheduleDetails> schedule;
+  final List<GalleryDetailsProduct> galleries;
+
+  ProductDetails({
+    required this.service,
+    required this.ticket,
+    required this.galleries,
+    required this.schedule,
+  });
+
+  factory ProductDetails.fromJson(Map<String, dynamic> json) => ProductDetails(
+    service: InforProductDetails.fromJson(json["service"]),
+    ticket: List<TicketProductDetails>.from(json["ticket"].map((x) => TicketProductDetails.fromJson(x))),
+    galleries: List<GalleryDetailsProduct>.from(json["galleries"].map((x) => GalleryDetailsProduct.fromJson(x))),
+    schedule: List<ScheduleDetails>.from(json["schedule"].map((x) => ScheduleDetails.fromJson(x))),
+  );
+}
+
+class AreaProductResponse {
+  final int id;
+  final String name;
+  final String url;
+
+  AreaProductResponse({
+    required this.id,
+    required this.name,
+    required this.url,
+  });
+
+  factory AreaProductResponse.fromJson(Map<String, dynamic> json) => AreaProductResponse(
+    id: json["id"],
+    name: json["name"],
+    url: json["url"],
+  );
+}
+
+class CategoryProductResponse {
+  
+  final int id;
+  final String name;
+  final String icon;
+
+  CategoryProductResponse({
+    required this.id,
+    required this.name,
+    required this.icon,
+  });
+
+  factory CategoryProductResponse.fromJson(Map<String, dynamic> json) => CategoryProductResponse(
+    id: json["id"],
+    name: json["name"],
+    icon: json["icon"],
+  );
+}
+
+class InforProductDetails {
+
+  final int id;
+  final String name;
+  final String address;
+  final String description;
+  final String event;
+  final dynamic note;
+  final CategoryProductResponse category;
+  final AreaProductResponse area;
+
+  InforProductDetails({
+    required this.id,
+    required this.name,
+    required this.address,
+    required this.description,
+    required this.event,
+    required this.note,
+    required this.category,
+    required this.area,
+  });
+
+    
+  factory InforProductDetails.fromJson(Map<String, dynamic> json) => InforProductDetails(
+    id: json["id"],
+    name: json["name"],
+    address: json["address"],
+    description: json["description"],
+    event: json["event"],
+    note: json["note"],
+    category: CategoryProductResponse.fromJson(json["category"]),
+    area: AreaProductResponse.fromJson(json["area"]),
+  );
+}
+
+class ScheduleDetails {
+
+  ScheduleDetails({
+    required this.id,
+    required this.time,
+    required this.quantityPerDay,
+  });
+
+  final int id;
+  final String time;
+  final int quantityPerDay;
+
+  factory ScheduleDetails.fromJson(Map<String, dynamic> json) => ScheduleDetails(
+    id: json["id"],
+    time: json["time"],
+    quantityPerDay: json["quantityPerDay"],
+  );
+}
 class GalleryProduct {
   final int id;
   final String url;
@@ -35,6 +146,33 @@ class GalleryProduct {
     "url": url,
     "type": type,
   };
+
+  factory GalleryProduct.fromJson(Map<String, dynamic> json) => GalleryProduct(
+    id: json["id"],
+    url: json["url"],
+    type: json["type"],
+  );
+}
+
+class GalleryDetailsProduct {
+  final int id;
+  final String url;
+  final String type;
+  final String publicId;
+
+  GalleryDetailsProduct({
+    required this.id,
+    required this.url,
+    required this.type,
+    required this.publicId
+  });
+
+  factory GalleryDetailsProduct.fromJson(Map<String, dynamic> json) => GalleryDetailsProduct(
+    id: json["id"],
+    url: json["url"],
+    type: json["type"],
+    publicId: json["publicId"]
+  );
 }
 
 class ScheduleProductForAdd {
@@ -107,3 +245,31 @@ class TicketForProductForAdd {
   };
 
 }
+
+class TicketProductDetails {
+  
+  final int idTicket;
+  final int valueTicket;
+  final String typeTicket;
+  final int amountTicket;
+  final String? note;
+  
+  TicketProductDetails({
+    required this.idTicket,
+    required this.valueTicket,
+    required this.typeTicket,
+    required this.amountTicket,
+    required this.note,
+  });
+
+  factory TicketProductDetails.fromJson(Map<String, dynamic> json) => TicketProductDetails(
+    idTicket: json["idTicket"],
+    valueTicket: json["valueTicket"],
+    typeTicket: json["typeTicket"],
+    amountTicket: json["amountTicket"],
+    note: json["note"] ?? "",
+  );
+}
+
+
+
