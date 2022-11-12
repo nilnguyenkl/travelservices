@@ -131,7 +131,7 @@ class MyApp extends StatelessWidget {
             Routes.productByStatus: (context) => const ProductByStatus() 
           },
           debugShowCheckedModeBanner: false,
-          home: const RoutePageAdmin()
+          home: const RoutePage()
         ),
       )
     );

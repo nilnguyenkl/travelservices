@@ -9,6 +9,10 @@ class AdminProductState extends Equatable {
   final bool getLoading;
   final bool getProductDetails;
 
+  final int statusDeleteImage;
+  
+  final List<ProductShow> listProduct;
+
   final List<XFile> images;
   final int statusUploadImages;
 
@@ -36,7 +40,9 @@ class AdminProductState extends Equatable {
     required this.dynamicTicket,
     required this.dynamicSchedule,
     required this.readProduct,
-    required this.getProductDetails
+    required this.getProductDetails,
+    required this.statusDeleteImage,
+    required this.listProduct
   });
 
   factory AdminProductState.empty() {
@@ -53,6 +59,8 @@ class AdminProductState extends Equatable {
       dynamicSchedule: <DynamicScheduleWidget>[],
       product: null,
       readProduct: null,
+      statusDeleteImage: 0,
+      listProduct: <ProductShow>[]
     );
   }
 
@@ -68,7 +76,9 @@ class AdminProductState extends Equatable {
     List<DynamicTicketWidget>? dynamicTicket,
     List<DynamicScheduleWidget>? dynamicSchedule,
     ProductDetails? readProduct,
-    bool? getProductDetails
+    bool? getProductDetails,
+    int? statusDeleteImage,
+    List<ProductShow>? listProduct
   }) {
     return AdminProductState(
       getLoading: getLoading ?? this.getLoading, 
@@ -82,7 +92,9 @@ class AdminProductState extends Equatable {
       dynamicTicket: dynamicTicket ?? this.dynamicTicket,
       dynamicSchedule: dynamicSchedule ?? this.dynamicSchedule,
       readProduct: readProduct ?? this.readProduct,
-      getProductDetails: getProductDetails ?? this.getProductDetails
+      getProductDetails: getProductDetails ?? this.getProductDetails,
+      statusDeleteImage: statusDeleteImage ?? this.statusDeleteImage,
+      listProduct: listProduct ?? this.listProduct
     );
   }
   
@@ -99,7 +111,8 @@ class AdminProductState extends Equatable {
     curentIndex, 
     dynamicTicket,
     dynamicSchedule,
-    readProduct
+    readProduct,
+    listProduct
   ];
 
 }

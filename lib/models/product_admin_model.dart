@@ -19,6 +19,57 @@ class CreateProduct {
   };
 }
 
+
+class ProductShow {
+  final ProductForAdmin service;
+  final List<TicketProductDetails> ticket;
+  final List<ScheduleDetails> schedule;
+  final List<GalleryProduct> galleries;
+
+  ProductShow({
+    required this.service,
+    required this.ticket,
+    required this.galleries,
+    required this.schedule,
+  });
+
+  factory ProductShow.fromJson(Map<String, dynamic> json) => ProductShow(
+    service: ProductForAdmin.fromJson(json["service"]),
+    ticket: List<TicketProductDetails>.from(json["ticket"].map((x) => TicketProductDetails.fromJson(x))),
+    galleries: List<GalleryProduct>.from(json["galleries"].map((x) => GalleryProduct.fromJson(x))),
+    schedule: List<ScheduleDetails>.from(json["schedule"].map((x) => ScheduleDetails.fromJson(x))),
+  );
+
+}
+
+class ProductForAdmin {
+  final int idService;
+  final String name;
+  final String description;
+  final String event;
+  final String area;
+  final String category;
+
+  ProductForAdmin({
+    required this.idService,
+    required this.name,
+    required this.description,
+    required this.event,
+    required this.area,
+    required this.category,
+  });
+
+  factory ProductForAdmin.fromJson(Map<String, dynamic> json) => ProductForAdmin(
+    idService: json["idService"],
+    name: json["name"],
+    description: json["description"],
+    event: json["event"],
+    area: json["area"],
+    category: json["category"],
+  );
+}
+
+
 class ProductDetails {
   final InforProductDetails service;
   final List<TicketProductDetails> ticket;

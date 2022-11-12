@@ -17,7 +17,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://172.20.10.3:8089/";
+  static String url = "http://192.168.1.3:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -347,6 +347,29 @@ class Api {
       return response;
     } on DioError catch(e) {
       return MessageModel(message: '');
+    }
+  }
+
+  Future<Object> deleteGalleryProduct (String url, String path, String idLink, String publicId) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      FormData formData = FormData.fromMap({
+        "publicId" : publicId
+      });
+      response = await dio.delete(
+        url + path + idLink,
+        data: formData,
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return response;
+    } on DioError catch (e) {
+      return MessageModel(message: "Error 403");
     }
   }
 

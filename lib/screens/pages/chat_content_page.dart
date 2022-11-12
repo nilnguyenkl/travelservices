@@ -99,12 +99,6 @@ class _ChatContentPageState extends State<ChatContentPage> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              // stream: FirebaseFirestore.instance
-              //   .collection("chatroom")
-              //   .doc(args.idRoom)
-              //   .collection('chats')
-              //   .orderBy('createDate', descending: false)
-              //   .snapshots(),
               stream: FirebaseFirestore.instance
                 .collection("users")
                 .doc(args.id1.toString())
@@ -201,7 +195,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
                           message: messageController.text, 
                           type: 'text'
                         );
-                        ChatRepository.sendMessage(model, args.idRoom);
+                        ChatRepository.sendMessage(model);
                         messageController.clear();
                       }
                     },

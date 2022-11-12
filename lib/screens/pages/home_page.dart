@@ -17,7 +17,6 @@ import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/current_user_arguments.dart';
 import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
-import 'package:travelservices/screens/pages/cart_page.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {

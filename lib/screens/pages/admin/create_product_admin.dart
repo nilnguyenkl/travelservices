@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelservices/api/api.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_bloc.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_event.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_state.dart';
@@ -14,10 +13,12 @@ import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/category_bloc/category_state.dart';
 import 'package:travelservices/configs/colors.dart';
+import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/area_model.dart';
 import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/models/product_admin_model.dart';
 import 'package:travelservices/screens/arguments/action_product_by_admin.dart';
+import 'package:travelservices/screens/widgets/dynamic_schedule_widget.dart';
 import 'package:travelservices/screens/widgets/dynamic_ticket_widget.dart';
 
 class CreateProductAdmin extends StatefulWidget {
@@ -41,6 +42,8 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
   bool? statusAction;
   
   List<DynamicTicketWidget> ticketsWidget = [];
+  List<DynamicScheduleWidget> schedulessWidget = [];
+  List<GalleryDetailsProduct> gralleries = []; 
 
   @override
   void initState() {
@@ -59,8 +62,10 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
           eventProductController.text = args.productDetails?.service.event ?? "";
           noteProductController.text = args.productDetails?.service.note ?? "";
 
+          gralleries = args.productDetails?.galleries ?? <GalleryDetailsProduct>[];
+
           final int sizeTicket = args.productDetails?.ticket.length ?? 999999;
-          print(sizeTicket);
+
           if (sizeTicket != 999999) {
             for (int i = 0; i < sizeTicket; i++) {
               ticketsWidget.add(DynamicTicketWidget());
@@ -75,6 +80,20 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
               ticketsWidget[i].valueController.text = args.productDetails?.ticket[i].valueTicket.toString() ?? "0";
             }
           } 
+
+          final int sizeSchedule = args.productDetails?.schedule.length ?? 999999;
+          if (sizeSchedule != 999999) {
+            for (int i = 0; i < sizeSchedule; i++) {
+              schedulessWidget.add(DynamicScheduleWidget());
+            }
+          }
+
+          if (schedulessWidget.isNotEmpty) {
+            for (int i = 0; i < schedulessWidget.length; i++) {
+              schedulessWidget[i].perController.text = args.productDetails?.schedule[i].quantityPerDay.toString() ?? "0";
+              schedulessWidget[i].timeController.text = args.productDetails?.schedule[i].time ?? "";
+            }
+          }
 
 
 
@@ -167,8 +186,6 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                   BlocBuilder<CategoryBloc, CategoryState>(
                     builder: (context, state) {
                       final List<CategoryData> listItems = state.categories;
-                      // currentCate = state.clickCategory;
-                      // print(currentCate?.name ?? "=======");
                       return Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.blue.shade600),
@@ -277,35 +294,82 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                   ),
                   SizedBox(
                     child: Column(
-                      children: List.generate(ticketsWidget.length, (index){
-                        return ticketsWidget[index];
-                      }),
-                    ),
-                  ),
-                  SizedBox(
-                    child: Column(
                       children: List.generate(state.dynamicTicket.length, (index) {
-                        return Column(
-                          children: [
-                            const SizedBox(height: 25),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              width: double.infinity,
-                              child: Text(
-                                "Ticket ${index + 1}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18
-                                ),
-                              )
-                            ),
-                            const SizedBox(height: 10),
-                            state.dynamicTicket[index]
-                          ],
+                        return Container(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const SizedBox(
+                                    child: Text(
+                                      "New Ticket",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        fontStyle: FontStyle.italic
+                                      ),
+                                    )
+                                  ),
+                                  SizedBox(
+                                    child: IconButton(
+                                      onPressed: (){}, 
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red
+                                      )
+                                    )
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              state.dynamicTicket[index]
+                            ],
+                          ),
                         );
                       })
                     )
-                  )
+                  ),
+                  SizedBox(
+                    child: Column(
+                      children: List.generate(ticketsWidget.length, (index){
+                        return Container(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    child: Text(
+                                      "Ticket ${index + 1}",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        fontStyle: FontStyle.italic
+                                      ),
+                                    )
+                                  ),
+                                  SizedBox(
+                                    child: IconButton(
+                                      onPressed: (){}, 
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red
+                                      )
+                                    )
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              ticketsWidget[index]
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
                 ],
               ),
             );
@@ -316,7 +380,35 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
         state: currentStep > 2 ? StepState.complete : StepState.indexed,
         isActive: currentStep >= 2,
         title: const Text("Schedules/Picture"), 
-        content: BlocBuilder<AdminProductBloc, AdminProductState>(
+        content: BlocConsumer<AdminProductBloc, AdminProductState>(
+          listener: (context, state) {
+            // if (state.statusDeleteImage == 1) {
+            //   MotionToast.success(
+            //     height: 80,
+            //     width: MediaQuery.of(context).size.width*3/4,
+            //     title: const Text(
+            //       "Success",
+            //       style: TextStyle(
+            //         fontWeight: FontWeight.bold
+            //       ),
+            //     ),
+            //     description: const Text("Successful")
+            //   ).show(context);
+            // }
+            // if (state.statusDeleteImage == -1) {
+            //   MotionToast.success(
+            //     height: 80,
+            //     width: MediaQuery.of(context).size.width*3/4,
+            //     title: const Text(
+            //       "Failed",
+            //       style: TextStyle(
+            //         fontWeight: FontWeight.bold
+            //       ),
+            //     ),
+            //     description: const Text("Something was wrong")
+            //   ).show(context);
+            // }
+          },
           builder:(context, state) {
             return Column(
               children: [
@@ -332,28 +424,81 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                 SizedBox(
                   child: Column(
                     children: List.generate(state.dynamicSchedule.length, (index) {
-                      return Column(
-                        children: [
-                          const SizedBox(height: 25),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            width: double.infinity,
-                            child: Text(
-                              "Schedule ${index + 1}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18
-                              ),
-                            )
-                          ),
-                          const SizedBox(height: 10),
-                          state.dynamicSchedule[index]
-                        ],
+                      return Container(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const SizedBox(
+                                  child: Text(
+                                    "New Schedule",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      fontStyle: FontStyle.italic
+                                    ),
+                                  )
+                                ),
+                                SizedBox(
+                                  child: IconButton(
+                                    onPressed: (){}, 
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red
+                                    )
+                                  )
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 2),
+                            state.dynamicSchedule[index]
+                          ],
+                        ),
                       );
                     })
                   )
                 ),
-                const SizedBox(height: 25),
+                SizedBox(
+                  child: Column(
+                    children: List.generate(schedulessWidget.length, (index){
+                      return Container(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  child: Text(
+                                    "Schedule ${index + 1}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      fontStyle: FontStyle.italic
+                                    ),
+                                  )
+                                ),
+                                SizedBox(
+                                  child: IconButton(
+                                    onPressed: (){}, 
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red
+                                    )
+                                  )
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 2),
+                            schedulessWidget[index]
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
                 Container(
                   alignment: Alignment.centerLeft,
                   width: double.infinity,
@@ -403,42 +548,59 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                     )
                   ),
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  width: double.infinity,
-                  child: const Text(
-                    "Picture asdasdsa",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18
+                statusAction == false ? Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      alignment: Alignment.centerLeft,
+                      width: double.infinity,
+                      child: const Text(
+                        "Previous image",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18
+                        ),
+                      )
                     ),
-                  )
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  alignment: Alignment.center,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child:ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    itemCount: state.images.length,
-                    itemBuilder: (_, i) => Container(
-                      height: 100,
-                      width: 120,
-                      margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                    const SizedBox(height: 10),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 150,
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(File(state.images[i].path)),
-                          fit: BoxFit.cover,
-                        )
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        itemCount: gralleries.length,
+                        itemBuilder: (_, i) {
+                          return Container(
+                            height: 100,
+                            width: 120,
+                            alignment: Alignment.bottomLeft,
+                            margin: const EdgeInsets.only(left: 3.0, right: 3.0),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(state.readProduct?.galleries[i].url ?? productImgDefault),
+                                fit: BoxFit.cover,
+                              )
+                            ),
+                            child: IconButton(
+                              onPressed: (){
+                                context.read<AdminProductBloc>().add(AdminDeleteImageProductEvent(idLink: state.readProduct?.galleries[i].id ?? 0, publicId: state.readProduct?.galleries[i].publicId ?? ""));
+                              }, 
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )
+                            )
+                          );
+                        }
+                      )
                     )
-                  )
-                )
+                  ],
+                ) : const SizedBox.shrink(),
               ],
             );
           },
@@ -458,6 +620,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
           ),
           leading: IconButton(
             onPressed: (){
+              context.read<AdminProductBloc>().add(AdminResetCurrentStepProductEvent());
               Navigator.pop(context);
             },
             icon: Icon(
@@ -486,54 +649,54 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                 
                 if (currentStep == getSteps().length - 1) {
                   // Send to server
-                  InforProduct service = InforProduct(
-                    name: nameProductController.text, 
-                    address: addressProductController.text, 
-                    description: descriptionProductController.text, 
-                    event: eventProductController.text, 
-                    note: noteProductController.text, 
-                    idArea: state.idArea, 
-                    idCategory: state.idCategory
-                  );
+                  // InforProduct service = InforProduct(
+                  //   name: nameProductController.text, 
+                  //   address: addressProductController.text, 
+                  //   description: descriptionProductController.text, 
+                  //   event: eventProductController.text, 
+                  //   note: noteProductController.text, 
+                  //   idArea: state.idArea, 
+                  //   idCategory: state.idCategory
+                  // );
 
-                  List<TicketForProductForAdd> tickets = [];
+                  // List<TicketForProductForAdd> tickets = [];
 
-                  for (var widget in state.dynamicTicket) {
-                    TicketForProductForAdd ticket = TicketForProductForAdd(
-                      valueTicket: int.parse(widget.valueController.text), 
-                      typeTicket: widget.typeController.text, 
-                      noteTicket: widget.amountController.text, 
-                      amountTicket: int.parse(widget.amountController.text)
-                    );
-                    tickets.add(ticket);
-                  }
+                  // for (var widget in state.dynamicTicket) {
+                  //   TicketForProductForAdd ticket = TicketForProductForAdd(
+                  //     valueTicket: int.parse(widget.valueController.text), 
+                  //     typeTicket: widget.typeController.text, 
+                  //     noteTicket: widget.amountController.text, 
+                  //     amountTicket: int.parse(widget.amountController.text)
+                  //   );
+                  //   tickets.add(ticket);
+                  // }
 
-                  List<ScheduleProductForAdd> schedules = [];
-                  for (var widget in state.dynamicSchedule) {
-                    ScheduleProductForAdd schedule = ScheduleProductForAdd(
-                      time: widget.timeController.text, 
-                      quantityPerDay: int.parse(widget.perController.text)
-                    );
-                    schedules.add(schedule);
-                  }
+                  // List<ScheduleProductForAdd> schedules = [];
+                  // for (var widget in state.dynamicSchedule) {
+                  //   ScheduleProductForAdd schedule = ScheduleProductForAdd(
+                  //     time: widget.timeController.text, 
+                  //     quantityPerDay: int.parse(widget.perController.text)
+                  //   );
+                  //   schedules.add(schedule);
+                  // }
 
-                  List<GalleryProduct> galleries = [];
-                  Api api = Api();
-                  var object = await api.uploadGalleryProduct("admin/upload", state.images);
-                  if (object is Response) {
-                    galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
+                  // List<GalleryProduct> galleries = [];
+                  // Api api = Api();
+                  // var object = await api.uploadGalleryProduct("admin/upload", state.images);
+                  // if (object is Response) {
+                  //   galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
                   
-                    CreateProduct product = CreateProduct(
-                      service: service, 
-                      ticket: tickets, 
-                      schedule: schedules, 
-                      galleries: galleries
-                    );
-                    bloc.add(AdminAddProductEvent(product: product));
+                  //   CreateProduct product = CreateProduct(
+                  //     service: service, 
+                  //     ticket: tickets, 
+                  //     schedule: schedules, 
+                  //     galleries: galleries
+                  //   );
+                  //   bloc.add(AdminAddProductEvent(product: product));
 
-                  } else {
-                    //
-                  }
+                  // } else {
+                  //   //
+                  // }
                 } else {
                   currentStep = state.curentIndex + 1;
                   bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));

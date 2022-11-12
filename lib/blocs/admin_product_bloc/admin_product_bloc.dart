@@ -11,6 +11,10 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
   ProductRepository productRepo = ProductRepository();
   AdminProductBloc() : super(AdminProductState.empty()) {
 
+    on<AdminResetCurrentStepProductEvent>(onResetCurrentStep);
+
+    on<AdminReadListProductEvent>(onReadListProduct);
+
     on<AdminAddProductEvent>(onAddProduct);
     on<AdminProductDetailsEvent>(onProductDetails);
 
@@ -23,6 +27,7 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
 
     on<AdminAddDynamicTicketProductEvent>(onAddDynamicTicketProduct);
     on<AdminAddDynamicScheduleProductEvent>(onAddDynamicScheduleProduct);
+    on<AdminDeleteImageProductEvent>(onDeleteImageProduct);
   }
 
   void onAddProduct(AdminAddProductEvent event, Emitter<AdminProductState> emit) async {
@@ -76,5 +81,31 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
     List<DynamicScheduleWidget> temp = state.dynamicSchedule.toList();
     temp.add(DynamicScheduleWidget());
     emit(state.copyWith(dynamicSchedule: temp));
+  }
+
+  void onDeleteImageProduct(AdminDeleteImageProductEvent event, Emitter<AdminProductState> emit) async {
+    var data = await productRepo.deleteImageProduct("admin/delete/", event.idLink.toString(), event.publicId);
+    if (data.message == "Success") {
+      emit(state.copyWith(statusDeleteImage: 1));
+    }
+    if (data.message == "Failed") {
+      emit(state.copyWith(statusDeleteImage: -1));
+    }
+    if (data.message == "Error 403") {
+      emit(state.copyWith(statusDeleteImage: -2));
+    }
+    emit(state.copyWith(statusDeleteImage: 0));
+  }
+
+  void onReadListProduct(AdminReadListProductEvent event, Emitter<AdminProductState> emit) async {
+    print("1");
+    emit(state.copyWith(getLoading: true));
+    var data = await productRepo.getListProductForAdmin("admin/service");
+    print(data);
+    emit(state.copyWith(getLoading: false, listProduct: data));
+  }
+
+  void onResetCurrentStep(AdminResetCurrentStepProductEvent event, Emitter<AdminProductState> emit) {
+    emit(state.copyWith(curentIndex: 0));
   }
 }

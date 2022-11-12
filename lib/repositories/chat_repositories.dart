@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travelservices/models/firebase_chat_model.dart';
-import 'package:travelservices/models/firebase_user_model.dart';
 
 class ChatRepository {
   
@@ -9,7 +8,7 @@ class ChatRepository {
   //   await docRoom.set(model.toJson());
   // }
 
-  static sendMessage(ChatRequestModel model, String docRoomId) async {
+  static sendMessage(ChatRequestModel model) async {
     await FirebaseFirestore.instance.collection("users")
       .doc(model.sendById.toString())
       .collection("messages")

@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelservices/models/product_admin_model.dart';
-import 'package:travelservices/screens/widgets/dynamic_ticket_widget.dart';
 
 class AdminProductEvent extends Equatable {
   @override
@@ -60,4 +59,21 @@ class AdminAddDynamicTicketProductEvent extends AdminProductEvent{
 
 class AdminAddDynamicScheduleProductEvent extends AdminProductEvent{
   AdminAddDynamicScheduleProductEvent();
+}
+
+class AdminReadListProductEvent extends AdminProductEvent {
+  AdminReadListProductEvent();
+}
+
+class AdminDeleteImageProductEvent extends AdminProductEvent {
+  final int idLink;
+  final String publicId;
+  AdminDeleteImageProductEvent({
+    required this.idLink,
+    required this.publicId
+  });
+}
+
+class AdminResetCurrentStepProductEvent extends AdminProductEvent {
+  AdminResetCurrentStepProductEvent();
 }

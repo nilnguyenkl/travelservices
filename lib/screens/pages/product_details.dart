@@ -152,11 +152,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                             child: IconButton(
                               onPressed: () {
                                 Navigator.pushNamed(context, Routes.chatContentPage, arguments: ChatArgument(
-                                  idRoom: chatRoomId(username1, state.productDetails?.usernameAuth ?? ""), 
+                                  // idRoom: chatRoomId(username1, state.productDetails?.usernameAuth ?? ""), 
                                   id1: idAuth1, 
                                   id2: state.productDetails?.createByAuthId ?? 0, 
-                                  username1: username1, 
-                                  username2: state.productDetails?.usernameAuth ?? ""
+                                  // username1: username1, 
+                                  // username2: state.productDetails?.usernameAuth ?? ""
                                 ));
                               }, 
                               icon: Icon(
@@ -717,13 +717,13 @@ class _ProductDetailsState extends State<ProductDetails> {
   //   };
   // }
 
-  String chatRoomId(String user1, String user2) {
-    if (user1.toLowerCase().codeUnits[0] > user2.toLowerCase().codeUnits[0]) {
-      return "${user1}lamlam$user2";
-    } else {
-      return "${user2}lamlam$user1";
-    }
-  }
+  // String chatRoomId(String user1, String user2) {
+  //   if (user1.toLowerCase().codeUnits[0] > user2.toLowerCase().codeUnits[0]) {
+  //     return "${user1}lamlam$user2";
+  //   } else {
+  //     return "${user2}lamlam$user1";
+  //   }
+  // }
 
   Widget carouselElement(String url){
     return Container(
