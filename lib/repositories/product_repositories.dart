@@ -47,14 +47,10 @@ class ProductRepository {
     return ProductDetails.fromJson(response.data);
   }
 
-  Future<MessageModel> deleteImageProduct(String endPoint, String id, String publicId) async {
-    var object = await api.deleteGalleryProduct(Api.url, endPoint, id, publicId);
+  Future<Object> deleteImageProduct(String endPoint, String id, String publicId, String idService) async {
+    var object = await api.deleteGalleryProduct(Api.url, endPoint, id, publicId, idService);
     if (object is Response) {
-      if (object.data == "Success") {
-        return MessageModel(message: "Success");
-      } else {
-        return MessageModel(message: "Failed");
-      }
+      return (object.data as List).map((e) => GalleryDetailsProduct.fromJson(e)).toList();
     } else {
       return MessageModel(message: "Error 403");
     }

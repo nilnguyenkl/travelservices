@@ -57,8 +57,22 @@ class AdminAddDynamicTicketProductEvent extends AdminProductEvent{
   AdminAddDynamicTicketProductEvent();
 }
 
+class AdminDeleteDynamicTicketProductEvent extends AdminProductEvent{
+  final int index;
+  AdminDeleteDynamicTicketProductEvent({
+    required this.index
+  });
+}
+
 class AdminAddDynamicScheduleProductEvent extends AdminProductEvent{
   AdminAddDynamicScheduleProductEvent();
+}
+
+class AdminDeleteDynamicScheduleProductEvent extends AdminProductEvent{
+  final int index;
+  AdminDeleteDynamicScheduleProductEvent({
+    required this.index
+  });
 }
 
 class AdminReadListProductEvent extends AdminProductEvent {

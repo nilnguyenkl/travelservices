@@ -38,7 +38,9 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     WayCartArguments args = ModalRoute.of(context)!.settings.arguments as WayCartArguments;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

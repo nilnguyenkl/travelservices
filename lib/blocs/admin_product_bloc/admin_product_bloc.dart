@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_event.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_state.dart';
+import 'package:travelservices/models/message_model.dart';
+import 'package:travelservices/models/product_admin_model.dart';
 import 'package:travelservices/repositories/product_repositories.dart';
 import 'package:travelservices/screens/widgets/dynamic_schedule_widget.dart';
 import 'package:travelservices/screens/widgets/dynamic_ticket_widget.dart';
@@ -26,7 +28,11 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
     on<AdminUnSelectMultipleImageEvent>(onUnSelectImages);
 
     on<AdminAddDynamicTicketProductEvent>(onAddDynamicTicketProduct);
+    on<AdminDeleteDynamicTicketProductEvent>(onDeleteDynamicTicketProduct);
+    
     on<AdminAddDynamicScheduleProductEvent>(onAddDynamicScheduleProduct);
+    on<AdminDeleteDynamicScheduleProductEvent>(onDeleteDynamicScheduleProduct);
+
     on<AdminDeleteImageProductEvent>(onDeleteImageProduct);
   }
 
@@ -43,7 +49,7 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
   void onProductDetails(AdminProductDetailsEvent event, Emitter<AdminProductState> emit) async {
     emit(state.copyWith(getLoading: true));
     var data = await productRepo.getProductDetailsForAdmin("admin/serviceDetails?idService=${event.idService}");
-    emit(state.copyWith(readProduct: data, getLoading: false, getProductDetails: true));
+    emit(state.copyWith(readProduct: data, getLoading: false, getProductDetails: true, listImages: data.galleries));
     emit(state.copyWith(getProductDetails: false));
   }
 
@@ -83,29 +89,40 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
     emit(state.copyWith(dynamicSchedule: temp));
   }
 
+  void onDeleteDynamicScheduleProduct(AdminDeleteDynamicScheduleProductEvent event, Emitter<AdminProductState> emit) {
+    List<DynamicScheduleWidget> temp = state.dynamicSchedule.toList();
+    temp.removeAt(event.index);
+    emit(state.copyWith(dynamicSchedule: temp));
+  }
+
+  void onDeleteDynamicTicketProduct(AdminDeleteDynamicTicketProductEvent event, Emitter<AdminProductState> emit) {
+    List<DynamicTicketWidget> temp = state.dynamicTicket.toList();
+    temp.removeAt(event.index);
+    emit(state.copyWith(dynamicTicket: temp));
+  }
+
   void onDeleteImageProduct(AdminDeleteImageProductEvent event, Emitter<AdminProductState> emit) async {
-    var data = await productRepo.deleteImageProduct("admin/delete/", event.idLink.toString(), event.publicId);
-    if (data.message == "Success") {
-      emit(state.copyWith(statusDeleteImage: 1));
-    }
-    if (data.message == "Failed") {
-      emit(state.copyWith(statusDeleteImage: -1));
-    }
-    if (data.message == "Error 403") {
-      emit(state.copyWith(statusDeleteImage: -2));
+    var data = await productRepo.deleteImageProduct("admin/delete/", event.idLink.toString(), event.publicId, state.readProduct!.service.id.toString());
+    if (data is MessageModel) {
+      if (data.message == "Error 403") {
+        emit(state.copyWith(statusDeleteImage: -1));
+      }   
+    } 
+    if (data is List<GalleryDetailsProduct>) {
+      emit(state.copyWith(listImages: data, statusDeleteImage: 1));
     }
     emit(state.copyWith(statusDeleteImage: 0));
   }
 
   void onReadListProduct(AdminReadListProductEvent event, Emitter<AdminProductState> emit) async {
-    print("1");
     emit(state.copyWith(getLoading: true));
     var data = await productRepo.getListProductForAdmin("admin/service");
-    print(data);
     emit(state.copyWith(getLoading: false, listProduct: data));
   }
 
   void onResetCurrentStep(AdminResetCurrentStepProductEvent event, Emitter<AdminProductState> emit) {
     emit(state.copyWith(curentIndex: 0));
   }
+
+  
 }

@@ -3,7 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
@@ -19,6 +18,7 @@ import 'package:travelservices/screens/arguments/chat_arguments.dart';
 import 'package:travelservices/screens/arguments/idarguments.dart';
 import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/list_reviews_details_arguments.dart';
+import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
 import 'package:travelservices/screens/widgets/delegate_list_widget.dart';
 import 'package:travelservices/screens/widgets/get_box_offse_widget.dart';
 import 'package:travelservices/screens/widgets/loading_widget.dart';
@@ -146,25 +146,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                           )
                         ),
                         actions: [
-                          Badge(
-                            badgeContent: Text("1"),
-                            position: BadgePosition.bottomEnd(bottom: 4, end: 5),
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, Routes.chatContentPage, arguments: ChatArgument(
-                                  // idRoom: chatRoomId(username1, state.productDetails?.usernameAuth ?? ""), 
-                                  id1: idAuth1, 
-                                  id2: state.productDetails?.createByAuthId ?? 0, 
-                                  // username1: username1, 
-                                  // username2: state.productDetails?.usernameAuth ?? ""
-                                ));
-                              }, 
-                              icon: Icon(
-                                Icons.chat_outlined,
-                                color: scrolled ? Colors.blue.shade600 : Colors.white,
-                              )
-                            ),
-                          ),   
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, Routes.chatContentPage, arguments: ChatArgument(
+                                id1: idAuth1, 
+                                id2: state.productDetails?.createByAuthId ?? 0, 
+                              ));
+                            }, 
+                            icon: Icon(
+                              Icons.chat_outlined,
+                              color: scrolled ? Colors.blue.shade600 : Colors.white,
+                            )
+                          ),  
                           BlocBuilder<CartBloc, CartState>(
                             builder:(context, state) {
                               return Badge(
@@ -172,7 +165,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 position: BadgePosition.bottomEnd(bottom: 4, end: 5),
                                 child: IconButton(
                                   onPressed: (){
-                                    Navigator.pushNamed(context, Routes.cartPage);
+                                    Navigator.pushNamed(context, Routes.cartPage, arguments: WayCartArguments(way: true));
                                   }, 
                                   icon: Icon(
                                     Icons.shopping_cart_outlined,

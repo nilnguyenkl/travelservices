@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:travelservices/api/api.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_bloc.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_event.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_state.dart';
@@ -314,7 +316,9 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                   ),
                                   SizedBox(
                                     child: IconButton(
-                                      onPressed: (){}, 
+                                      onPressed: (){
+                                        context.read<AdminProductBloc>().add(AdminDeleteDynamicTicketProductEvent(index: index));
+                                      }, 
                                       icon: const Icon(
                                         Icons.delete,
                                         color: Colors.red
@@ -353,7 +357,9 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                   ),
                                   SizedBox(
                                     child: IconButton(
-                                      onPressed: (){}, 
+                                      onPressed: (){
+
+                                      }, 
                                       icon: const Icon(
                                         Icons.delete,
                                         color: Colors.red
@@ -443,7 +449,9 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                 ),
                                 SizedBox(
                                   child: IconButton(
-                                    onPressed: (){}, 
+                                    onPressed: (){
+                                      context.read<AdminProductBloc>().add(AdminDeleteDynamicScheduleProductEvent(index: index));
+                                    }, 
                                     icon: const Icon(
                                       Icons.delete,
                                       color: Colors.red
@@ -573,7 +581,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(vertical: 5),
-                        itemCount: gralleries.length,
+                        itemCount: state.listImages.length,
                         itemBuilder: (_, i) {
                           return Container(
                             height: 100,
@@ -582,13 +590,13 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                             margin: const EdgeInsets.only(left: 3.0, right: 3.0),
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(state.readProduct?.galleries[i].url ?? productImgDefault),
+                                image: NetworkImage(state.listImages[i].url),
                                 fit: BoxFit.cover,
                               )
                             ),
                             child: IconButton(
                               onPressed: (){
-                                context.read<AdminProductBloc>().add(AdminDeleteImageProductEvent(idLink: state.readProduct?.galleries[i].id ?? 0, publicId: state.readProduct?.galleries[i].publicId ?? ""));
+                                context.read<AdminProductBloc>().add(AdminDeleteImageProductEvent(idLink: state.listImages[i].id, publicId: state.listImages[i].publicId));
                               }, 
                               icon: const Icon(
                                 Icons.delete,
@@ -649,54 +657,62 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                 
                 if (currentStep == getSteps().length - 1) {
                   // Send to server
-                  // InforProduct service = InforProduct(
-                  //   name: nameProductController.text, 
-                  //   address: addressProductController.text, 
-                  //   description: descriptionProductController.text, 
-                  //   event: eventProductController.text, 
-                  //   note: noteProductController.text, 
-                  //   idArea: state.idArea, 
-                  //   idCategory: state.idCategory
-                  // );
+                  if (statusAction!) {
+                    // Create
+                    InforProduct service = InforProduct(
+                      name: nameProductController.text, 
+                      address: addressProductController.text, 
+                      description: descriptionProductController.text, 
+                      event: eventProductController.text, 
+                      note: noteProductController.text, 
+                      idArea: state.idArea, 
+                      idCategory: state.idCategory
+                    );
 
-                  // List<TicketForProductForAdd> tickets = [];
+                    List<TicketForProductForAdd> tickets = [];
 
-                  // for (var widget in state.dynamicTicket) {
-                  //   TicketForProductForAdd ticket = TicketForProductForAdd(
-                  //     valueTicket: int.parse(widget.valueController.text), 
-                  //     typeTicket: widget.typeController.text, 
-                  //     noteTicket: widget.amountController.text, 
-                  //     amountTicket: int.parse(widget.amountController.text)
-                  //   );
-                  //   tickets.add(ticket);
-                  // }
+                    for (var widget in state.dynamicTicket) {
+                      TicketForProductForAdd ticket = TicketForProductForAdd(
+                        valueTicket: int.parse(widget.valueController.text), 
+                        typeTicket: widget.typeController.text, 
+                        noteTicket: widget.amountController.text, 
+                        amountTicket: int.parse(widget.amountController.text)
+                      );
+                      tickets.add(ticket);
+                    }
 
-                  // List<ScheduleProductForAdd> schedules = [];
-                  // for (var widget in state.dynamicSchedule) {
-                  //   ScheduleProductForAdd schedule = ScheduleProductForAdd(
-                  //     time: widget.timeController.text, 
-                  //     quantityPerDay: int.parse(widget.perController.text)
-                  //   );
-                  //   schedules.add(schedule);
-                  // }
+                    List<ScheduleProductForAdd> schedules = [];
+                    for (var widget in state.dynamicSchedule) {
+                      ScheduleProductForAdd schedule = ScheduleProductForAdd(
+                        time: widget.timeController.text, 
+                        quantityPerDay: int.parse(widget.perController.text)
+                      );
+                      schedules.add(schedule);
+                    }
 
-                  // List<GalleryProduct> galleries = [];
-                  // Api api = Api();
-                  // var object = await api.uploadGalleryProduct("admin/upload", state.images);
-                  // if (object is Response) {
-                  //   galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
-                  
-                  //   CreateProduct product = CreateProduct(
-                  //     service: service, 
-                  //     ticket: tickets, 
-                  //     schedule: schedules, 
-                  //     galleries: galleries
-                  //   );
-                  //   bloc.add(AdminAddProductEvent(product: product));
+                    List<GalleryProduct> galleries = [];
+                    Api api = Api();
+                    var object = await api.uploadGalleryProduct("admin/upload", state.images);
+                    if (object is Response) {
+                      galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
+                    
+                      CreateProduct product = CreateProduct(
+                        service: service, 
+                        ticket: tickets, 
+                        schedule: schedules, 
+                        galleries: galleries
+                      );
+                      bloc.add(AdminAddProductEvent(product: product));
 
-                  // } else {
-                  //   //
-                  // }
+                    } else {
+                      // Hinh anh khong duoc upload
+                    }
+
+                  }
+
+                  if (!statusAction!) {
+                    // Update
+                  }
                 } else {
                   currentStep = state.curentIndex + 1;
                   bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));

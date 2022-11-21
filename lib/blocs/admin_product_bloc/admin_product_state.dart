@@ -18,6 +18,8 @@ class AdminProductState extends Equatable {
 
   final ProductDetails? readProduct;
 
+  final List<GalleryDetailsProduct> listImages;
+
   final CreateProduct? product; 
   final int statusCreate;
 
@@ -42,7 +44,8 @@ class AdminProductState extends Equatable {
     required this.readProduct,
     required this.getProductDetails,
     required this.statusDeleteImage,
-    required this.listProduct
+    required this.listProduct,
+    required this.listImages
   });
 
   factory AdminProductState.empty() {
@@ -60,7 +63,8 @@ class AdminProductState extends Equatable {
       product: null,
       readProduct: null,
       statusDeleteImage: 0,
-      listProduct: <ProductShow>[]
+      listProduct: <ProductShow>[],
+      listImages: <GalleryDetailsProduct>[]
     );
   }
 
@@ -78,7 +82,8 @@ class AdminProductState extends Equatable {
     ProductDetails? readProduct,
     bool? getProductDetails,
     int? statusDeleteImage,
-    List<ProductShow>? listProduct
+    List<ProductShow>? listProduct,
+    List<GalleryDetailsProduct>? listImages
   }) {
     return AdminProductState(
       getLoading: getLoading ?? this.getLoading, 
@@ -94,7 +99,8 @@ class AdminProductState extends Equatable {
       readProduct: readProduct ?? this.readProduct,
       getProductDetails: getProductDetails ?? this.getProductDetails,
       statusDeleteImage: statusDeleteImage ?? this.statusDeleteImage,
-      listProduct: listProduct ?? this.listProduct
+      listProduct: listProduct ?? this.listProduct,
+      listImages: listImages ?? this.listImages
     );
   }
   
@@ -112,7 +118,8 @@ class AdminProductState extends Equatable {
     dynamicTicket,
     dynamicSchedule,
     readProduct,
-    listProduct
+    listProduct,
+    listImages
   ];
 
 }

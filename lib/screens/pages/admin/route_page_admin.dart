@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/screens/pages/admin/chat_page_admin.dart';
 import 'package:travelservices/screens/pages/admin/manage_page_admin.dart';
+import 'package:travelservices/screens/pages/admin/order_admin.dart';
 import 'package:travelservices/screens/pages/admin/profile_page_admin.dart';
 
 class RoutePageAdmin extends StatefulWidget {
@@ -18,6 +19,7 @@ class _RoutePageAdminState extends State<RoutePageAdmin> {
   final List<Widget> pages = const [
     ManagePageAdmin(),
     ChatPageAdmin(),
+    OrderAdminPage(),
     ProfilePageAdmin(),
   ];
 
@@ -59,6 +61,10 @@ class _RoutePageAdminState extends State<RoutePageAdmin> {
             GButton(
               icon: Icons.chat,
               text: 'Chat',
+            ),
+            GButton(
+              icon: Icons.list_alt,
+              text: 'Order',
             ),
             GButton(
               icon: Icons.person,

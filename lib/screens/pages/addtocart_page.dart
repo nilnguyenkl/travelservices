@@ -459,7 +459,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                                                     ),
                                                     const SizedBox(height: 5),
                                                     Text(
-                                                      data.tickets[index].note,
+                                                      data.tickets[index].note ?? "",
                                                       style: const TextStyle(
                                                         fontSize: 14,
                                                       ),
@@ -587,7 +587,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                               valueTicket: temps[i].valueTicket, 
                               typeTicket: temps[i].typeTicket, 
                               amountTicket: state.counts[i], 
-                              note: temps[i].note
+                              note: temps[i].note ?? ""
                               ));
                             }
                           } 

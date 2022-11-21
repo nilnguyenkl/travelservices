@@ -216,7 +216,7 @@ class _ChatContentPageState extends State<ChatContentPage> {
   String nameUser(String lastname, String firstname) {
     if (lastname.isEmpty) {
       if (firstname.isEmpty) {
-        return "Guest";
+        return "Admin";
       } else {
         return firstname;
       }

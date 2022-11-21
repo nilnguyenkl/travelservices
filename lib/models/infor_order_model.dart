@@ -39,7 +39,7 @@ class InforOrder {
 
   factory InforOrder.fromJson(Map<String, dynamic> json) => InforOrder(
     id: json["id"],
-    tickets: List<TicketInforOrder>.from(json["tickets"].map((x) => TicketInforOrder.fromJson(x))),
+    tickets: json["tickets"] != null ? List<TicketInforOrder>.from(json["tickets"].map((x) => TicketInforOrder.fromJson(x))) : [],
     schedules: List<ScheduleInforOrder>.from(json["schedules"].map((x) => ScheduleInforOrder.fromJson(x))),
   );
 
@@ -71,14 +71,14 @@ class TicketInforOrder {
   int valueTicket;
   String typeTicket;
   int amountTicket;
-  String note;
+  String? note;
 
   factory TicketInforOrder.fromJson(Map<String, dynamic> json) => TicketInforOrder(
     idTicket: json["idTicket"],
     valueTicket: json["valueTicket"],
     typeTicket: json["typeTicket"],
     amountTicket: json["amountTicket"],
-    note: json["note"],
+    note: json["note"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {

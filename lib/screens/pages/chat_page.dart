@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/chat_arguments.dart';
 import 'package:travelservices/screens/arguments/current_user_arguments.dart';
 
 class ChatPage extends StatefulWidget {
@@ -102,7 +104,10 @@ class _ChatPageState extends State<ChatPage> {
                                 var friend = asyncSnapshot.data as DocumentSnapshot;
                                 return GestureDetector(
                                   onTap: () {
-                                    print("1");
+                                    Navigator.pushNamed(context, Routes.chatContentPage, arguments: ChatArgument(
+                                      id1: args.id,
+                                      id2: int.parse(friendId)
+                                    ));
                                   },
                                   child: Column(
                                     children: [
@@ -123,7 +128,7 @@ class _ChatPageState extends State<ChatPage> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        friend['firstname'],
+                                                        friend['firstname'].isEmpty ? "Admin" : friend['firstname'],
                                                         style: const TextStyle(
                                                           fontSize: 20,
                                                           fontWeight: FontWeight.bold
@@ -139,22 +144,12 @@ class _ChatPageState extends State<ChatPage> {
                                                     ],
                                                   ),
                                                 ),
-                                              ),
-                                              Container(
-                                                height: 20,
-                                                width: 20,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  color: Colors.red,
-                                                ),
-                                                child: Text("12"),
-                                              )                              
+                                              ),                           
                                             ],
                                           ),
                                         ),
                                       ),
-                                      Divider(thickness: 2)
+                                      const Divider(thickness: 2)
                                     ],
                                   ),
                                 );

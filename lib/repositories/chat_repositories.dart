@@ -24,7 +24,7 @@ class ChatRepository {
       });
     });
     await FirebaseFirestore.instance.collection("users")
-      .doc(model.sendById.toString())
+      .doc(model.sendToId.toString())
       .collection("messages")
       .doc(model.sendById.toString())
       .collection('chats')
@@ -33,29 +33,9 @@ class ChatRepository {
         .collection("users")
         .doc(model.sendToId.toString())
         .collection("messages")
-        .doc(model.sendToId.toString())
+        .doc(model.sendById.toString())
         .set({'last_msg' : model.message
       });
     });
   }
-
-  // static getListChat() async {
-    
-  //   List<String> list = [];
-
-  //   var collection = FirebaseFirestore.instance.collection('chatroom');
-  //   var querySnapshots = collection.doc().snapshots();
-
-  //   querySnapshots.map((event) {
-  //     list.add(event.reference.id);
-  //   });
-
-  //   print("HEHE: $list");
-    
-  //   return FirebaseFirestore.instance
-  //   .collection('chatroom')
-  //   .get();
-
-  // }
-
 }
