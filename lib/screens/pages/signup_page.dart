@@ -244,7 +244,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                               label: const Text("Password"),
                             ),
-                            obscureText: state.eyePassword,
+                            obscureText: !state.eyePassword,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
                           );
@@ -269,7 +269,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                               label: const Text("Confirm Password"),
                             ),
-                            obscureText: state.eyeCnfPassword,
+                            obscureText: !state.eyeCnfPassword,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.done,
                           );

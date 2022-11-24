@@ -36,6 +36,31 @@ class Api {
       }
     ));
   }
+
+  static Future<LoginResponseModel> getToken() async {
+    List<String> roles = [await SharedPreferencesCustom.getStringCustom('role')];
+    LoginResponseModel response =  LoginResponseModel(
+      id: await SharedPreferencesCustom.getIntCustom('idAuth'), 
+      username: await SharedPreferencesCustom.getStringCustom('username'), 
+      email: await SharedPreferencesCustom.getStringCustom('email'), 
+      roles: roles, 
+      refreshToken: await SharedPreferencesCustom.getStringCustom('refreshToken'), 
+      accessToken: await SharedPreferencesCustom.getStringCustom('accessToken'), 
+      tokenType: "Bearer", 
+      provider: await SharedPreferencesCustom.getBoolCustom('provider'), 
+      phone: await SharedPreferencesCustom.getStringCustom('phone')
+    );
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> getTokenToLogin() async {
+    List<String> roles = [await SharedPreferencesCustom.getStringCustom('role')];
+    print("=================${roles[0]}");
+    return {
+      "isLogined" : await SharedPreferencesCustom.getBoolCustom('isLogined'),
+      "role" : roles[0]
+    };
+  }
   
   static Future<String> getTokenAccess() async {
     return await SharedPreferencesCustom.getStringCustom('accessToken');
@@ -394,5 +419,7 @@ class Api {
       return MessageModel(message: '');
     }
   }
+
+  
   
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/api/api.dart';
+import 'package:travelservices/blocs/admin_order_bloc/admin_order_bloc.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_bloc.dart';
 import 'package:travelservices/blocs/area_bloc/area_bloc.dart';
 import 'package:travelservices/blocs/area_bloc/area_event.dart';
@@ -34,6 +36,7 @@ import 'package:travelservices/screens/pages/chat_content_page.dart';
 import 'package:travelservices/screens/pages/chat_page.dart';
 import 'package:travelservices/screens/pages/login_page.dart';
 import 'package:travelservices/screens/pages/myprofile_page.dart';
+import 'package:travelservices/screens/pages/option_page.dart';
 import 'package:travelservices/screens/pages/order_details.dart';
 import 'package:travelservices/screens/pages/product_by_status.dart';
 import 'package:travelservices/screens/pages/product_details.dart';
@@ -41,6 +44,7 @@ import 'package:travelservices/screens/pages/reviews_details_page.dart';
 import 'package:travelservices/screens/pages/route_page.dart';
 import 'package:travelservices/screens/pages/signup_page.dart';
 import 'package:travelservices/screens/pages/verify_phone_page.dart';
+import 'package:travelservices/screens/widgets/loading_widget.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -109,6 +113,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => AdminProductBloc()
           ),
+          BlocProvider(
+            create: (context) => AdminOrderBloc()
+          ),
         ],
         child: MaterialApp(
           routes: {
@@ -128,10 +135,29 @@ class MyApp extends StatelessWidget {
             Routes.changepasswordPage: (context) => const ChangePasswordPage(),
             Routes.createProductAdmin: (context) => const CreateProductAdmin(),
             Routes.aboutAppPage: (context) => const AboutAppPage(),
-            Routes.productByStatus: (context) => const ProductByStatus() 
+            Routes.productByStatus: (context) => const ProductByStatus() ,
+            Routes.optionPage: (context) => const OptionPage()
           },
           debugShowCheckedModeBanner: false,
-          home: const RoutePageAdmin()
+          home: FutureBuilder(
+            future: Api.getTokenToLogin(),
+            builder:(context, snapshot) {
+              if (snapshot.hasData) {
+                var snapshotData = snapshot.data as Map<String, dynamic>;
+                if (snapshotData['isLogined']) {
+                  if (snapshotData['role'] == "ADMIN") {
+                    return const RoutePageAdmin();
+                  } else {
+                    return const RoutePage();
+                  }
+                } else {
+                  return const OptionPage();
+                }
+              } else {
+                return const OptionPage();
+              }
+            },
+          ) 
         ),
       )
     );

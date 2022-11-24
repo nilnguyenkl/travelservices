@@ -38,14 +38,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
     if (auth is LoginResponseModel) {
       emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
-      
       // Set local data
       SharedPreferencesCustom.setStringCustom('accessToken', auth.accessToken.toString());
       SharedPreferencesCustom.setBoolCustom('isLogined', true);
       SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
       SharedPreferencesCustom.setStringCustom('username', auth.username);
+      SharedPreferencesCustom.setStringCustom('email', auth.email);
+      SharedPreferencesCustom.setStringCustom('phone', auth.phone);
+      SharedPreferencesCustom.setBoolCustom('provider', auth.provider);
+      SharedPreferencesCustom.setStringCustom('role', auth.roles[0]);
       SharedPreferencesCustom.setIntCustom('idAuth', auth.id);
-      
       
       await Future.delayed(const Duration(seconds: 3));
       emit(state.copyWith(status: const InitialStatus()));
@@ -54,6 +56,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       authRepo.updateStatusUser(true, auth.id.toString());
       
     }
+
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    print("==============$token");
+
   }
 
   void loginProvider(LoginByProvider event, Emitter<LoginState> emit) async {
@@ -95,6 +101,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         SharedPreferencesCustom.setBoolCustom('isLogined', true);
         SharedPreferencesCustom.setStringCustom('refreshToken', auth.refreshToken.toString());
         SharedPreferencesCustom.setStringCustom('username', auth.username);
+        SharedPreferencesCustom.setStringCustom('email', auth.email);
+        SharedPreferencesCustom.setStringCustom('phone', auth.phone);
+        SharedPreferencesCustom.setBoolCustom('provider', auth.provider);
+        SharedPreferencesCustom.setStringCustom('role', auth.roles[0]);
         SharedPreferencesCustom.setIntCustom('idAuth', auth.id);
         
         await Future.delayed(const Duration(seconds: 3));

@@ -26,6 +26,8 @@ class LoginResponseModel {
   final String refreshToken;
   final String accessToken;
   final String tokenType;
+  final bool provider;
+  final String phone;
 
   LoginResponseModel({
     required this.id,
@@ -35,6 +37,8 @@ class LoginResponseModel {
     required this.refreshToken,
     required this.accessToken,
     required this.tokenType,
+    required this.provider,
+    required this.phone
   });
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) => LoginResponseModel(
@@ -45,6 +49,8 @@ class LoginResponseModel {
     refreshToken: json["refreshToken"],
     accessToken: json["accessToken"],
     tokenType: json["tokenType"],
+    provider: json["provider"],
+    phone: json["phone"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -55,5 +61,7 @@ class LoginResponseModel {
     "refreshToken": refreshToken,
     "accessToken": accessToken,
     "tokenType": tokenType,
+    "provider": provider,
+    "phone": phone,
   };
 }

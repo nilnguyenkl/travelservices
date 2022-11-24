@@ -26,12 +26,16 @@ class ProfileResponse {
   final int numOrderWaiting;
   final int numOrderApproved;
   final int numOrderExperienced;
+  final int numServiceForAdmin;
+  final int numOrderForAdmin;
   final InforProfile infor;
 
   ProfileResponse({
     required this.numOrderWaiting,
     required this.numOrderApproved,
     required this.numOrderExperienced,
+    required this.numServiceForAdmin,
+    required this.numOrderForAdmin,
     required this.infor,
   });
 
@@ -39,6 +43,8 @@ class ProfileResponse {
         numOrderWaiting: json["numOrderWaiting"],
         numOrderApproved: json["numOrderApproved"],
         numOrderExperienced: json["numOrderExperienced"],
+        numServiceForAdmin: json["numServiceForAdmin"],
+        numOrderForAdmin: json["numOrderForAdmin"],
         infor: InforProfile.fromJson(json["infor"]),
     );
 }

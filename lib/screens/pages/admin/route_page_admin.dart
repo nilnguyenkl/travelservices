@@ -5,7 +5,7 @@ import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/screens/pages/admin/chat_page_admin.dart';
 import 'package:travelservices/screens/pages/admin/manage_page_admin.dart';
 import 'package:travelservices/screens/pages/admin/order_admin.dart';
-import 'package:travelservices/screens/pages/admin/profile_page_admin.dart';
+import 'package:travelservices/screens/pages/profile_page.dart';
 
 class RoutePageAdmin extends StatefulWidget {
   const RoutePageAdmin({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class _RoutePageAdminState extends State<RoutePageAdmin> {
     ManagePageAdmin(),
     ChatPageAdmin(),
     OrderAdminPage(),
-    ProfilePageAdmin(),
+    ProfilePage(),
   ];
 
   int index = 0;

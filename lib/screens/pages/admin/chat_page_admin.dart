@@ -17,14 +17,6 @@ class ChatPageAdmin extends StatefulWidget {
 
 class _ChatPageAdminState extends State<ChatPageAdmin> {
 
-  // int? idAuth;
-  // late String username;
-
-  // @override
-  // void initState() {
-  //   getValueShared(); 
-  //   super.initState();
-  // }
 
   Future<Map<String, dynamic>> sharedPreValue() async {
     return {
@@ -32,11 +24,6 @@ class _ChatPageAdminState extends State<ChatPageAdmin> {
       "username" : await SharedPreferencesCustom.getStringCustom('username')
     };
   }
-
-  // void getValueShared() async {
-  //   idAuth = await SharedPreferencesCustom.getIntCustom('idAuth');
-  //   username = await SharedPreferencesCustom.getStringCustom('username');
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -49,15 +36,6 @@ class _ChatPageAdminState extends State<ChatPageAdmin> {
             color: Colors.black
           ),
           textAlign: TextAlign.center,
-        ),
-        leading: IconButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.blue.shade600,
-          ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1), 
@@ -191,7 +169,6 @@ class _ChatPageAdminState extends State<ChatPageAdmin> {
             ],
           );
         },
-        
       )
     );
   }

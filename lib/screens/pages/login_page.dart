@@ -92,9 +92,15 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(15)
                               ),
                               prefixIcon: const Icon(Icons.key),
-                              suffixIcon: Icon(Icons.remove_red_eye),
-                              label: const Text("Password")
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  context.read<LoginBloc>().add(LoginEyePasswordEvent(!state.eyeStatus));
+                                }, 
+                                icon: state.eyeStatus ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility)
+                              ),
+                              label: const Text("Password"),
                             ),
+                            obscureText: !state.eyeStatus,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.done,
                           );
