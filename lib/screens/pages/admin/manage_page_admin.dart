@@ -133,20 +133,7 @@ class _ManagePageAdminState extends State<ManagePageAdmin> {
                                                         color: Colors.blue.shade600
                                                       ),
                                                     )
-                                                  ),
-                                                  const SizedBox(width: 7),
-                                                  InkWell(
-                                                    onTap: (){
-
-                                                    },
-                                                    child: const Text(
-                                                      "Delete",
-                                                      style: TextStyle(
-                                                        fontStyle: FontStyle.italic,
-                                                        color: Colors.red
-                                                      ),  
-                                                    ),
-                                                  )
+                                                  ),          
                                                 ],
                                               ),
                                             ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_event.dart';
 import 'package:travelservices/blocs/admin_product_bloc/admin_product_state.dart';
 import 'package:travelservices/models/message_model.dart';
@@ -13,11 +14,12 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
   ProductRepository productRepo = ProductRepository();
   AdminProductBloc() : super(AdminProductState.empty()) {
 
-    on<AdminResetCurrentStepProductEvent>(onResetCurrentStep);
+    on<AdminResetStateProductEvent>(onResetStateProduct);
 
     on<AdminReadListProductEvent>(onReadListProduct);
 
     on<AdminAddProductEvent>(onAddProduct);
+    on<AdminUpdateProductEvent>(onUpdateProduct);
     on<AdminProductDetailsEvent>(onProductDetails);
 
     on<AdminCurrentIndexProductEvent>(onCurrentIndexProduct);
@@ -39,11 +41,25 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
   void onAddProduct(AdminAddProductEvent event, Emitter<AdminProductState> emit) async {
     var data = await productRepo.postServiceForAdmin(event.product);
     if (data.message.isEmpty) {
+      print("Thêm thất bại");
       emit(state.copyWith(statusCreate: -1));
     } else {
+      print("Thêm thành công");
       emit(state.copyWith(statusCreate: 1));
     }
     emit(state.copyWith(statusCreate: 0));
+  }
+
+  void onUpdateProduct(AdminUpdateProductEvent event, Emitter<AdminProductState> emit) async {
+    var data = await productRepo.putServiceForAdmin(event.product, event.idService);
+    if (data.message.isEmpty) {
+      print("Sửa thất bại");
+      emit(state.copyWith(statusUpdate: -1));
+    } else {
+      print("Sửa thành công");
+      emit(state.copyWith(statusUpdate: 1));
+    }
+    emit(state.copyWith(statusUpdate: 0));
   }
 
   void onProductDetails(AdminProductDetailsEvent event, Emitter<AdminProductState> emit) async {
@@ -120,9 +136,22 @@ class AdminProductBloc extends Bloc<AdminProductEvent, AdminProductState> {
     emit(state.copyWith(getLoading: false, listProduct: data));
   }
 
-  void onResetCurrentStep(AdminResetCurrentStepProductEvent event, Emitter<AdminProductState> emit) {
-    emit(state.copyWith(curentIndex: 0));
+  void onResetStateProduct(AdminResetStateProductEvent event, Emitter<AdminProductState> emit) {
+    emit(state.copyWith(
+      getLoading: false, 
+      getProductDetails: false,
+      images: <XFile>[],
+      statusCreate: 0,
+      statusUploadImages: 0,
+      curentIndex: 0,
+      dynamicTicket: <DynamicTicketWidget>[],
+      dynamicSchedule: <DynamicScheduleWidget>[],
+      product: null,
+      readProduct: null,
+      statusDeleteImage: 0,
+      listImages: <GalleryDetailsProduct>[], 
+      statusUpdate: 0, 
+      updateProduct: null
+    ));
   }
-
-  
 }

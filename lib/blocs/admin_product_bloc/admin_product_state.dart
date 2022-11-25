@@ -23,6 +23,9 @@ class AdminProductState extends Equatable {
   final CreateProduct? product; 
   final int statusCreate;
 
+  final UpdateProduct? updateProduct; 
+  final int statusUpdate;
+
   final int idCategory;
   final int idArea;
   final int curentIndex;
@@ -31,6 +34,8 @@ class AdminProductState extends Equatable {
   final List<DynamicScheduleWidget> dynamicSchedule;
 
   const AdminProductState({
+    required this.statusUpdate,
+    required this.updateProduct,
     required this.getLoading,
     required this.images,
     required this.product,
@@ -64,7 +69,9 @@ class AdminProductState extends Equatable {
       readProduct: null,
       statusDeleteImage: 0,
       listProduct: <ProductShow>[],
-      listImages: <GalleryDetailsProduct>[]
+      listImages: <GalleryDetailsProduct>[], 
+      statusUpdate: 0, 
+      updateProduct: null
     );
   }
 
@@ -83,7 +90,9 @@ class AdminProductState extends Equatable {
     bool? getProductDetails,
     int? statusDeleteImage,
     List<ProductShow>? listProduct,
-    List<GalleryDetailsProduct>? listImages
+    List<GalleryDetailsProduct>? listImages,
+    int? statusUpdate,
+    UpdateProduct? updateProduct
   }) {
     return AdminProductState(
       getLoading: getLoading ?? this.getLoading, 
@@ -100,7 +109,9 @@ class AdminProductState extends Equatable {
       getProductDetails: getProductDetails ?? this.getProductDetails,
       statusDeleteImage: statusDeleteImage ?? this.statusDeleteImage,
       listProduct: listProduct ?? this.listProduct,
-      listImages: listImages ?? this.listImages
+      listImages: listImages ?? this.listImages, 
+      statusUpdate: statusUpdate ?? this.statusUpdate, 
+      updateProduct: updateProduct ?? this.updateProduct
     );
   }
   
@@ -119,7 +130,9 @@ class AdminProductState extends Equatable {
     dynamicSchedule,
     readProduct,
     listProduct,
-    listImages
+    listImages,
+    statusUpdate,
+    updateProduct
   ];
 
 }

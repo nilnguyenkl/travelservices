@@ -39,7 +39,7 @@ class DynamicTicketWidget extends StatelessWidget {
                     ),
                     label: const Text("Value")
                   ),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                 ),
               ),
@@ -53,7 +53,7 @@ class DynamicTicketWidget extends StatelessWidget {
                     ),
                     label: const Text("Amount")
                   ),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                 ),
               ),

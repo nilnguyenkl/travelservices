@@ -41,6 +41,11 @@ class ProductRepository {
     return await api.postService(Api.url, 'admin/service', model);
   }
 
+  Future<MessageModel> putServiceForAdmin(UpdateProduct model, int idService) async {
+    return await api.updateService(Api.url, 'admin/service/', model, idService);
+  }
+
+
   Future<ProductDetails> getProductDetailsForAdmin(String endPoint) async {
     Response response;
     response = await api.getRequest(Api.url, endPoint);

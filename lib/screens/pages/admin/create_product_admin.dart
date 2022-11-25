@@ -19,6 +19,7 @@ import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/area_model.dart';
 import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/models/product_admin_model.dart';
+import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/action_product_by_admin.dart';
 import 'package:travelservices/screens/widgets/dynamic_schedule_widget.dart';
 import 'package:travelservices/screens/widgets/dynamic_ticket_widget.dart';
@@ -41,10 +42,13 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
   TextEditingController noteProductController = TextEditingController();
 
   int currentStep = 0;
+  int currentState = 0;
   bool? statusAction;
   
   List<DynamicTicketWidget> ticketsWidget = [];
+  List<int> idTickets = [];
   List<DynamicScheduleWidget> schedulessWidget = [];
+  List<int> idSchedules = [];
   List<GalleryDetailsProduct> gralleries = []; 
 
   @override
@@ -76,6 +80,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
 
           if (ticketsWidget.isNotEmpty) {
             for (int i = 0; i < ticketsWidget.length; i++) {
+              idTickets.add(args.productDetails?.ticket[i].idTicket ?? 0);
               ticketsWidget[i].typeController.text = args.productDetails?.ticket[i].typeTicket ?? "";
               ticketsWidget[i].noteController.text = args.productDetails?.ticket[i].note ?? "";
               ticketsWidget[i].amountController.text = args.productDetails?.ticket[i].amountTicket.toString() ?? "0";
@@ -92,6 +97,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
 
           if (schedulessWidget.isNotEmpty) {
             for (int i = 0; i < schedulessWidget.length; i++) {
+              idSchedules.add(args.productDetails?.schedule[i].id ?? 0);
               schedulessWidget[i].perController.text = args.productDetails?.schedule[i].quantityPerDay.toString() ?? "0";
               schedulessWidget[i].timeController.text = args.productDetails?.schedule[i].time ?? "";
             }
@@ -355,20 +361,9 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                       ),
                                     )
                                   ),
-                                  SizedBox(
-                                    child: IconButton(
-                                      onPressed: (){
-
-                                      }, 
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red
-                                      )
-                                    )
-                                  ),
                                 ],
                               ),
-                              const SizedBox(height: 2),
+                              const SizedBox(height: 20),
                               ticketsWidget[index]
                             ],
                           ),
@@ -386,35 +381,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
         state: currentStep > 2 ? StepState.complete : StepState.indexed,
         isActive: currentStep >= 2,
         title: const Text("Schedules/Picture"), 
-        content: BlocConsumer<AdminProductBloc, AdminProductState>(
-          listener: (context, state) {
-            // if (state.statusDeleteImage == 1) {
-            //   MotionToast.success(
-            //     height: 80,
-            //     width: MediaQuery.of(context).size.width*3/4,
-            //     title: const Text(
-            //       "Success",
-            //       style: TextStyle(
-            //         fontWeight: FontWeight.bold
-            //       ),
-            //     ),
-            //     description: const Text("Successful")
-            //   ).show(context);
-            // }
-            // if (state.statusDeleteImage == -1) {
-            //   MotionToast.success(
-            //     height: 80,
-            //     width: MediaQuery.of(context).size.width*3/4,
-            //     title: const Text(
-            //       "Failed",
-            //       style: TextStyle(
-            //         fontWeight: FontWeight.bold
-            //       ),
-            //     ),
-            //     description: const Text("Something was wrong")
-            //   ).show(context);
-            // }
-          },
+        content: BlocBuilder<AdminProductBloc, AdminProductState>(
           builder:(context, state) {
             return Column(
               children: [
@@ -460,7 +427,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 20),
                             state.dynamicSchedule[index]
                           ],
                         ),
@@ -486,15 +453,6 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                       fontSize: 18,
                                       fontStyle: FontStyle.italic
                                     ),
-                                  )
-                                ),
-                                SizedBox(
-                                  child: IconButton(
-                                    onPressed: (){}, 
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red
-                                    )
                                   )
                                 ),
                               ],
@@ -628,7 +586,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
           ),
           leading: IconButton(
             onPressed: (){
-              context.read<AdminProductBloc>().add(AdminResetCurrentStepProductEvent());
+              context.read<AdminProductBloc>().add(AdminResetStateProductEvent());
               Navigator.pop(context);
             },
             icon: Icon(
@@ -647,7 +605,58 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
           backgroundColor: Colors.white,
           elevation: 0,
         ),
-        body: BlocBuilder<AdminProductBloc, AdminProductState>(
+        body: BlocConsumer<AdminProductBloc, AdminProductState>(
+          listener: (context, state) {
+            if (state.statusUpdate == 1 || state.statusCreate == 1) {
+              showDialog(
+                context: context, 
+                builder: (context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: SizedBox(
+                      height: 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/success.png",
+                            height: 50,
+                            width: 50,
+                          ), 
+                          const SizedBox(height: 20),
+                          Text(
+                            state.statusCreate == 1 ? "Successfully added product" : "Changed product successfully",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontStyle: FontStyle.italic
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<AdminProductBloc>().add(AdminResetStateProductEvent());
+                              Navigator.pushNamed(context, Routes.routePageAdmin);
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                )
+                              )
+                            ), 
+                            child: const Text("OK")
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              );
+            } 
+          },
           builder:(context, state) {
             return Stepper(
               currentStep: currentStep,
@@ -691,31 +700,222 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                     }
 
                     List<GalleryProduct> galleries = [];
-                    Api api = Api();
-                    var object = await api.uploadGalleryProduct("admin/upload", state.images);
-                    if (object is Response) {
-                      galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
-                    
-                      CreateProduct product = CreateProduct(
-                        service: service, 
-                        ticket: tickets, 
-                        schedule: schedules, 
-                        galleries: galleries
-                      );
-                      bloc.add(AdminAddProductEvent(product: product));
 
+                    if (state.images.isNotEmpty) {
+                      Api api = Api();
+                      var object = await api.uploadGalleryProduct("admin/upload", state.images);
+                      if (object is Response) {
+                        galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
+                      
+                        CreateProduct product = CreateProduct(
+                          service: service, 
+                          ticket: tickets, 
+                          schedule: schedules, 
+                          galleries: galleries
+                        );
+                        bloc.add(AdminAddProductEvent(product: product));
+
+                      } else {
+                        if (!mounted) return;
+                        MotionToast.error(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width*3/4,
+                          title: const Text(
+                            "Error",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          description: const Text("Add images for failed products")
+                        ).show(context);
+                        
+                      }
                     } else {
-                      // Hinh anh khong duoc upload
+                      if (!mounted) return;
+                        MotionToast.error(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width*3/4,
+                          title: const Text(
+                            "Error",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          description: const Text("You have to add image to continue process")
+                        ).show(context);
                     }
-
                   }
 
                   if (!statusAction!) {
+
+                    InforProductUpdate service = InforProductUpdate(
+                      name: nameProductController.text, 
+                      address: addressProductController.text, 
+                      description: descriptionProductController.text, 
+                      event: eventProductController.text, 
+                      note: noteProductController.text, 
+                    );
+
                     // Update
+                    for (var widget in state.dynamicTicket) {
+                      if (widget.valueController.text.isEmpty && widget.typeController.text.isEmpty && widget.amountController.text.isEmpty && widget.noteController.text.isEmpty) {
+                        // Nos rong hoan toan
+                      } else {
+                        CreateTicket ticket = CreateTicket(
+                          valueTicket: int.parse(widget.valueController.text), 
+                          typeTicket: widget.typeController.text, 
+                          noteTicket: widget.amountController.text, 
+                          amountTicket: int.parse(widget.amountController.text), 
+                          idService: state.readProduct?.service.id ?? 0
+                        );
+                        Api.createTicket(Api.url, 'admin/ticket', ticket);
+                      }
+                    }
+                    for (var widget in state.dynamicSchedule) {
+                      if (widget.perController.text.isEmpty && widget.perController.text.isEmpty) {
+                        // No rong hoan toan
+                      } else {
+                        CreateSchedule schedule = CreateSchedule(
+                          idService: state.readProduct?.service.id ?? 0, 
+                          quantityPerDay: int.parse(widget.perController.text), 
+                          time: widget.timeController.text
+                        );
+                        Api.createSchedule(Api.url, 'admin/schedule', schedule);
+                      }
+                    }
+
+                    List<TicketForProductForUpdate> ticket = [];
+
+                    for (int i = 0; i < ticketsWidget.length; i++) {
+                      TicketForProductForUpdate temp = TicketForProductForUpdate(
+                        idTicket: idTickets[i], 
+                        valueTicket: int.parse(ticketsWidget[i].valueController.text), 
+                        typeTicket: ticketsWidget[i].typeController.text, 
+                        noteTicket: ticketsWidget[i].noteController.text, 
+                        amountTicket: int.parse(ticketsWidget[i].amountController.text)
+                      );
+                      ticket.add(temp);
+                    }
+
+                    List<ScheduleProductForUpdate> schedule = [];
+                    for (int i = 0; i < schedulessWidget.length; i++) {
+                      ScheduleProductForUpdate temp = ScheduleProductForUpdate(
+                        id: idSchedules[i], 
+                        time: schedulessWidget[i].timeController.text, 
+                        quantityPerDay: int.parse(schedulessWidget[i].perController.text)
+                      );
+                      schedule.add(temp);
+                    }
+                    List<GalleryProduct> galleries = [];
+                    if (state.images.isNotEmpty) {
+                      Api api = Api();
+                      var object = await api.uploadGalleryProduct("admin/upload", state.images);
+                      if (object is Response) {
+                        galleries = (object.data as List).map((e) => GalleryProduct.fromJson(e)).toList();
+                        UpdateProduct updateProduct = UpdateProduct(
+                          service: service, 
+                          ticket: ticket, 
+                          schedule: schedule, 
+                          galleries: galleries
+                        );
+                        bloc.add(AdminUpdateProductEvent(product: updateProduct, idService: state.readProduct?.service.id ?? 0));
+                      } else {
+                        if (!mounted) return;
+                        MotionToast.error(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width*3/4,
+                          title: const Text(
+                            "Error",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          description: const Text("Add images for failed products")
+                        ).show(context);
+                      }
+                    } else {
+                      if (!mounted) return;
+                      MotionToast.error(
+                        height: 80,
+                        width: MediaQuery.of(context).size.width*3/4,
+                        title: const Text(
+                          "Error",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        description: const Text("You have to add image to continue process")
+                      ).show(context);
+                    }
                   }
                 } else {
-                  currentStep = state.curentIndex + 1;
-                  bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));
+
+                  if (!statusAction!) {
+                    currentStep = state.curentIndex + 1;
+                    bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));
+                  } else {
+                    if (currentStep == 0) {
+                      if (state.idArea == 0 || state.idCategory == 0) {
+                        MotionToast.error(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width*3/4,
+                          title: const Text(
+                            "Error",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          description: const Text("Category or area not yet selected")
+                        ).show(context);
+                      } else {
+                        currentStep = state.curentIndex + 1;
+                        bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));
+                      }
+                    }
+                    if (currentStep == 1) {
+                      if (currentState != 0) {
+                        if (state.dynamicTicket.isEmpty) {
+                          MotionToast.error(
+                            height: 80,
+                            width: MediaQuery.of(context).size.width*3/4,
+                            title: const Text(
+                              "Error",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            description: const Text("Tickets are empty")
+                          ).show(context);
+                        } else {
+                          bool errorTicket = false;
+
+                          for (var widget in state.dynamicTicket) {
+                            if (widget.amountController.text.isEmpty || widget.valueController.text.isEmpty || widget.typeController.text.isEmpty) {
+                              errorTicket = true;
+                            }
+                          }
+                          if (!errorTicket) {
+                            currentStep = state.curentIndex + 1;
+                            bloc.add(AdminCurrentIndexProductEvent(currentIndex: currentStep));
+                          } else {
+                            MotionToast.error(
+                              height: 80,
+                              width: MediaQuery.of(context).size.width*3/4,
+                              title: const Text(
+                                "Error",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              description: const Text("Type, amount, value ticket are required")
+                            ).show(context);
+                          }
+                        }
+                      } else {
+                        currentState = 1;
+                      }
+                    }
+                  }
                 }     
               },
               onStepCancel: () {

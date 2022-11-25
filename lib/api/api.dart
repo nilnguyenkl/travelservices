@@ -420,6 +420,79 @@ class Api {
     }
   }
 
+  static Future<ScheduleDetails> createSchedule(String url, String endpoint, CreateSchedule model) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      response = await Dio().post(
+        url + endpoint,
+        data: model.toJson(),
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return ScheduleDetails.fromJson(response.data);
+    } on DioError catch (e) {
+      return ScheduleDetails(
+        id: 0, 
+        quantityPerDay: 0, 
+        time: ''
+      );
+    }
+  }
+
+  static Future<TicketProductDetails> createTicket(String url, String endpoint, CreateTicket model) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      response = await Dio().post(
+        url + endpoint,
+        data: model.toJson(),
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return TicketProductDetails.fromJson(response.data);
+    } on DioError catch (e) {
+      return TicketProductDetails(
+        amountTicket: 0, 
+        idTicket: 0, 
+        note: '', 
+        typeTicket: '', 
+        valueTicket: 0
+      );
+    }
+  }
+
+
+  
+
+  Future<MessageModel> updateService(String url, String endpoint, UpdateProduct model, int idService) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      response = await Dio().put(
+        url + endpoint + idService.toString(),
+        data: model.toJson(),
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return MessageModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return MessageModel(message: '');
+    }
+  }
+
   
   
 }

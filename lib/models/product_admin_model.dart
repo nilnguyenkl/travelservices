@@ -19,6 +19,144 @@ class CreateProduct {
   };
 }
 
+class UpdateProduct {
+  final InforProductUpdate service;
+  final List<TicketForProductForUpdate> ticket;
+  final List<ScheduleProductForUpdate> schedule;
+  final List<GalleryProduct> galleries;
+
+  UpdateProduct({
+    required this.service,
+    required this.ticket,
+    required this.schedule,
+    required this.galleries,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "service": service.toJson(),
+    "ticket": List<dynamic>.from(ticket.map((x) => x.toJson())),
+    "schedule": List<dynamic>.from(schedule.map((x) => x.toJson())),
+    "galleries": List<dynamic>.from(galleries.map((x) => x.toJson())),
+  };
+}
+
+class InforProductUpdate {
+  
+  final String name;
+  final String address;
+  final String description;
+  final String event;
+  final String note;
+
+  InforProductUpdate({
+    required this.name,
+    required this.address,
+    required this.description,
+    required this.event,
+    required this.note,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "address": address,
+    "description": description,
+    "event": event,
+    "note": note,
+  };
+}
+
+class TicketForProductForUpdate {
+  
+  final int idTicket;
+  final int valueTicket;
+  final String typeTicket;
+  final String noteTicket;
+  final int amountTicket;
+  
+  TicketForProductForUpdate({
+    required this.idTicket,
+    required this.valueTicket,
+    required this.typeTicket,
+    required this.noteTicket,
+    required this.amountTicket,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "idTicket": idTicket,
+    "valueTicket": valueTicket,
+    "typeTicket": typeTicket,
+    "noteTicket": noteTicket,
+    "amountTicket": amountTicket,
+  };
+}
+
+class CreateTicket {
+  
+  final int idService;
+  final int valueTicket;
+  final String typeTicket;
+  final String noteTicket;
+  final int amountTicket;
+  
+  CreateTicket({
+    required this.idService,
+    required this.valueTicket,
+    required this.typeTicket,
+    required this.noteTicket,
+    required this.amountTicket,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "idService": idService,
+    "valueTicket": valueTicket,
+    "typeTicket": typeTicket,
+    "noteTicket": noteTicket,
+    "amountTicket": amountTicket,
+  };
+}
+
+class ScheduleProductForUpdate {
+  final int id;
+  final String time;
+  final int quantityPerDay;
+
+  ScheduleProductForUpdate({
+    required this.id,
+    required this.time,
+    required this.quantityPerDay,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "time": time,
+    "quantityPerDay": quantityPerDay,
+  };
+
+}
+
+class CreateSchedule {
+  final int idService;
+  final String time;
+  final int quantityPerDay;
+
+  CreateSchedule({
+    required this.idService,
+    required this.time,
+    required this.quantityPerDay,
+  });
+
+  Map<String, dynamic> toJson() => {
+    "idService": idService,
+    "time": time,
+    "quantityPerDay": quantityPerDay,
+  };
+
+}
+
+
+
+
+
 
 class ProductShow {
   final ProductForAdmin service;
@@ -241,6 +379,7 @@ class ScheduleProductForAdd {
   };
 
 }
+
 
 class InforProduct {
   

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DynamicScheduleWidget extends StatefulWidget {
   
@@ -35,12 +36,14 @@ class _DynamicScheduleWidgetState extends State<DynamicScheduleWidget> {
                   if (newTime == null) {
                     return;
                   }
-                  widget.timeController.text = newTime.hour.toString();
+                  NumberFormat formatter = NumberFormat("00");
+                  widget.timeController.text = "${formatter.format(newTime.hour)}:${formatter.format(newTime.minute)}";
                 }, 
                 icon: const Icon(Icons.schedule)
               )
             ),
             textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.datetime,
           ),
           const SizedBox(height: 25),
           TextFormField(
@@ -54,6 +57,7 @@ class _DynamicScheduleWidgetState extends State<DynamicScheduleWidget> {
               ),
             ),
             textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.number,
           ),
         ],
       ),

@@ -14,6 +14,15 @@ class AdminAddProductEvent extends AdminProductEvent {
   });  
 }
 
+class AdminUpdateProductEvent extends AdminProductEvent {
+  final UpdateProduct product;
+  final int idService;
+  AdminUpdateProductEvent({
+    required this.product,
+    required this.idService
+  });  
+}
+
 class AdminProductDetailsEvent extends AdminProductEvent {
   final int idService;
   AdminProductDetailsEvent({
@@ -88,6 +97,6 @@ class AdminDeleteImageProductEvent extends AdminProductEvent {
   });
 }
 
-class AdminResetCurrentStepProductEvent extends AdminProductEvent {
-  AdminResetCurrentStepProductEvent();
+class AdminResetStateProductEvent extends AdminProductEvent {
+  AdminResetStateProductEvent();
 }
