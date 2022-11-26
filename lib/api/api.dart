@@ -493,6 +493,43 @@ class Api {
     }
   }
 
+  Future<MessageModel> updateStatusOrderItem(String url, endPoint) async {
+    Response response;
+    try {
+      response = await Dio().put(
+        url + endPoint,
+      );
+      return MessageModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return MessageModel(message: '');
+    }
+  }
+
+  Future<MessageModel> postReview(String url, endPoint, int idService, String content, String point) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      FormData formData = FormData.fromMap({
+        "idService" : idService,
+        "content" : content,
+        "point" : point
+      }); 
+      response = await Dio().post(
+        url + endPoint,
+        data: formData,
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return MessageModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return MessageModel(message: '');
+    }
+  }
+
   
   
 }

@@ -307,6 +307,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           gender: state.user?.infor.sex ?? ""
                                         ));
                                       }),
+                                      dataSnapshot.roles[0] == "USER" ? menuProfile("Reviews", Icons.reviews, () {
+                                        Navigator.pushNamed(context, Routes.reviewsPage);
+                                      }) : const SizedBox.shrink(),
                                       menuProfile("Change Password", Icons.key, (){
                                         Navigator.pushNamed(context, Routes.changepasswordPage);
                                       }),
@@ -343,7 +346,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget menuProfile(String text, IconData icon, GestureTapCallback onPressed) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: TextButton(
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(

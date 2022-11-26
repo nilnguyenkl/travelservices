@@ -41,6 +41,7 @@ import 'package:travelservices/screens/pages/order_details.dart';
 import 'package:travelservices/screens/pages/product_by_status.dart';
 import 'package:travelservices/screens/pages/product_details.dart';
 import 'package:travelservices/screens/pages/reviews_details_page.dart';
+import 'package:travelservices/screens/pages/reviews_page.dart';
 import 'package:travelservices/screens/pages/route_page.dart';
 import 'package:travelservices/screens/pages/signup_page.dart';
 import 'package:travelservices/screens/pages/verify_phone_page.dart';
@@ -136,7 +137,8 @@ class MyApp extends StatelessWidget {
             Routes.createProductAdmin: (context) => const CreateProductAdmin(),
             Routes.aboutAppPage: (context) => const AboutAppPage(),
             Routes.productByStatus: (context) => const ProductByStatus() ,
-            Routes.optionPage: (context) => const OptionPage()
+            Routes.optionPage: (context) => const OptionPage(),
+            Routes.reviewsPage: (context) => const ReviewsPage()
           },
           debugShowCheckedModeBanner: false,
           home: FutureBuilder(

@@ -1,3 +1,5 @@
+import 'package:travelservices/screens/pages/reviews_page.dart';
+
 class Routes{
   static const routesPage = '/routePage';
   static const verifyPhone = '/verifyPhone';
@@ -15,7 +17,7 @@ class Routes{
   static const productByStatus = '/productStatus';
 
   static const optionPage = '/optionPage';
-
+  static const reviewsPage = '/reviewsPage';
 
 
 
