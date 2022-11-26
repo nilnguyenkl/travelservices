@@ -22,3 +22,28 @@ class AreaData {
     "url": url,
   };
 }
+
+class AreaFavorite {
+    
+  final int idArea;
+  final String? nameArea;
+  final String? url;
+  
+  AreaFavorite({
+    required this.idArea,
+    required this.nameArea,
+    required this.url,
+  });
+
+  factory AreaFavorite.fromJson(Map<String, dynamic> json) => AreaFavorite(
+    idArea: json["idArea"],
+    nameArea: json["nameArea"],
+    url: json["url"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "idArea": idArea,
+    "nameArea": nameArea,
+    "url": url,
+  };
+}

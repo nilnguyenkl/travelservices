@@ -203,19 +203,29 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 8),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: Colors.blue.shade600,
-                                    ),
-                                    const Text(
-                                      'Cần Thơ - Việt Nam',
-                                      style: TextStyle(
-                                        fontSize: 16
+                                child: IntrinsicHeight(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: Colors.blue.shade600,
                                       ),
-                                    )
-                                  ],
+                                      Text(
+                                        state.productDetails?.area ?? "Viet Nam",
+                                        style: const TextStyle(
+                                          fontSize: 16
+                                        ),
+                                      )
+                                      // Text(
+                                      //   "sdsadas",
+                                      //   style: const TextStyle(
+                                      //     fontSize: 16
+                                      //   ),
+                                      //   maxLines: 1,
+                                      //   overflow: TextOverflow.ellipsis,
+                                      // )
+                                    ],
+                                  ),
                                 ),
                               ),
                               Padding(

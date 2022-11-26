@@ -5,6 +5,8 @@ class ProductDetailsModel {
   final String? usernameAuth;
   String? name;
   String? address;
+  String area;
+  String category;
   String? description;
   String? event;
   String? note;
@@ -23,12 +25,16 @@ class ProductDetailsModel {
     this.note = '',
     required this.minPrice,
     required this.reviews,
-    required this.galleries
+    required this.galleries,
+    required this.area,
+    required this.category
   });
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) => ProductDetailsModel(
     id: json["id"],
     createByAuthId: json["createByAuthId"],
+    area: json["area"],
+    category: json["category"],
     usernameAuth: json["usernameAuth"],
     name: json["name"],
     address: json["address"],
@@ -50,6 +56,8 @@ class ProductDetailsModel {
     "event": event,
     "note": note,
     "minPrice": minPrice,
+    "area": area,
+    "category": category,
     "reviews": List<dynamic>.from(reviews.map((x) => x.toJson())),
     "galleries": List<dynamic>.from(galleries.map((x) => x.toJson())),
   };

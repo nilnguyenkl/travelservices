@@ -7,6 +7,7 @@ class ProductData {
   final String? name;
   final String address;
   final String? description;
+  final double? point;
   final String? image;
   final CategoryDataP category;
   final AreaDataP area;
@@ -23,6 +24,7 @@ class ProductData {
     this.description,
     this.image,
     required this.address,
+    required this.point,
     required this.category,
     required this.area,
     required this.ticket,
@@ -36,6 +38,7 @@ class ProductData {
     factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
       id: json["id"],
       name: json["name"],
+      point: json["point"],
       address: json["address"],
       description: json["description"],
       image: json["image"],
@@ -61,6 +64,7 @@ class ProductData {
       "schedule": List<dynamic>.from(schedule.map((x) => x.toJson())),
       "reviews": reviews,
       "orders": orders,
+      "point": point,
       "createDate": createDate.toIso8601String(),
       "modifiedDate": modifiedDate.toIso8601String(),
     };

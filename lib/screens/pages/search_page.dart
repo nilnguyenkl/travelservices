@@ -549,7 +549,7 @@ class _SearchPageState extends State<SearchPage> {
                                   Container(
                                     padding: const EdgeInsets.only(left: 2),
                                     child: Text(
-                                      "4.5 (${data[index].reviews}) | ${data[index].orders} đã đặt",
+                                      "${data[index].point} (${data[index].reviews}) | ${data[index].orders} đã đặt",
                                       style: const TextStyle(
                                         fontSize: 14
                                       ),

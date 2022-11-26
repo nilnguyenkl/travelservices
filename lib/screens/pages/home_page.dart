@@ -1,11 +1,16 @@
 import 'package:badges/badges.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travelservices/api/api.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
 import 'package:travelservices/blocs/category_bloc/category_state.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
+import 'package:travelservices/blocs/favorite_bloc/favorite_state.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_event.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_state.dart';
@@ -13,7 +18,9 @@ import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
 import 'package:travelservices/blocs/search_bloc/search_event.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/models/area_model.dart';
 import 'package:travelservices/models/category_model.dart';
+import 'package:travelservices/models/product_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/current_user_arguments.dart';
 import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
@@ -108,6 +115,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             actions: [
+              IconButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, Routes.chatPage, arguments: CurrentArguments(id: idAuth));
+                }, 
+                icon: Icon(
+                  Icons.sms_outlined,
+                  color: Colors.blue.shade600,
+                )
+              ),
               BlocBuilder<CartBloc, CartState>(
                 builder:(context, state) {
                   return Badge(
@@ -125,22 +141,6 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              IconButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, Routes.chatPage, arguments: CurrentArguments(id: idAuth));
-                }, 
-                icon: Icon(
-                  Icons.sms_outlined,
-                  color: Colors.blue.shade600,
-                )
-              ),
-              IconButton(
-                onPressed: (){}, 
-                icon: Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.blue.shade600,
-                )
-              )
             ],
           ),
           SliverToBoxAdapter(
@@ -148,12 +148,13 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   categoriesOption(),
-                  // title("Các thành được yêu thích"),
-                  // areaFavorite(context),
-                  // title("Top 10 trải nghiệm hot nhất"),
-                  // serviceTravelHot(context)
+                  title("Top 5 favorite area"),
+                  areaFavorite(context),
+                  title("Top 20 hottest experiences"),
+                  serviceTravelHot(context)
                 ],
               ),
             ),
@@ -265,43 +266,53 @@ class _HomePageState extends State<HomePage> {
       physics: const BouncingScrollPhysics(),
       clipBehavior: Clip.none,
       scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(10, (index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Card(
-              color: Colors.black,
-              semanticContainer: true,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Container(
-                height: MediaQuery.of(context).size.width*0.4,
-                width: MediaQuery.of(context).size.width/3.2,
-                alignment: Alignment.bottomLeft,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/ct.jpg"),
-                    fit: BoxFit.fitHeight,
-                    alignment: Alignment.topCenter,
-                  ),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "Can Tho",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18
+      child: FutureBuilder(
+        future: getAreaFavorite(),
+        builder:(context, snapshot) {
+          if (snapshot.hasData) {
+            var data = snapshot.data as List<AreaFavorite>;
+            return Row(
+              children: List.generate(data.length, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Card(
+                    color: Colors.black,
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.width*0.4,
+                      width: MediaQuery.of(context).size.width/3.2,
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(data[index].url ?? areaImgDefault),
+                          fit: BoxFit.fitHeight,
+                          alignment: Alignment.topCenter,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          data[index].nameArea ?? "",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18
+                          ),
+                        ),
+                      )
+                    )
                   ),
-                )
-              )
-            ),
-          );
-        })
-      ),
+                );
+              })
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      )
     );
   }
 
@@ -324,101 +335,154 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget serviceTravelHot(BuildContext context){
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      clipBehavior: Clip.none,
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(10, (index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Card(
-              elevation: 0,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.width*0.6,
-                width: MediaQuery.of(context).size.width/2.3,
+    return SizedBox(
+      child: FutureBuilder(
+          future: getServiceHot(),
+          builder:(context, snapshot) {
+            if (snapshot.hasData) {
+              var data = snapshot.data as List<ProductData>;
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 130,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            image: const DecorationImage(
-                              image: AssetImage("assets/images/test.jpg")
-                            )
-                          ),
-                        ),
-                        Positioned(
-                          top: 5,
-                          right: 3,
-                          child: IconButton(
-                            onPressed: (){},
-                            icon: Icon(
-                              Icons.favorite_outline,
-                              color: Colors.blue.shade600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(minHeight: 65),
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.only(top: 7, bottom: 7),
-                            child: const Text(
-                              "Vé ăn tối thuyền Nữ Hoàng Đông Dương | Hồ Chí Minh | Quận Gò Vấp",
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: nameTextDescriptSize),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 5),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                color: Colors.blue.shade600,
-                                size: 18,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(left: 2),
-                                child: const Text(
-                                  "4.5 (512)",
-                                  style: TextStyle(
-                                    fontSize: 14
-                                  ),
+                  children: List.generate(data.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].id));     
+                        },
+                        child: Card(
+                          color: Colors.transparent,
+                          elevation: 0,
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.width*2/2.5,
+                            child: Column(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      height: 230,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        image: DecorationImage(
+                                          image: NetworkImage(data[index].image ?? productImgDefault),
+                                          fit: BoxFit.fitWidth,
+                                          opacity: 0.9
+                                        )
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 5,
+                                      left: 5,
+                                      right: 5,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          BlocBuilder<FavoriteBloc, FavoriteState>(
+                                            buildWhen: (previous, current) {
+                                              return previous.statusAdd != current.statusAdd || previous.statusDelete != current.statusDelete;
+                                            },
+                                            builder:(context, state) {
+                                              var contain = state.favorites.where((element) => element.idService == data[index].id);
+                                              return IconButton(
+                                                onPressed: (){
+                                                  if (contain.isEmpty) {
+                                                    context.read<FavoriteBloc>().add(FavoriteAddEvent(idProduct: data[index].id));
+                                                  } else {
+                                                    context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: data[index].id));
+                                                  }
+                                                },
+                                                icon: Icon(
+                                                  contain.isEmpty ? Icons.favorite_outline : Icons.favorite,
+                                                  color: Colors.blue.shade600,
+                                                  size: 30,
+                                                ),
+                                              );
+                                            }
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            "1.420.000 VND",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: titleTextSize
+                                Column(
+                                  children: [
+                                    ConstrainedBox(
+                                      constraints: const BoxConstraints(minHeight: 60),
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        padding: const EdgeInsets.only(top: 5, bottom: 5),
+                                        child: Text(
+                                          data[index].name ?? productNameDefault,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: titleTextSize),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.star,
+                                            color: Colors.blue.shade600,
+                                            size: 18,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.only(left: 2),
+                                            child: Text(
+                                              "${data[index].point} (${data[index].reviews}) | ${data[index].orders} đã đặt",
+                                              style: const TextStyle(
+                                                fontSize: 14
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "${data[index].ticket.first.value.toString()} VND",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: titleTextSize
+                                        ),
+                                      ),
+                                    )           
+                                  ],
+                                )
+                              ],
                             ),
                           ),
-                        )           
-                      ],
-                    )
-                  ],
+                        ),
+                      )
+                    );
+                  })
                 ),
-              ),
-            ),
-          );
-        }) 
-      ),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          }, 
+        )
     );
+  }
+
+  Future<List<AreaFavorite>> getAreaFavorite() async {
+    Api api = Api();
+    Response response;
+    response = await api.getRequest(Api.url, "public/favoriteArea");
+    return (response.data as List).map((e) => AreaFavorite.fromJson(e)).toList();
+  }
+
+  Future<List<ProductData>> getServiceHot() async {
+    Api api = Api();
+    Response response;
+    response = await api.getRequest(Api.url, "public/favoriteService");
+    return (response.data as List).map((e) => ProductData.fromJson(e)).toList();
   }
 }
