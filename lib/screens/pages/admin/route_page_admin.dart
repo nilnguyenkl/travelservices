@@ -55,8 +55,8 @@ class _RoutePageAdminState extends State<RoutePageAdmin> {
           gap: 8,
           tabs: const [
             GButton(
-              icon: Icons.manage_accounts,
-              text: 'Manage',
+              icon: Icons.home,
+              text: 'Home',
             ),
             GButton(
               icon: Icons.chat,

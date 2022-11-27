@@ -201,7 +201,7 @@ class ProductForAdmin {
     idService: json["idService"],
     name: json["name"],
     description: json["description"],
-    event: json["event"],
+    event: json["event"] ?? "",
     area: json["area"],
     category: json["category"],
   );

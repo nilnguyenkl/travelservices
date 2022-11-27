@@ -122,7 +122,7 @@ class _ProductByStatusState extends State<ProductByStatus> {
                                                   );
                                                 },
                                                 child: Text(
-                                                  "Order Information",
+                                                  "Tickets",
                                                   style: TextStyle(
                                                     fontStyle: FontStyle.italic,
                                                     color: Colors.blue.shade600

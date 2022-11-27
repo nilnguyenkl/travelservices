@@ -189,6 +189,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       child: SizedBox(
                         child: SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
@@ -233,7 +234,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 child: Row(
                                   children: [
                                     const Text(
-                                      'Chỉ từ',
+                                      'From ',
                                       style: TextStyle(
                                         fontSize: 16
                                       ),
@@ -298,7 +299,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                             ),
                                             const SizedBox(width: 10),
                                             const Text(
-                                              "Mô tả",
+                                              "Introduce",
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold

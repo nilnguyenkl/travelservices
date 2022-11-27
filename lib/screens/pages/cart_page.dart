@@ -193,7 +193,6 @@ class _CartPageState extends State<CartPage> {
                                             child: Divider(thickness: 1),
                                           ),
                                           SizedBox(
-                                            height: 120,
                                             child: Row(
                                               children: [
                                                 Expanded(

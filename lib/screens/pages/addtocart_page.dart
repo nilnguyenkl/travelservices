@@ -111,7 +111,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
             padding: const EdgeInsets.only(left: 50),
             width: double.infinity,
             child: const Text(
-              "Chọn ngày",
+              "Select",
               style: TextStyle(
                 color: Colors.black
               ),
@@ -123,7 +123,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
               child: TextButton(
                 onPressed: (){}, 
                 child: Text(
-                  'Chọn lại',
+                  'Reselect',
                   style: TextStyle(
                     color: Colors.blue.shade600,
                     fontSize: 17
@@ -324,7 +324,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                                       const SizedBox(
                                         width: double.infinity,
                                         child: Text(
-                                          "Khung gio",
+                                          "Time: ",
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold
@@ -438,81 +438,90 @@ class _AddToCartPageState extends State<AddToCartPage> {
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      data.tickets[index].typeTicket,
-                                                      style: const TextStyle(
-                                                        fontSize: 20,
-                                                        color: Colors.black
-                                                      ),
+                                                Expanded(
+                                                  flex: 5,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(right: 10),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          data.tickets[index].typeTicket,
+                                                          style: const TextStyle(
+                                                            fontSize: 20,
+                                                            color: Colors.black
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5),
+                                                        Text(
+                                                          "${data.tickets[index].valueTicket} VND",
+                                                          style: const TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.black
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 5),
+                                                        Text(
+                                                          data.tickets[index].note ?? "",
+                                                          style: const TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        )
+                                                      ],
                                                     ),
-                                                    const SizedBox(height: 5),
-                                                    Text(
-                                                      "${data.tickets[index].valueTicket} VND",
-                                                      style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.black
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 5),
-                                                    Text(
-                                                      data.tickets[index].note ?? "",
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                      ),
-                                                    )
-                                                  ],
+                                                  ),
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      color: Colors.blue.shade600,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          bloc.add(InforOrderValueTicketEvent(
-                                                            index: index, 
-                                                            status: false,
-                                                          ));
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.remove,
-                                                          color: Colors.white,
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 30,
+                                                        width: 30,
+                                                        color: Colors.blue.shade600,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            bloc.add(InforOrderValueTicketEvent(
+                                                              index: index, 
+                                                              status: false,
+                                                            ));
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.remove,
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Container(
-                                                      width: 50,
-                                                      alignment: Alignment.center,
-                                                      child: Text(
-                                                        state.counts[index].toString(),
-                                                        style: const TextStyle(
-                                                          fontSize: 18
+                                                      Container(
+                                                        width: 50,
+                                                        alignment: Alignment.center,
+                                                        child: Text(
+                                                          state.counts[index].toString(),
+                                                          style: const TextStyle(
+                                                            fontSize: 18
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Container(
-                                                      height: 30,
-                                                      width: 30,
-                                                      color: Colors.blue.shade600,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          bloc.add(InforOrderValueTicketEvent(
-                                                            index: index, 
-                                                            status: true,
-                                                          ));
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.add,
-                                                          color: Colors.white,
+                                                      Container(
+                                                        height: 30,
+                                                        width: 30,
+                                                        color: Colors.blue.shade600,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            bloc.add(InforOrderValueTicketEvent(
+                                                              index: index, 
+                                                              status: true,
+                                                            ));
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             ),
