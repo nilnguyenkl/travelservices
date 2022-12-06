@@ -52,35 +52,16 @@ class _CartPageState extends State<CartPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          actions: [
-            BlocBuilder<NavbarBloc, NavbarState> (
-              builder:(context, state) {
-                return TextButton(
-                  onPressed: (){
-                    context.read<NavbarBloc>().add(NavbarSearchStatusEvent());
-                    context.read<NavbarBloc>().add(NavbarSearchPageEvent());
-                    Navigator.pushNamed(context, Routes.routesPage);
-                  }, 
-                  child: const Text(
-                    "Continue to buy",
-                    style: TextStyle(
-                      fontSize: 18
-                    ),
-                  )
-                ); 
-              },
-            )
-          ],
           leading: IconButton(
             onPressed: (){
               if (args.way) {
                 Navigator.pop(context);
               } else {
-                Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(args.idService ?? 0));
+                Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(args.idService ?? 0, false));
               }
             },
             icon: Icon(
-              Icons.close,
+              Icons.arrow_back,
               color: Colors.blue.shade600,
             ),
           ),
@@ -330,7 +311,7 @@ class _CartPageState extends State<CartPage> {
                                       ),
                                       const SizedBox(width: 10),
                                       const Text(
-                                        "Thông tin khách hàng",
+                                        "Customer information",
                                         style: TextStyle(
                                           fontSize: 20
                                         ),
@@ -339,7 +320,7 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   const Divider(thickness: 1),
                                   const Text(
-                                    "Tên",
+                                    "Full name",
                                     style: TextStyle(
                                       fontSize: 18
                                     ),  
@@ -348,7 +329,7 @@ class _CartPageState extends State<CartPage> {
                                     controller: nameController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Tên người đặt hàng"
+                                      hintText: "Full name of person booking tourism service"
                                     ),
                                   ),
                                   const Divider(thickness: 1),
@@ -362,12 +343,12 @@ class _CartPageState extends State<CartPage> {
                                     controller: emailController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Email người đặt hàng"
+                                      hintText: "Email of person booking tourism service"
                                     ),
                                   ),
                                   const Divider(thickness: 1),
                                   const Text(
-                                    "Số điện thoại",
+                                    "Phone number",
                                     style: TextStyle(
                                       fontSize: 18
                                     ),  
@@ -377,7 +358,7 @@ class _CartPageState extends State<CartPage> {
                                     controller: phoneController,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Số điện thoại người đặt hàng"
+                                      hintText: "Phone number of person booking tourism service"
                                     ),
                                   ),
                                 ],
@@ -407,7 +388,61 @@ class _CartPageState extends State<CartPage> {
                       ],
                       color: Colors.white,
                     ),
-                    child: BlocBuilder<OrderBloc, OrderState>(
+                    child: BlocConsumer<OrderBloc, OrderState>(
+                      listener: (context, state) {
+                        if (state.statusOrder == 1 || state.statusOrder == -1) {
+                          showDialog(
+                            context: context, 
+                            builder: (context) {
+                              return Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)
+                                ),
+                                child: SizedBox(
+                                  height: 200,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        state.statusOrder == 1 ? "assets/images/success.png" : "assets/images/failed.png",
+                                        height: 50,
+                                        width: 50,
+                                      ), 
+                                      const SizedBox(height: 20),
+                                      Text(
+                                        state.statusOrder == 1 ? "Booking tourism services were success" : "Booking tourism services were failed",
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontStyle: FontStyle.italic
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          if (args.way) {
+                                            Navigator.pop(context);
+                                          } else {
+                                            Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(args.idService ?? 0, false));
+                                          }
+                                        },
+                                        style: ButtonStyle(
+                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(18.0),
+                                            )
+                                          )
+                                        ), 
+                                        child: const Text("OK")
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          );
+                        }
+                      },
                       builder:(context, stateO) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -462,7 +497,7 @@ class _CartPageState extends State<CartPage> {
                                 width: 100,
                                 child: Center(
                                   child: Text(
-                                    "Order ${state.itemsChoose.where((element) => element == true).isEmpty ? "" : "(${state.itemsChoose.where((element) => element == true).length})"}",
+                                    "Booking ${state.itemsChoose.where((element) => element == true).isEmpty ? "" : "(${state.itemsChoose.where((element) => element == true).length})"}",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16

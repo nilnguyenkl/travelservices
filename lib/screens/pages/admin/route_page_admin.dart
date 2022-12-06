@@ -64,7 +64,7 @@ class _RoutePageAdminState extends State<RoutePageAdmin> {
             ),
             GButton(
               icon: Icons.list_alt,
-              text: 'Order',
+              text: 'Booked',
             ),
             GButton(
               icon: Icons.person,

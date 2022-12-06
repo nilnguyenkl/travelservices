@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/models/product_by_status_model.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/idarguments.dart';
 import 'package:travelservices/screens/arguments/status_order_arguments.dart';
 import 'package:travelservices/screens/widgets/loading_widget.dart';
 
@@ -36,7 +38,7 @@ class _ProductByStatusState extends State<ProductByStatus> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "Orders",
+            "Booked",
             style: TextStyle(
               color: Colors.black
             ),
@@ -114,9 +116,110 @@ class _ProductByStatusState extends State<ProductByStatus> {
                                                   showDialog(
                                                     context: context, 
                                                     builder: (context) {
-                                                      return Container(
-                                                        height: 100,
-                                                        width: 100,
+                                                      return Dialog(
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(15)
+                                                        ),
+                                                        child: ConstrainedBox(
+                                                          constraints: const BoxConstraints(
+                                                            minHeight: 200,
+                                                            maxHeight: 500,
+                                                          ),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Image.asset(
+                                                                    "assets/images/tickets.png",
+                                                                    height: 50,
+                                                                    width: 50,
+                                                                  ),
+                                                                  const SizedBox(width: 15),
+                                                                  const Text(
+                                                                    "Ticket Details",
+                                                                    style: TextStyle(
+                                                                      fontSize: 20,
+                                                                      fontWeight: FontWeight.bold
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              const SizedBox(height: 20),
+                                                              Column(
+                                                                children: List.generate(data[index].tickets.length, (i) {
+                                                                  return SizedBox(
+                                                                    child: Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Container(
+                                                                          width: double.infinity,
+                                                                          alignment: Alignment.center,
+                                                                          margin: const EdgeInsets.only(top: 10, bottom: 10),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                          child: Text(
+                                                                            "Ticket ${i + 1}",
+                                                                            style: const TextStyle(
+                                                                              fontSize: 16,
+                                                                              fontStyle: FontStyle.italic,
+                                                                              fontWeight: FontWeight.bold
+                                                                            ),
+                                                                          )
+                                                                        ),
+                                                                        Container(
+                                                                          margin: const EdgeInsets.only(top: 5),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                          child: Text(
+                                                                            "Type: ${data[index].tickets[i].typeTicket}",
+                                                                            style: const TextStyle(
+                                                                              fontSize: 16,
+                                                                              fontStyle: FontStyle.italic
+                                                                            ),
+                                                                          )
+                                                                        ),
+                                                                        Container(
+                                                                          margin: const EdgeInsets.only(top: 5),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                          child: Text(
+                                                                            "Value: ${data[index].tickets[i].valueTicket} VND",
+                                                                            style: const TextStyle(
+                                                                              fontSize: 16,
+                                                                              fontStyle: FontStyle.italic
+                                                                            ),
+                                                                          )
+                                                                        ),
+                                                                        Container(
+                                                                          margin: const EdgeInsets.only(top: 5),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                          child: Text(
+                                                                            "Amount: ${data[index].tickets[i].amountTicket}",
+                                                                            style: const TextStyle(
+                                                                              fontSize: 16,
+                                                                              fontStyle: FontStyle.italic
+                                                                            ),
+                                                                          )
+                                                                        ),
+                                                                        Container(
+                                                                          margin: const EdgeInsets.only(top: 5),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                          child: Text(
+                                                                            "Note: ${data[index].tickets[i].note}",
+                                                                            style: const TextStyle(
+                                                                              fontSize: 16,
+                                                                              fontStyle: FontStyle.italic
+                                                                            ),
+                                                                          )
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  );
+                                                                }),
+                                                              ) 
+                                                            ],
+                                                          ),
+                                                        ),
                                                       );
                                                     }
                                                   );
@@ -132,7 +235,7 @@ class _ProductByStatusState extends State<ProductByStatus> {
                                               const SizedBox(width: 7),
                                               InkWell(
                                                 onTap: (){
-
+                                                  Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].idService, true)); 
                                                 },
                                                 child: Text(
                                                   "Product Details",

@@ -25,13 +25,13 @@ class ValidateForm {
   }
 
   static String? isValidEmail(String? email) {
-    // final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    // final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (email!.isNotEmpty) {
       if (emailRegExp.hasMatch(email)) {
-        return "Please enter the correct format of an email";
-      } else {
         return null;
+      } else {
+        return "Please enter the correct format of an email";
       }
     } else {
       return null;
@@ -39,12 +39,23 @@ class ValidateForm {
   }
 
   static String? isValidPhone(String? phone) {
-    // RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$')
+    // RegExp regExp = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+    // RegExp regExp = RegExp("^0[0-9]{9}");
     if (phone!.isNotEmpty) {
       if (phone.length < 10) {
         return "Phone number must be 10 characters";
       } else {
-        return null;
+        if (phone.length == 10) {
+          // if (regExp.hasMatch(phone)) {
+          //   return null;
+          // } else {
+          //   return "Phone number with start 0 character";
+          // }
+          return null;
+        } else {
+          // return "Phone number must be 10 characters";
+          return null;
+        }
       }
     } else {
       return null;

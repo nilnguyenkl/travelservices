@@ -27,6 +27,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       print("thanh cong");
       emit(state.copyWith(getLoading: false, statusOrder: 1));
     }
+
+    emit(state.copyWith(getLoading: false, statusOrder: 0));
+
   }
 
   void orderReset(OrderResetEvent event, Emitter<OrderState> emit) {

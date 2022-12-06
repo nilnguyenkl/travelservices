@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:pinput/pinput.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
+import 'package:travelservices/blocs/signup_bloc/signup_state.dart';
+import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/signupform.dart';
 
 class VerifyPhonePage extends StatefulWidget {
@@ -123,7 +125,15 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                         width: MediaQuery.of(context).size.width*0.35,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: (){},
+                          onPressed: () async {
+                            await FirebaseAuth.instance.verifyPhoneNumber(
+                              phoneNumber: formData.phone.replaceAll("0", "+84"),
+                              verificationCompleted: (PhoneAuthCredential credential){}, 
+                              verificationFailed: (FirebaseAuthException e){}, 
+                              codeSent: (String verificationId, int? resendToken) {}, 
+                              codeAutoRetrievalTimeout: (String verificationId){}
+                            );
+                          },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
@@ -142,44 +152,80 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width*0.35,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: formData.verify, smsCode: codeSMS);
-                            await auth.signInWithCredential(credential).then((value) {
-                              if (value.user != null) {
-                                  context.read<SignUpBloc>().add(SignUpUsernameEvent(formData.phone));
-                                  context.read<SignUpBloc>().add(SignUpEmailEvent(formData.email));
-                                  context.read<SignUpBloc>().add(SignUpPhoneEvent(formData.phone));
-                                  context.read<SignUpBloc>().add(SignUpLastnameEvent(formData.lastname));
-                                  context.read<SignUpBloc>().add(SignUpFirstnameEvent(formData.firstname));
-                                  context.read<SignUpBloc>().add(SignUpPasswordEvent(formData.password));
-                                  context.read<SignUpBloc>().add(SignUpGenderEvent(formData.gender));
-                                  context.read<SignUpBloc>().add(SignUpSubmitEvent());
-                              } else {
-                                print("Failed");
-                              }
-                            });
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
-                            ),
-                            backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
-                          ), 
-                          child: const Padding(
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            child: Text(
-                              "Confirm",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold
+                      BlocBuilder<SignUpBloc, SignUpState>(
+                        builder:(context, state) {
+                          if (state.status is FailedStatus) {
+                            print("asdasd");
+                          }
+                          if (state.status is SuccessStatus) {
+                            Navigator.pushNamed(context, Routes.login);
+                          }
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width*0.35,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: formData.verify, smsCode: codeSMS);
+                                  await auth.signInWithCredential(credential).then((value) {
+                                    if (value.user != null) {
+                                        context.read<SignUpBloc>().add(SignUpUsernameEvent(formData.phone));
+                                        context.read<SignUpBloc>().add(SignUpEmailEvent(formData.email));
+                                        context.read<SignUpBloc>().add(SignUpPhoneEvent(formData.phone));
+                                        context.read<SignUpBloc>().add(SignUpLastnameEvent(formData.lastname));
+                                        context.read<SignUpBloc>().add(SignUpFirstnameEvent(formData.firstname));
+                                        context.read<SignUpBloc>().add(SignUpPasswordEvent(formData.password));
+                                        context.read<SignUpBloc>().add(SignUpGenderEvent(formData.gender));
+                                        context.read<SignUpBloc>().add(SignUpProviderEvent(formData.provider));
+                                        context.read<SignUpBloc>().add(SignUpRoleEvent(formData.role));
+                                        context.read<SignUpBloc>().add(SignUpSubmitEvent());
+                                    } else {
+                                      MotionToast.error(
+                                        height: 80,
+                                        width: MediaQuery.of(context).size.width*3/4,
+                                        title: const Text(
+                                          "Failed",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold
+                                          ),
+                                        ),
+                                        description: const Text("Somethong was wrong")
+                                      ).show(context);
+                                    }
+                                  });
+                                } catch (e) {
+                                  MotionToast.error(
+                                    height: 80,
+                                    width: MediaQuery.of(context).size.width*3/4,
+                                    title: const Text(
+                                      "Failed",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    description: const Text("The sms code has expired or wrong. Please re-send the verification code to try again")
+                                  ).show(context);
+                                }
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+                                ),
+                                backgroundColor: MaterialStateProperty.all(Colors.green.shade400)
+                              ), 
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 15, bottom: 15),
+                                child: Text(
+                                  "Confirm",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       )
                     ],    
                   )

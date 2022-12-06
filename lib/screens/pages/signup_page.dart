@@ -68,7 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/images/logo.jpg",
+                  "assets/images/logo.png",
                   height: 150,
                 ),
                 Form(
@@ -285,9 +285,13 @@ class _SignUpPageState extends State<SignUpPage> {
                               onPressed: () async {
                                 if (_keySignUpForm.currentState!.validate()) {
                                   await FirebaseAuth.instance.verifyPhoneNumber(
-                                    phoneNumber: phoneController.text,
-                                    verificationCompleted: (PhoneAuthCredential credential){}, 
-                                    verificationFailed: (FirebaseAuthException e){}, 
+                                    phoneNumber: phoneController.text.replaceFirst("0", "+84"),
+                                    verificationCompleted: (PhoneAuthCredential credential){
+                                      print("chay o conplete");
+                                    }, 
+                                    verificationFailed: (FirebaseAuthException e){
+                                      print("chay o failed");
+                                    }, 
                                     codeSent: (String verificationId, int? resendToken) {
                                       Navigator.pushNamed(
                                         context, 
@@ -300,7 +304,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                           email: emailController.text, 
                                           gender: state.gender, 
                                           password: passwordController.text, 
-                                          role: args.type ? 2 : 1
+                                          role: args.type ? 2 : 1, 
+                                          provider: false
                                         )
                                       );
                                     }, 

@@ -16,7 +16,7 @@ class OptionPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(paddingWidth, paddingWidth*5, paddingWidth, 0),
               child: Text(
-                "Welcome to FTravel",
+                "Welcome to FTService",
                 style: TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
@@ -28,7 +28,7 @@ class OptionPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(paddingWidth, paddingWidth, paddingWidth, 0),
               child: Image.asset(
-                'assets/images/logo.jpg',
+                'assets/images/logo.png',
                 height: 150,
               )
             ),
@@ -40,7 +40,7 @@ class OptionPage extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: (){
-                    Navigator.pushNamed(context, Routes.login, arguments: TypeLogin(false, "User"));
+                    Navigator.pushNamed(context, Routes.login, arguments: TypeLogin(true, "User"));
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(

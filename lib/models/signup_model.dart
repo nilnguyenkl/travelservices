@@ -6,9 +6,10 @@ class SignUpRequest {
   final String firstname;
   final String gender;
   final String password;
+  final bool provider;
   final int idRole;
 
-  SignUpRequest(this.username, this.email, this.phone, this.password, this.lastname, this.firstname, this.gender, this.idRole);
+  SignUpRequest(this.username, this.email, this.phone, this.password, this.lastname, this.firstname, this.gender, this.idRole, this.provider);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
@@ -19,6 +20,7 @@ class SignUpRequest {
       'firstname' : firstname.trim(),
       'lastname' : lastname.trim(),
       'sex' : gender.trim(),
+      'provider' : provider,
       'idRole' : idRole
     };
     return map;

@@ -1,3 +1,4 @@
+import 'package:travelservices/models/area_model.dart';
 import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/infor_order_model.dart';
 import 'package:travelservices/models/order_model.dart';
@@ -31,6 +32,14 @@ class ConvertModel {
       typeTicket: model.typeTicket ?? "", 
       amountTicket: model.amountTicket ?? 0, 
       note: model.note ?? ""
+    );
+  }
+
+  static AreaData convertToAreaData(AreaFavorite model) {
+    return AreaData(
+      id: model.idArea, 
+      name: model.nameArea, 
+      url: model.url
     );
   }
 

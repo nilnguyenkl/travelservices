@@ -8,6 +8,7 @@ class SignUpForm {
   final String password;
   final String email;
   final int role;
+  final bool provider;
 
   SignUpForm({
     required this.verify,
@@ -17,7 +18,8 @@ class SignUpForm {
     required this.gender,
     required this.password,
     required this.role,
-    required this.email
+    required this.email,
+    required this.provider
   });
 
 }

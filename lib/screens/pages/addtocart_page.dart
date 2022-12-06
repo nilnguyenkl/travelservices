@@ -19,7 +19,6 @@ import 'package:travelservices/screens/arguments/infor_order_arguments.dart';
 import 'package:travelservices/screens/arguments/order_arguments.dart';
 import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
 import 'package:travelservices/utils/convert_model.dart';
-import 'package:travelservices/utils/shared_preferences.dart';
 import 'package:travelservices/utils/totalValueOrder.dart';
 
 class AddToCartPage extends StatefulWidget {
@@ -106,32 +105,13 @@ class _AddToCartPageState extends State<AddToCartPage> {
               color: Colors.blue.shade600,
             ),
           ),
-          title: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(left: 50),
-            width: double.infinity,
-            child: const Text(
-              "Select",
-              style: TextStyle(
-                color: Colors.black
-              ),
+          centerTitle: true,
+          title: const Text(
+            "Select",
+            style: TextStyle(
+              color: Colors.black
             ),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: TextButton(
-                onPressed: (){}, 
-                child: Text(
-                  'Reselect',
-                  style: TextStyle(
-                    color: Colors.blue.shade600,
-                    fontSize: 17
-                  ),
-                )
-              ),
-            )
-          ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(1), 
             child: Container(
@@ -318,20 +298,20 @@ class _AddToCartPageState extends State<AddToCartPage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
                                   child: Column(
                                     children: [
-                                      const SizedBox(
-                                        width: double.infinity,
-                                        child: Text(
-                                          "Time: ",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
+                                      // const SizedBox(
+                                      //   width: double.infinity,
+                                      //   child: Text(
+                                      //     "Time: ",
+                                      //     style: TextStyle(
+                                      //         fontSize: 18,
+                                      //         fontWeight: FontWeight.bold
+                                      //       ),
+                                      //   ),
+                                      // ),
+                                      // const SizedBox(height: 10),
                                       Row(
                                         children: List.generate(data.schedules.length, (index) {
                                           if (data.schedules[index].quantityPerDay == 0) {
@@ -613,6 +593,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                               url: url
                             )
                           ];
+                          print("1: ${url}");
                           Navigator.pushNamed(context, Routes.orderDetails, arguments: OrderArguments(
                             statusOrder: true, 
                             items: itemsTicket, 
@@ -625,7 +606,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                           width: 100,
                           child: Center(
                             child: Text(
-                              "Order",
+                              "Booking",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16

@@ -14,6 +14,8 @@ class SignUpState extends Equatable {
   final String firstname;
   final String lastname;
   final String gender;
+  final bool provider;
+  final int roleId;
   final String password;
   final String cnfpassword;
 
@@ -36,8 +38,10 @@ class SignUpState extends Equatable {
     this.gender = 'Male',
     this.cnfpassword = '', 
     this.password = '',
+    this.roleId = 0,
     this.eyePassword = false,
     this.eyeCnfPassword = false,
+    this.provider = false,
     this.status = const InitialStatus()
   });
 
@@ -51,10 +55,12 @@ class SignUpState extends Equatable {
     String? firstname,
     String? lastname,
     String? gender,
+    int? roleId,
     String? password,
     String? cnfpassword,
     bool? eyePassword,
     bool? eyeCnfPassword,
+    bool? provider,
     SubmitStatus? status,
   }) {
     return SignUpState(
@@ -71,7 +77,9 @@ class SignUpState extends Equatable {
       cnfpassword: cnfpassword ?? this.cnfpassword,
       eyePassword: eyePassword ?? this.eyePassword,
       eyeCnfPassword: eyeCnfPassword ?? this.eyeCnfPassword,
+      provider: provider ?? this.provider,
       status: status ?? this.status,
+      roleId: roleId ?? this.roleId
     );
   }
   
@@ -89,7 +97,9 @@ class SignUpState extends Equatable {
     firstname,
     lastname,
     password,
-    status
+    status,
+    provider,
+    roleId
   ];
   
 }

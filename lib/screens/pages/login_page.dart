@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
 import 'package:travelservices/blocs/login_bloc/login_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/typeloginarguments.dart';
+import 'package:travelservices/utils/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -59,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/images/logo.jpg",
+                  "assets/images/logo.png",
                   height: 200,
                 ),
                 Form(
@@ -74,8 +77,8 @@ class _LoginPageState extends State<LoginPage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)
                               ),
-                              prefixIcon: const Icon(Icons.person),
-                              label: const Text("Username"),
+                              prefixIcon: const Icon(Icons.phone),
+                              label: const Text("Phone"),
                             ),
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
@@ -113,17 +116,68 @@ class _LoginPageState extends State<LoginPage> {
                             return const CircularProgressIndicator();
                           }
                           if (state.status is FailedStatus) {
-                            // return const InitialStatus();
+                            Future.delayed(Duration.zero, () {
+                              MotionToast.error(
+                                height: 80,
+                                width: MediaQuery.of(context).size.width*3/4,
+                                title: const Text(
+                                  "Incorrect password",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                                description: const Text("Your phone and password is incorrect. Please try agin")
+                              ).show(context);
+                            });
                           }
                           if (state.status is SuccessStatus) {
-                            if (state.typeObject == "ADMIN") {
-                              Future.delayed(Duration.zero, () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(Routes.routePageAdmin, (route) => false);
-                              });
+                            if (args.type) {
+                              if (state.typeObject == "USER") {
+                                Future.delayed(Duration.zero, () {
+                                  Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
+                                });
+                              } else {
+                                Future.delayed(Duration.zero, () async {
+                                  MotionToast.error(
+                                    height: 80,
+                                    width: MediaQuery.of(context).size.width*3/4,
+                                    title: const Text(
+                                      "Incorrect password",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    description: const Text("Your phone and password is incorrect. Please try agin")
+                                  ).show(context);
+                                  SharedPreferences preferences = await SharedPreferences.getInstance();
+                                  await preferences.clear();     
+                                  SharedPreferencesCustom.setBoolCustom('isLogined', false);
+                                });
+                                
+                              }
                             } else {
-                              Future.delayed(Duration.zero, () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
-                              });
+                              if (state.typeObject == "ADMIN") {
+                                Future.delayed(Duration.zero, () {
+                                  Navigator.of(context).pushNamedAndRemoveUntil(Routes.routePageAdmin, (route) => false);
+                                });
+                              } else {
+                                Future.delayed(Duration.zero, () async {
+                                  MotionToast.error(
+                                    height: 80,
+                                    width: MediaQuery.of(context).size.width*3/4,
+                                    title: const Text(
+                                      "Incorrect password",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    description: const Text("Your phone and password is incorrect. Please try agin")
+                                  ).show(context);
+                                  SharedPreferences preferences = await SharedPreferences.getInstance();
+                                  await preferences.clear();     
+                                  SharedPreferencesCustom.setBoolCustom('isLogined', false);
+                                });
+                              }
                             }
                           }
                           return SizedBox(

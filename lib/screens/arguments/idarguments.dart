@@ -1,5 +1,6 @@
 class IdArguments {
   int id;
-  IdArguments(this.id);
+  bool from;
+  IdArguments(this.id, this.from);
   int get getId => id;
 }

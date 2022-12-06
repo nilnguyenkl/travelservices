@@ -93,27 +93,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                dataSnapshot.roles[0] == "USER" ? Column(
-                                                  children: [
-                                                    const Text(
-                                                      "Approved",
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        color: hintText,
+                                                dataSnapshot.roles[0] == "USER" ? GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.pushNamed(context, Routes.productByStatus, arguments: StatusOrderArguments(status: "approved"));
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                        "Approved",
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          color: hintText,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      "${state.user?.numOrderApproved ?? 0}",
-                                                      style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: Colors.blue.shade400
-                                                      ),
-                                                    )
-                                                  ],
+                                                      Text(
+                                                        "${state.user?.numOrderApproved ?? 0}",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.blue.shade400
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ) : Column(
                                                   children: [
                                                     const Text(
-                                                      "Services",
+                                                      "Tourism services",
                                                       style: TextStyle(
                                                         fontSize: 20,
                                                         color: hintText,

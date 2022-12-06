@@ -11,7 +11,7 @@ const avatarDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v166541
 // chua doi hinh
 const categoryDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v1664616239/TravelServiceDefault/philipp-kammerer-6Mxb_mZ_Q8E-unsplash_ashcgp.jpg";
 const productImgDefault = "https://res.cloudinary.com/nilnguyen/image/upload/v1665415300/TravelServiceDefault/Travel.ff88c854_ly9iwn.jpg";
-const productNameDefault = "";
-const productDescriptDefault = "Liên hệ với người tổ chức để biết thêm chi tiết";
-const productEventDefault = "Liên hệ với người tổ chức để biết thêm chi tiết";
-const productNoteDefault = "Liên hệ với người tổ chức để biết thêm chi tiết";
+const productNameDefault = "Contact the organizer for more details";
+const productDescriptDefault = "Contact the organizer for more details";
+const productEventDefault = "Contact the organizer for more details";
+const productNoteDefault = "Contact the organizer for more details";

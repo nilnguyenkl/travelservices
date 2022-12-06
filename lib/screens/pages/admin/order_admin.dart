@@ -20,7 +20,7 @@ class _OrderAdminPageState extends State<OrderAdminPage> {
           appBar: AppBar(
             centerTitle: true,
             title: const Text(
-              "Order",
+              "Booked",
               style: TextStyle(
                 color: Colors.black
               ),

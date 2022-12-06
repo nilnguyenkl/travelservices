@@ -29,7 +29,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "About App",
+            "About Application",
             style: TextStyle(
               color: Colors.black
             ),
@@ -59,7 +59,6 @@ class _AboutAppPageState extends State<AboutAppPage> {
           future: aboutApp,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              print(snapshot.data);
               var data = snapshot.data as AboutAppModel;
               return SizedBox(
                 child: Column(
@@ -82,7 +81,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Admin",
+                                    "Organizer",
                                     style: TextStyle(
                                       fontSize: 30,
                                       color: Colors.blue.shade600
@@ -180,7 +179,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Products",
+                                    "Services",
                                     style: TextStyle(
                                       fontSize: 30,
                                       color: Colors.blue.shade600

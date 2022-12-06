@@ -41,6 +41,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   ProductDetailsBloc bloc = ProductDetailsBloc();
   late Map<String, double> latlng;
   int idService = 0;
+  bool from = true;
 
   late int idAuth1;
   late String username1;
@@ -53,6 +54,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       setState(() {
         IdArguments args = ModalRoute.of(context)!.settings.arguments as IdArguments;
         idService = args.getId;
+        from = args.from;
         bloc.add(ProductDetailsLoadEvent(id: idService));
       });
     });
@@ -120,7 +122,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                         elevation: 0.5,
                         leading: IconButton(
                           onPressed: (){
-                            Navigator.pushNamed(context, Routes.routesPage);
+                            if (from) {
+                              Navigator.pop(context);
+                            } else {
+                              Navigator.pushNamed(context, Routes.routesPage);
+                            }
                           }, 
                           icon: Icon(
                             Icons.arrow_back,
@@ -194,7 +200,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(
-                                  state.productDetails?.name.toString() ?? 'adad',
+                                  state.productDetails?.name.toString() ?? '',
                                   style: const TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
@@ -217,14 +223,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           fontSize: 16
                                         ),
                                       )
-                                      // Text(
-                                      //   "sdsadas",
-                                      //   style: const TextStyle(
-                                      //     fontSize: 16
-                                      //   ),
-                                      //   maxLines: 1,
-                                      //   overflow: TextOverflow.ellipsis,
-                                      // )
                                     ],
                                   ),
                                 ),
@@ -238,7 +236,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       style: TextStyle(
                                         fontSize: 16
                                       ),
-              
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
@@ -331,6 +328,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   ),
                                   padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8),
@@ -358,7 +356,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 10),
                                         child: address.isEmpty ? 
-                                          Text("adasd") : 
+                                          const SizedBox() : 
                                           SizedBox(
                                             height: 400,
                                             width: double.infinity,
@@ -379,6 +377,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   ),
                                   padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8),
@@ -406,7 +405,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 10),
                                         child: Text(
-                                          state.productDetails?.event.toString() ?? productEventDefault,
+                                          state.productDetails?.event.toString() == "null" ? productEventDefault : (state.productDetails?.event.toString() ?? productEventDefault),
                                           style: const TextStyle(
                                             fontSize: 16
                                           ),
@@ -426,6 +425,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   ),
                                   padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8),
@@ -504,7 +504,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       ),
                                       const SizedBox(height: 20),
                                       listReviews.isEmpty ? const Text(
-                                        "Chưa có review nào cả",
+                                        "There are no reviews yet",
                                         style: TextStyle(
                                           fontSize: 16
                                         ),
@@ -663,6 +663,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         Navigator.pushNamed(context, Routes.addToCart, arguments: InforOrderArgument(
                           idService: idService, 
                           status: true, 
+                          url: state.productDetails!.galleries[0].url,
                           description: state.productDetails!.description ?? "", 
                           nameProduct: state.productDetails!.name ?? "", 
                           way: true
@@ -673,7 +674,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         width: 120,
                         child: Center(
                           child: Text(
-                            "Order",
+                            "Booking",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16

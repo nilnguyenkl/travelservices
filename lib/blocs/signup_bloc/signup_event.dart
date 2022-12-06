@@ -15,6 +15,16 @@ class SignUpEmailEvent extends SignUpEvent {
   SignUpEmailEvent(this.email);
 }
 
+class SignUpRoleEvent extends SignUpEvent {
+  final int roleId;
+  SignUpRoleEvent(this.roleId);
+}
+
+class SignUpProviderEvent extends SignUpEvent {
+  final bool provider;
+  SignUpProviderEvent(this.provider);
+}
+
 class SignUpFirstnameEvent extends SignUpEvent {
   final String firstname;
   SignUpFirstnameEvent(this.firstname);

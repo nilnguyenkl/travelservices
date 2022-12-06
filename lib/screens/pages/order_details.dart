@@ -5,6 +5,8 @@ import 'package:travelservices/blocs/order_bloc/order_event.dart';
 import 'package:travelservices/blocs/order_bloc/order_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/routes.dart';
+import 'package:travelservices/screens/arguments/idarguments.dart';
 import 'package:travelservices/screens/arguments/order_arguments.dart';
 
 class OrderDetails extends StatefulWidget {
@@ -24,12 +26,13 @@ class _OrderDetailsState extends State<OrderDetails> {
   @override
   Widget build(BuildContext context) {
     OrderArguments args = ModalRoute.of(context)!.settings.arguments as OrderArguments;
+    String url = args.items.first.url!; 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "Order",
+            "Booking",
             style: TextStyle(
               color: Colors.black
             ),
@@ -40,7 +43,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               Navigator.pop(context);
             },
             icon: Icon(
-              Icons.close,
+              Icons.arrow_back,
               color: Colors.blue.shade600,
             ),
           ),
@@ -67,7 +70,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                     SizedBox(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(1, (index) {
+                        children: List.generate(args.items.length, (index) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: Card(
@@ -86,7 +89,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           Navigator.pop(context);
                                         },
                                         child: const Text(
-                                          "Thay đổi",
+                                          "Change",
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: hintText
@@ -99,7 +102,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       child: Divider(thickness: 1),
                                     ),
                                     SizedBox(
-                                      height: 130,
                                       child: Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -112,8 +114,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 width: 110,
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(10),
-                                                  image: const DecorationImage(
-                                                    image: AssetImage("assets/images/ct.jpg"),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(url),
                                                     fit: BoxFit.fitHeight,
                                                     alignment: Alignment.topCenter,
                                                   ),
@@ -173,7 +175,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                       ),
                                                     ),
                                                   ),
-                                                
                                                 ],
                                               ),
                                             ) 
@@ -237,7 +238,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 ),
                                 const SizedBox(width: 10),
                                 const Text(
-                                  "Thông tin khách hàng",
+                                  "Customer information",
                                   style: TextStyle(
                                     fontSize: 20
                                   ),
@@ -246,7 +247,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                             const Divider(thickness: 1),
                             const Text(
-                              "Tên",
+                              "Full name",
                               style: TextStyle(
                                 fontSize: 18
                               ),  
@@ -255,7 +256,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                               controller: nameController,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "Tên người đặt hàng"
+                                hintText: "Full name of person booking tourism service"
                               ),
                             ),
                             const Divider(thickness: 1),
@@ -269,12 +270,12 @@ class _OrderDetailsState extends State<OrderDetails> {
                               controller: emailController,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "Email người đặt hàng"
+                                hintText: "Email of person booking tourism service"
                               ),
                             ),
                             const Divider(thickness: 1),
                             const Text(
-                              "Số điện thoại",
+                              "Phone number",
                               style: TextStyle(
                                 fontSize: 18
                               ),  
@@ -284,7 +285,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                               controller: phoneController,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "Số điện thoại người đặt hàng"
+                                hintText: "Phone number of person booking tourism service"
                               ),
                             ),
                           ],
@@ -295,7 +296,57 @@ class _OrderDetailsState extends State<OrderDetails> {
                 ),
               ),
             ),
-            BlocBuilder<OrderBloc, OrderState>(
+            BlocConsumer<OrderBloc, OrderState>(
+              listener: (context, state) {
+                if (state.statusOrder == 1 || state.statusOrder == -1) {
+                  showDialog(
+                    context: context, 
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)
+                        ),
+                        child: SizedBox(
+                          height: 200,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                state.statusOrder == 1 ? "assets/images/success.png" : "assets/images/failed.png",
+                                height: 50,
+                                width: 50,
+                              ), 
+                              const SizedBox(height: 20),
+                              Text(
+                                state.statusOrder == 1 ? "Booking tourism services were success" : "Booking tourism services were failed",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontStyle: FontStyle.italic
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(args.items.first.idService, false));
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                    )
+                                  )
+                                ), 
+                                child: const Text("OK")
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  );
+                }
+              },
               builder:(context, state) {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -345,7 +396,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                           width: 100,
                           child: Center(
                             child: Text(
-                              "Order",
+                              "Booking",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16

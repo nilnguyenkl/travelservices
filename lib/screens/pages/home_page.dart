@@ -23,6 +23,7 @@ import 'package:travelservices/models/category_model.dart';
 import 'package:travelservices/models/product_model.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/current_user_arguments.dart';
+import 'package:travelservices/screens/arguments/idarguments.dart';
 import 'package:travelservices/screens/arguments/way_cart_arguments.dart';
 import 'package:travelservices/utils/shared_preferences.dart';
 
@@ -58,6 +59,7 @@ class _HomePageState extends State<HomePage> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
             snap: true,
@@ -109,7 +111,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),  
             title: Text(
-              "FVTravel",
+              "FTService",
               style: TextStyle(
                 color: Colors.blue.shade600
               ),
@@ -151,9 +153,9 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   categoriesOption(),
-                  title("Top 5 favorite area"),
+                  title("The most popular city"),
                   areaFavorite(context),
-                  title("Top 20 hottest experiences"),
+                  title("The most popular tourism services"),
                   serviceTravelHot(context)
                 ],
               ),
@@ -349,7 +351,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.only(bottom: 5),
                       child: InkWell(
                         onTap: () {
-                          // Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].id));     
+                          Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].id, true));     
                         },
                         child: Card(
                           color: Colors.transparent,
@@ -434,7 +436,7 @@ class _HomePageState extends State<HomePage> {
                                           Container(
                                             padding: const EdgeInsets.only(left: 2),
                                             child: Text(
-                                              "${data[index].point} (${data[index].reviews}) | ${data[index].orders} đã đặt",
+                                              "${data[index].point} (${data[index].reviews}) | ${data[index].orders} Booked",
                                               style: const TextStyle(
                                                 fontSize: 14
                                               ),

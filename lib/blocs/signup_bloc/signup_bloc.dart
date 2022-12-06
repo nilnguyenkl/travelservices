@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_state.dart';
@@ -16,6 +18,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<SignUpPhoneEvent>(_onSignUpPhone);
     on<SignUpFirstnameEvent>(_onSignUpFirstname);
     on<SignUpLastnameEvent>(_onSignUpLastname);
+    on<SignUpProviderEvent>(_onSignUpProvider);
+    on<SignUpRoleEvent>(_onSignUpRole);
     on<SignUpGenderEvent>(_onSignUpGender);
     on<SignUpPasswordEvent>(_onSignUpPassword);
     on<SignUpCnfPasswordEvent>(_onSignUpCnfPassword);
@@ -51,6 +55,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   void _onSignUpPassword(SignUpPasswordEvent event, Emitter<SignUpState> emit) {
     emit(state.copyWith(password: event.password));
   }
+  void _onSignUpRole(SignUpRoleEvent event, Emitter<SignUpState> emit) {
+    emit(state.copyWith(roleId: event.roleId));
+  }
 
   void _onSignUpCnfPassword(SignUpCnfPasswordEvent event, Emitter<SignUpState> emit) {
     emit(state.copyWith(cnfpassword: event.cnfPassword));
@@ -64,6 +71,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(state.copyWith(eyeCnfPassword: event.eyeStatus));
   }
 
+  void _onSignUpProvider(SignUpProviderEvent event, Emitter<SignUpState> emit) {
+    emit(state.copyWith(provider: event.provider));
+  }
+
   void _onSignUpSubmit(SignUpSubmitEvent event, Emitter<SignUpState> emit) async {
     emit(state.copyWith(status: SubmittingStatus()));
     var model = await authRepo.signUpRepo(
@@ -74,7 +85,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       state.lastname, 
       state.firstname, 
       state.gender,
-      2
+      state.roleId,
+      state.provider
     );
     if (model is MessageModel) {
       emit(state.copyWith(status: FailedStatus(), errorUsername: "Username already exists"));
@@ -96,5 +108,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         status: false
       ));
     }
+    emit(state.copyWith(status: const InitialStatus()));
   }
 }

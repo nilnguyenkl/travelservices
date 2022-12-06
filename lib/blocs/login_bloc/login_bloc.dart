@@ -35,6 +35,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     var auth = await authRepo.loginRepo(state.username, state.password);
     if (auth is MessageModel) {
       emit(state.copyWith(status: FailedStatus()));
+      await Future.delayed(const Duration(seconds: 2));
+      emit(state.copyWith(status: const InitialStatus()));
     }
     if (auth is LoginResponseModel) {
       emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
@@ -49,17 +51,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       SharedPreferencesCustom.setStringCustom('role', auth.roles[0]);
       SharedPreferencesCustom.setIntCustom('idAuth', auth.id);
       
-      await Future.delayed(const Duration(seconds: 3));
-      emit(state.copyWith(status: const InitialStatus()));
-
+      await Future.delayed(const Duration(seconds: 2));
       // Handle firebase
       authRepo.updateStatusUser(true, auth.id.toString());
-      
+      emit(state.copyWith(status: const InitialStatus()));
     }
-
-    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
-    print("==============$token");
-
   }
 
   void loginProvider(LoginByProvider event, Emitter<LoginState> emit) async {
@@ -73,8 +69,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       user.uid, 
       user.displayName!, 
       "", 
-      "",
-      2
+      "Male",
+      2,
+      true
     );
 
     if (model is MessageModel) {
@@ -92,6 +89,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       var auth = await authRepo.loginRepo(user.email!, user.uid);
       if (auth is MessageModel) {
         emit(state.copyWith(status: FailedStatus()));
+        emit(state.copyWith(status: const InitialStatus()));
       }
       if (auth is LoginResponseModel) {
         emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));

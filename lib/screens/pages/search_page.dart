@@ -442,7 +442,7 @@ class _SearchPageState extends State<SearchPage> {
               padding: const EdgeInsets.only(bottom: 5),
               child: InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].id));     
+                  Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(data[index].id, true));     
                 },
                 child: Card(
                   color: Colors.transparent,

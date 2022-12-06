@@ -184,7 +184,7 @@ class _ManageOrderPendingWidgetState extends State<ManageOrderPendingWidget> {
                                                               width: 50,
                                                             ),
                                                             const SizedBox(width: 15),
-                                                            Text(
+                                                            const Text(
                                                               "Approve",
                                                               style: TextStyle(
                                                                 fontSize: 20,
@@ -251,13 +251,13 @@ class _ManageOrderPendingWidgetState extends State<ManageOrderPendingWidget> {
                                                               width: 50,
                                                             ),
                                                             const SizedBox(width: 15),
-                                                            Text(
-                                                            "Delete",
-                                                            style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight: FontWeight.bold
-                                                            ),
-                                                          )
+                                                            const Text(
+                                                              "Delete",
+                                                              style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.bold
+                                                              ),
+                                                            )
                                                           ],
                                                         ),
                                                         const SizedBox(height: 50),
@@ -451,7 +451,7 @@ class _ManageOrderPendingWidgetState extends State<ManageOrderPendingWidget> {
                                                     ),
                                                   );
                                                 }
-                                            );
+                                              );
                                             } 
                                           ),
                                         ],

@@ -54,28 +54,7 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: paddingWidth),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: searchbar,
-                prefixIcon: const Icon(
-                  Icons.search_outlined,
-                  color: Colors.black,
-                ),
-                hintText: "Search",
-                hintStyle: const TextStyle(
-                  color: hintText
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none
-                )
-              ),
-            ),
-          ),
+          const SizedBox(height: 5),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),

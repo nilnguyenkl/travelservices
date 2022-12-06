@@ -15,8 +15,8 @@ import 'package:travelservices/models/signup_model.dart';
 class AuthRepository {
   Api api = Api();
 
-  Future<Object> signUpRepo(String username, String email, String phone, String password, String lastname, String firstname, String gender, int idRole) {
-    SignUpRequest request = SignUpRequest(username, email, phone, password, lastname, firstname, gender, idRole); 
+  Future<Object> signUpRepo(String username, String email, String phone, String password, String lastname, String firstname, String gender, int idRole, bool provider) {
+    SignUpRequest request = SignUpRequest(username, email, phone, password, lastname, firstname, gender, idRole, provider); 
     return api.postSignUp(Api.url, "auth/register", request);
   }
 
