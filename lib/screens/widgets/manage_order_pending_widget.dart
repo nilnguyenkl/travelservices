@@ -6,6 +6,7 @@ import 'package:travelservices/blocs/admin_order_bloc/admin_order_event.dart';
 import 'package:travelservices/blocs/admin_order_bloc/admin_order_state.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/screens/widgets/loading_widget.dart';
 
 
 class ManageOrderPendingWidget extends StatefulWidget {
@@ -23,6 +24,9 @@ class _ManageOrderPendingWidgetState extends State<ManageOrderPendingWidget> {
     return BlocBuilder<AdminOrderBloc, AdminOrderState>(
       bloc: bloc,
       builder:(context, state) {
+        if (state.statusReadPending) {
+          return const LoadingWidget();
+        }
         return SizedBox(
           child: ListView.builder(
             itemCount: state.ordersByPending.length,
@@ -163,61 +167,62 @@ class _ManageOrderPendingWidgetState extends State<ManageOrderPendingWidget> {
                                         const SizedBox(width: 7),
                                         InkWell(
                                           onTap: (){
-                                            showDialog(
-                                              context: context, 
-                                              builder: (context) {
-                                                return Dialog(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(15)
-                                                  ),
-                                                  child: SizedBox(
-                                                    height: 300,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/verified.png",
-                                                              height: 50,
-                                                              width: 50,
-                                                            ),
-                                                            const SizedBox(width: 15),
-                                                            const Text(
-                                                              "Approve",
-                                                              style: TextStyle(
-                                                                fontSize: 20,
-                                                                fontWeight: FontWeight.bold
-                                                              ),
-                                                          )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(height: 50),
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                          child: const TextField(
-                                                            decoration: InputDecoration(
-                                                              border: OutlineInputBorder()
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          margin: const EdgeInsets.only(top: 20),
-                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                          width: double.infinity,
-                                                          height: 55,
-                                                          child: ElevatedButton(
-                                                            onPressed: (){},
-                                                            child: const Text("Submit"),
-                                                          )
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            );
+                                            context.read<AdminOrderBloc>().add(AdminOrderApprovedEvent(idOrderItem: state.ordersByPending[index].id, status: 'approved'));
+                                            // showDialog(
+                                            //   context: context, 
+                                            //   builder: (context) {
+                                            //     return Dialog(
+                                            //       shape: RoundedRectangleBorder(
+                                            //         borderRadius: BorderRadius.circular(15)
+                                            //       ),
+                                            //       child: SizedBox(
+                                            //         height: 300,
+                                            //         child: Column(
+                                            //           mainAxisAlignment: MainAxisAlignment.center,
+                                            //           children: [
+                                            //             Row(
+                                            //               mainAxisAlignment: MainAxisAlignment.center,
+                                            //               children: [
+                                            //                 Image.asset(
+                                            //                   "assets/images/verified.png",
+                                            //                   height: 50,
+                                            //                   width: 50,
+                                            //                 ),
+                                            //                 const SizedBox(width: 15),
+                                            //                 const Text(
+                                            //                   "Approve",
+                                            //                   style: TextStyle(
+                                            //                     fontSize: 20,
+                                            //                     fontWeight: FontWeight.bold
+                                            //                   ),
+                                            //               )
+                                            //               ],
+                                            //             ),
+                                            //             const SizedBox(height: 50),
+                                            //             Container(
+                                            //               padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            //               child: const TextField(
+                                            //                 decoration: InputDecoration(
+                                            //                   border: OutlineInputBorder()
+                                            //                 ),
+                                            //               ),
+                                            //             ),
+                                            //             Container(
+                                            //               margin: const EdgeInsets.only(top: 20),
+                                            //               padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            //               width: double.infinity,
+                                            //               height: 55,
+                                            //               child: ElevatedButton(
+                                            //                 onPressed: (){},
+                                            //                 child: const Text("Submit"),
+                                            //               )
+                                            //             )
+                                            //           ],
+                                            //         ),
+                                            //       ),
+                                            //     );
+                                            //   }
+                                            // );
                                           },
                                           child: Text(
                                             "Approve",
@@ -230,61 +235,7 @@ class _ManageOrderPendingWidgetState extends State<ManageOrderPendingWidget> {
                                         const SizedBox(width: 7),
                                         InkWell(
                                           onTap: (){
-                                            showDialog(
-                                              context: context, 
-                                              builder: (context) {
-                                                return Dialog(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(15)
-                                                  ),
-                                                  child: SizedBox(
-                                                    height: 300,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/delete.png",
-                                                              height: 50,
-                                                              width: 50,
-                                                            ),
-                                                            const SizedBox(width: 15),
-                                                            const Text(
-                                                              "Delete",
-                                                              style: TextStyle(
-                                                                fontSize: 20,
-                                                                fontWeight: FontWeight.bold
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(height: 50),
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                          child: const TextField(
-                                                            decoration: InputDecoration(
-                                                              border: OutlineInputBorder()
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          margin: const EdgeInsets.only(top: 20),
-                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                          width: double.infinity,
-                                                          height: 55,
-                                                          child: ElevatedButton(
-                                                            onPressed: (){},
-                                                            child: const Text("Submit"),
-                                                          )
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            );
+                                            context.read<AdminOrderBloc>().add(AdminOrderCancelEvent(idOrderItem: state.ordersByPending[index].id, status: 'deleted'));
                                           },
                                           child: Text(
                                             "Delete",

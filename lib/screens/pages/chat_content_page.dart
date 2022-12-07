@@ -35,24 +35,24 @@ class _ChatContentPageState extends State<ChatContentPage> {
     return Scaffold(
       appBar: AppBar(
         title: SizedBox(
-          child: Row(
-            children: [
-              const CircleAvatar(
-                backgroundImage: NetworkImage(avatarDefault),
-              ),
-              const SizedBox(width: 5),
-              StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(args.id2.toString())
-                  .snapshots(),
-                builder:(context, snapshot) {
-                  if (snapshot.data != null) {
-                    return Column(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+              .collection("users")
+              .doc(args.id2.toString())
+              .snapshots(),
+            builder:(context, snapshot) {
+              if (snapshot.data != null) {
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(snapshot.data?['avatar'] ?? avatarDefault),
+                    ),
+                    const SizedBox(width: 5),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          nameUser(snapshot.data?['lastname'], snapshot.data?['firstname']),
+                          nameCustomer(snapshot.data?['firstname'], snapshot.data?['lastname']),
                           style: const TextStyle(
                             fontSize: 17,
                             color: Colors.black
@@ -66,14 +66,14 @@ class _ChatContentPageState extends State<ChatContentPage> {
                           ),
                         ),
                       ],
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              )
-            ],
-          ),
+                    ),
+                  ],
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          )
         ),
         leading: IconButton(
           onPressed: (){
@@ -213,10 +213,10 @@ class _ChatContentPageState extends State<ChatContentPage> {
     );
   }
 
-  String nameUser(String lastname, String firstname) {
+  String nameCustomer(String firstname, String lastname) {
     if (lastname.isEmpty) {
       if (firstname.isEmpty) {
-        return "Admin";
+        return "Customer";
       } else {
         return firstname;
       }

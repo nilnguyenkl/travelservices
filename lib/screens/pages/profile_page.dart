@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             Text(
-                                              "${state.user?.infor.firstname ?? ""} ${state.user?.infor.lastname ?? ""}",
+                                              getNameUser(state.user?.infor.firstname ?? "", state.user?.infor.lastname ?? "", dataSnapshot.roles[0]),
                                               style: TextStyle(
                                                 fontSize: 22,
                                                 fontWeight: FontWeight.w400,
@@ -118,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 ) : Column(
                                                   children: [
                                                     const Text(
-                                                      "Tourism services",
+                                                      "Services",
                                                       style: TextStyle(
                                                         fontSize: 20,
                                                         color: hintText,
@@ -391,5 +391,25 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+  
+  String getNameUser(String firstname, String lastname, String object) {
+    if (lastname.isEmpty) {
+      if (firstname.isEmpty) {
+        if (object == "ADMIN") {
+          return "Organizer";
+        } else {
+          return "Customer";
+        }
+      } else {
+        return firstname;
+      }
+    } else {
+      if (firstname.isEmpty) {
+        return lastname;
+      } else {
+        return "$firstname $lastname";
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/models/manage_order_model.dart';
+import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/order_model.dart';
 
 class OrderRepository {
@@ -18,5 +19,14 @@ class OrderRepository {
       return <OrderDataModel>[];
     }
   } 
+
+  Future<Object> updateStatusOrderItemForAdmin(String endPoint) async {
+    var object = await api.updateStatusOrderItemForAdmin(Api.url, endPoint);
+    if (object is Response) {
+      return (object.data['data'] as List).map((e) => OrderDataModel.fromJson(e)).toList();
+    } else {
+      return MessageModel(message: "");
+    }
+  }
 
 }

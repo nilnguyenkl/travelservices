@@ -49,7 +49,7 @@ class _ReviewsDetailsPageState extends State<ReviewsDetailsPage> {
   String getValueName(String? firstname, String? lastname) {
     if (firstname == null) {
       if (lastname == null) {
-        return "User";
+        return "Customer";
       } else {
         return lastname;
       }
@@ -148,8 +148,6 @@ class _ReviewsDetailsPageState extends State<ReviewsDetailsPage> {
                 ),
                 Column(
                   children: List.generate(listReview.length, (index) {
-                    print(index);
-                    print(listReview.length);
                     return reviewContainer(
                       listReview[index].user.avatar,
                       getValueName(listReview[index].user.firstname, listReview[index].user.lastname),

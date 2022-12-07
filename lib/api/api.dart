@@ -5,6 +5,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/login_model.dart';
+import 'package:travelservices/models/manage_order_model.dart';
 import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/order_model.dart';
 import 'package:travelservices/models/product_admin_model.dart';
@@ -17,7 +18,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://192.168.1.7:8089/";
+  static String url = "http://192.168.1.9:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -499,6 +500,25 @@ class Api {
         url + endPoint,
       );
       return MessageModel.fromJson(response.data);
+    } on DioError catch (e) {
+      return MessageModel(message: '');
+    }
+  }
+
+  Future<Object> updateStatusOrderItemForAdmin(String url, endPoint) async {
+    Response response;
+    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    try {
+      response = await Dio().put(
+        url + endPoint,
+        options: Options(
+          headers: {
+            "Accept" : "*/*",
+            "Authorization" : "Bearer $token",
+          },
+        )
+      );
+      return response;
     } on DioError catch (e) {
       return MessageModel(message: '');
     }

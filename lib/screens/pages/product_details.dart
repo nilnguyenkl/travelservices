@@ -696,7 +696,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   String getValueName(String? firstname, String? lastname) {
     if (firstname == "null") {
       if (lastname == "null") {
-        return "User";
+        return "Customer";
       } else {
         return lastname!;
       }

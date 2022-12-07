@@ -6,6 +6,7 @@ import 'package:travelservices/blocs/admin_order_bloc/admin_order_event.dart';
 import 'package:travelservices/blocs/admin_order_bloc/admin_order_state.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/order_model.dart';
+import 'package:travelservices/screens/widgets/loading_widget.dart';
 
 
 class ManageOrderApprovedWidget extends StatefulWidget {
@@ -23,7 +24,9 @@ class _ManageOrderApprovedWidgetState extends State<ManageOrderApprovedWidget> {
     return BlocBuilder<AdminOrderBloc, AdminOrderState>(
       bloc: bloc,
       builder:(context, state) {
-        print("===========${state.ordersByApproved.length}");
+        if (state.statusReadApproved) {
+          return const LoadingWidget();
+        }
         return SizedBox(
           child: ListView.builder(
             itemCount: state.ordersByApproved.length,
@@ -164,7 +167,7 @@ class _ManageOrderApprovedWidgetState extends State<ManageOrderApprovedWidget> {
                                         const SizedBox(width: 7),
                                         InkWell(
                                           onTap: (){
-                                            // 
+                                            context.read<AdminOrderBloc>().add(AdminOrderExperienceEvent(idOrderItem: state.ordersByApproved[index].id, status: 'experienced'));
                                           },
                                           child: Text(
                                             "Experienced",

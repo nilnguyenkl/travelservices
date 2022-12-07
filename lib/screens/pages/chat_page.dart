@@ -107,7 +107,8 @@ class _ChatPageState extends State<ChatPage> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        friend['firstname'].isEmpty ? "Admin" : friend['firstname'],
+                                                        // friend['firstname'].isEmpty ? "Admin" : friend['firstname'],
+                                                        nameOrganizer(friend['firstname'], friend['lastname']),
                                                         style: const TextStyle(
                                                           fontSize: 20,
                                                           fontWeight: FontWeight.bold
@@ -150,5 +151,21 @@ class _ChatPageState extends State<ChatPage> {
         ],
       )
     );
+  }
+  
+  String nameOrganizer(String firstname, String lastname) {
+    if (firstname.isEmpty) {
+      if (lastname.isEmpty) {
+        return "Organizer";
+      } else {
+        return lastname;
+      }
+    } else {
+      if (lastname.isEmpty) {
+        return firstname;
+      } else {
+        return "$firstname $lastname";
+      }
+    }
   }
 }

@@ -577,9 +577,9 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text(
-            "Create Product",
-            style: TextStyle(
+          title: Text(
+            statusAction == false ? "Edit tourism service" : "New tourism service",
+            style: const TextStyle(
               color: Colors.black
             ),
             textAlign: TextAlign.center,

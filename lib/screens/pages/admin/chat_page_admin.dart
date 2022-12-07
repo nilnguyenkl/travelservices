@@ -108,7 +108,8 @@ class _ChatPageAdminState extends State<ChatPageAdmin> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text(
-                                                              friend['firstname'].isEmpty ? "Guest" : friend['firstname'], 
+                                                              // friend['firstname'].isEmpty ? "Guest" : friend['firstname'],
+                                                              getNameChat(friend['firstname'], friend['lastname']), 
                                                               style: const TextStyle(
                                                                 fontSize: 20,
                                                                 fontWeight: FontWeight.bold
@@ -156,5 +157,21 @@ class _ChatPageAdminState extends State<ChatPageAdmin> {
         },
       )
     );
+  }
+  
+  String getNameChat(String firstname, String lastname) {
+    if (firstname.isEmpty) {
+      if (lastname.isEmpty) {
+        return "Customer";
+      } else {
+        return lastname;
+      }
+    } else {
+      if (lastname.isEmpty) {
+        return firstname;
+      } else {
+        return "$firstname $lastname";
+      }
+    }
   }
 }

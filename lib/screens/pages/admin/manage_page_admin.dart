@@ -52,19 +52,23 @@ class _ManagePageAdminState extends State<ManagePageAdmin> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
               child: Container(
+                height: 70,
                 alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, Routes.createProductAdmin, arguments: ActionProductByAdmin(status: true));
-                  },
-                  child: const Text("Add Product"),
+                child: SizedBox(
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, Routes.createProductAdmin, arguments: ActionProductByAdmin(status: true));
+                    },
+                    child: const Text("New tourism service"),
+                  ),
                 ),
               ),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: paddingWidth),
+              padding: EdgeInsets.symmetric(horizontal: paddingWidth, vertical: 10),
               child: Text(
-                "List Product",
+                "Tourism services",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -82,6 +86,7 @@ class _ManagePageAdminState extends State<ManagePageAdmin> {
                 builder: (context, state) {
                   return ListView.builder(
                     itemCount: state.listProduct.length,
+                    physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
