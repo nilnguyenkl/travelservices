@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_state.dart';

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:travelservices/blocs/login_bloc/login_event.dart';
 import 'package:travelservices/blocs/login_bloc/login_state.dart';
+import 'package:travelservices/models/firebase_user_model.dart';
 import 'package:travelservices/models/login_model.dart';
 import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/signup_model.dart';
@@ -81,7 +82,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(statusProvider: 1));
 
       // Handle Firebase
-
+      authRepo.createUser(UserFirebase(
+        id: model.id, 
+        username: model.username, 
+        firstname: model.firstname, 
+        lastname: model.lastname, 
+        phone: model.phone, 
+        email: model.phone, 
+        avatar: model.avatar, 
+        sex: model.sex, 
+        role: model.role, 
+        createDate: model.createDate, 
+        modifiedDate: model.modifiedDate, 
+        status: true
+      ));
 
     }
 
@@ -92,8 +106,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(state.copyWith(status: const InitialStatus()));
       }
       if (auth is LoginResponseModel) {
-        emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));
-        
+        emit(state.copyWith(status: SuccessStatus(), typeObject: auth.roles[0]));   
         // Set local data
         SharedPreferencesCustom.setStringCustom('accessToken', auth.accessToken.toString());
         SharedPreferencesCustom.setBoolCustom('isLogined', true);

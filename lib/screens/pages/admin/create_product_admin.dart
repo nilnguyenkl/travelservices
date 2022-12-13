@@ -587,7 +587,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
           leading: IconButton(
             onPressed: (){
               context.read<AdminProductBloc>().add(AdminResetStateProductEvent());
-              Navigator.pop(context);
+              Navigator.pushNamed(context, Routes.routePageAdmin);
             },
             icon: Icon(
               Icons.arrow_back,
