@@ -45,7 +45,6 @@ import 'package:travelservices/screens/pages/reviews_page.dart';
 import 'package:travelservices/screens/pages/route_page.dart';
 import 'package:travelservices/screens/pages/signup_page.dart';
 import 'package:travelservices/screens/pages/verify_phone_page.dart';
-import 'package:travelservices/screens/widgets/loading_widget.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -108,8 +107,11 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => OrderBloc(),
           ),
+          // BlocProvider(
+          //   create: (context) => ProfileBloc()..add(ProfileReadEvent())
+          // ),
           BlocProvider(
-            create: (context) => ProfileBloc()..add(ProfileReadEvent())
+            create: (context) => ProfileBloc()
           ),
           BlocProvider(
             create: (context) => AdminProductBloc()

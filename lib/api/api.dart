@@ -18,7 +18,7 @@ import 'package:travelservices/utils/shared_preferences.dart';
 class Api {
   
   Dio dio = Dio();
-  static String url = "http://192.168.1.9:8089/";
+  static String url = "http://192.168.1.11:8089/";
   
   Api() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -39,6 +39,8 @@ class Api {
   }
 
   static Future<LoginResponseModel> getToken() async {
+    int id = await SharedPreferencesCustom.getIntCustom('idAuth'); 
+    print("ID: $id");
     List<String> roles = [await SharedPreferencesCustom.getStringCustom('role')];
     LoginResponseModel response =  LoginResponseModel(
       id: await SharedPreferencesCustom.getIntCustom('idAuth'), 

@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                             if (args.type) {
                               if (state.typeObject == "USER") {
                                 Future.delayed(Duration.zero, () {
-                                  Navigator.of(context).pushNamedAndRemoveUntil(Routes.routesPage, (route) => false);
+                                  Navigator.of(context).pushNamed(Routes.routesPage);
                                 });
                               } else {
                                 Future.delayed(Duration.zero, () async {
@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                             } else {
                               if (state.typeObject == "ADMIN") {
                                 Future.delayed(Duration.zero, () {
-                                  Navigator.of(context).pushNamedAndRemoveUntil(Routes.routePageAdmin, (route) => false);
+                                  Navigator.of(context).pushNamed(Routes.routePageAdmin);
                                 });
                               } else {
                                 Future.delayed(Duration.zero, () async {

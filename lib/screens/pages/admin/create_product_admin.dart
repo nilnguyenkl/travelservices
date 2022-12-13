@@ -457,7 +457,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 10),
                             schedulessWidget[index]
                           ],
                         ),
@@ -521,7 +521,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
                       child: const Text(
-                        "Previous image",
+                        "Previous picture",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18
@@ -966,11 +966,11 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                               ),
                               backgroundColor: MaterialStateProperty.all(Colors.blue.shade400)
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 15, bottom: 15),
                               child: Text(
-                                "Continue",
-                                style: TextStyle(
+                                currentStep == 2 ? "Complete" : "Continue",
+                                style: const TextStyle(
                                   fontSize: 16,
                                 ),
                               ),

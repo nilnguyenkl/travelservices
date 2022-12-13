@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/blocs/profile_bloc/profile_bloc.dart';
+import 'package:travelservices/blocs/profile_bloc/profile_event.dart';
 import 'package:travelservices/blocs/profile_bloc/profile_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
@@ -50,8 +51,11 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var dataSnapshot = snapshot.data as LoginResponseModel;
+            ProfileBloc bloc = context.read<ProfileBloc>();
+            bloc.add(ProfileReadEvent());
             return SafeArea(
               child: BlocBuilder<ProfileBloc, ProfileState>(
+                bloc: bloc,
                 builder:(context, state) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: paddingWidth),
