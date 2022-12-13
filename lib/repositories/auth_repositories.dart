@@ -57,6 +57,23 @@ class AuthRepository {
     });
   }
 
+  Future updateAvaterToFirebase(String avatar, String doc) async {
+    final docUser = FirebaseFirestore.instance.collection("users").doc(doc);
+    await docUser.update({
+      "avatar" : avatar
+    });
+  }
+
+  Future updateProfileToFirebase(String firstname, String lastname, String gender, String email, String doc) async {
+    final docUser = FirebaseFirestore.instance.collection("users").doc(doc);
+    await docUser.update({
+      "firstname" : firstname,
+      "lastname" : lastname,
+      "sex" : gender,
+      "email" : email
+    });
+  }
+
   Future<Object> updateProfile(String endPoint, ProfileRequest request) async {
     var object = await api.updateProfile(request, endPoint);
     if (object is Response) {

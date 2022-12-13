@@ -9,6 +9,7 @@ import 'package:travelservices/blocs/profile_bloc/profile_event.dart';
 import 'package:travelservices/blocs/profile_bloc/profile_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
+import 'package:travelservices/repositories/auth_repositories.dart';
 import 'package:travelservices/screens/arguments/change_profile_arguments.dart';
 
 class MyProfile extends StatefulWidget {

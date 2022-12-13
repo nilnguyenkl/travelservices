@@ -8,6 +8,7 @@ import 'package:travelservices/blocs/profile_bloc/profile_state.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
 import 'package:travelservices/models/login_model.dart';
+import 'package:travelservices/repositories/auth_repositories.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/change_profile_arguments.dart';
 import 'package:travelservices/screens/arguments/status_order_arguments.dart';
@@ -326,6 +327,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         "Logout", 
                                         Icons.logout, 
                                         () async {
+                                          AuthRepository authRepo = AuthRepository();
+                                          authRepo.updateStatusUser(false, dataSnapshot.id.toString());
                                           SharedPreferences preferences = await SharedPreferences.getInstance();
                                           await preferences.clear();
                                           if (!mounted) return;

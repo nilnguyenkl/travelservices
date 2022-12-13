@@ -37,6 +37,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(updateStatus: -1, getLoading: false));
     }
     emit(state.copyWith(updateStatus: 0));
+    authRepo.updateProfileToFirebase(
+      state.user?.infor.firstname ?? "", 
+      state.user?.infor.lastname ?? "",
+      state.user?.infor.sex ?? "",
+      state.user?.infor.email ?? "" ,
+      state.user?.infor.id.toString() ?? "0"
+    );
   }
 
 
@@ -52,5 +59,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     } else {
       emit(state.copyWith(uploadAvatar: -1, getLoading: false));
     }
+    emit(state.copyWith(uploadAvatar: 0));
+    authRepo.updateAvaterToFirebase(state.user?.infor.avatar.toString() ?? "", state.user?.infor.id.toString() ?? "0");
   }
+
 }

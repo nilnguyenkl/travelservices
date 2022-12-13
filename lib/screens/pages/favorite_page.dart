@@ -20,6 +20,10 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    FavoriteBloc favoriteBloc = context.read<FavoriteBloc>();
+    favoriteBloc.add(FavoriteReadEvent());
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -44,6 +48,7 @@ class _FavoritePageState extends State<FavoritePage> {
           elevation: 0,
         ),
         body: BlocBuilder<FavoriteBloc, FavoriteState>(
+          bloc: favoriteBloc,
           builder:(context, state) {
             if (state.getLoading) {
               return const LoadingWidget();
@@ -88,7 +93,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                       right: 5,
                                       child: IconButton(
                                         onPressed: (){
-                                          context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: state.favorites[index].idService));
+                                          favoriteBloc.add(FavoriteDeleteEvent(idProduct: state.favorites[index].idService));
                                         },
                                         icon: Icon(
                                           Icons.favorite,

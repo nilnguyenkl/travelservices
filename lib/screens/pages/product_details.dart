@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_bloc.dart';
 import 'package:travelservices/blocs/favorite_bloc/favorite_event.dart';
@@ -94,6 +95,10 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
+
+    CartBloc cartBloc = context.read<CartBloc>();
+    cartBloc.add(CartReadEvent());
+
     return BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
       bloc: bloc,
       builder:(context, state) {
@@ -165,6 +170,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             )
                           ),  
                           BlocBuilder<CartBloc, CartState>(
+                            bloc: cartBloc,
                             builder:(context, state) {
                               return Badge(
                                 badgeContent: Text(state.items.length.toString()),
@@ -360,7 +366,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           SizedBox(
                                             height: 400,
                                             width: double.infinity,
-                                            child: MapCustom(text: state.productDetails!.address.toString(), title: state.productDetails!.address.toString())
+                                            child: MapCustom(text: state.productDetails?.address.toString() ?? "Viet Nam", title: state.productDetails?.address.toString() ?? "Viet Nam")
                                           )   
                                       )     
                                     ],

@@ -119,7 +119,7 @@ class Api {
   }
 
   Future<Object> getRequestAuth(String url, String endpoint) async {
-    String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    var token = await SharedPreferencesCustom.getStringCustom('accessToken');
     Response response;
     try {
       response = await dio.get(

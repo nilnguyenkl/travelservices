@@ -15,7 +15,6 @@ import 'package:travelservices/blocs/login_bloc/login_bloc.dart';
 import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
 import 'package:travelservices/blocs/order_bloc/order_bloc.dart';
 import 'package:travelservices/blocs/profile_bloc/profile_bloc.dart';
-import 'package:travelservices/blocs/profile_bloc/profile_event.dart';
 import 'package:travelservices/blocs/search_bloc/search_bloc.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_bloc.dart';
 import 'package:travelservices/repositories/area_repositories.dart';
@@ -84,7 +83,7 @@ class MyApp extends StatelessWidget {
             create: (context) => LoginBloc(authRepo: context.read<AuthRepository>()),
           ),
           BlocProvider(
-            create: (context) => FavoriteBloc(repo: context.read<FavoriteRepository>())..add(FavoriteReadEvent()),
+            create: (context) => FavoriteBloc(repo: context.read<FavoriteRepository>())
           ),
           BlocProvider(
             create: (context) => NavbarBloc(),
@@ -102,14 +101,11 @@ class MyApp extends StatelessWidget {
             )
           ),
           BlocProvider(
-            create: (context) => CartBloc()..add(CartReadEvent()),
+            create: (context) => CartBloc(),
           ),
           BlocProvider(
             create: (context) => OrderBloc(),
           ),
-          // BlocProvider(
-          //   create: (context) => ProfileBloc()..add(ProfileReadEvent())
-          // ),
           BlocProvider(
             create: (context) => ProfileBloc()
           ),

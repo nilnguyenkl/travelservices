@@ -3,9 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
-import 'package:travelservices/blocs/navbar_bloc/navbar_bloc.dart';
-import 'package:travelservices/blocs/navbar_bloc/navbar_event.dart';
-import 'package:travelservices/blocs/navbar_bloc/navbar_state.dart';
 import 'package:travelservices/blocs/order_bloc/order_bloc.dart';
 import 'package:travelservices/blocs/order_bloc/order_event.dart';
 import 'package:travelservices/blocs/order_bloc/order_state.dart';
@@ -422,8 +419,10 @@ class _CartPageState extends State<CartPage> {
                                         onPressed: () {
                                           if (args.way) {
                                             Navigator.pop(context);
+                                            context.read<CartBloc>().add(CartReadEvent());
                                           } else {
                                             Navigator.pushNamed(context, Routes.productDetails, arguments: IdArguments(args.idService ?? 0, false));
+                                            context.read<CartBloc>().add(CartReadEvent());
                                           }
                                         },
                                         style: ButtonStyle(

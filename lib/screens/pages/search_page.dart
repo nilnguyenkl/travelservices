@@ -433,6 +433,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget resultSearch(List<ProductData> data) {
+    FavoriteBloc favoriteBloc = context.read<FavoriteBloc>();
+    favoriteBloc.add(FavoriteReadEvent());
     return Expanded(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -496,6 +498,7 @@ class _SearchPageState extends State<SearchPage> {
                                     ],
                                   ),
                                   BlocBuilder<FavoriteBloc, FavoriteState>(
+                                    bloc: favoriteBloc,
                                     buildWhen: (previous, current) {
                                       return previous.statusAdd != current.statusAdd || previous.statusDelete != current.statusDelete;
                                     },
@@ -504,9 +507,9 @@ class _SearchPageState extends State<SearchPage> {
                                       return IconButton(
                                         onPressed: (){
                                           if (contain.isEmpty) {
-                                            context.read<FavoriteBloc>().add(FavoriteAddEvent(idProduct: data[index].id));
+                                            favoriteBloc.add(FavoriteAddEvent(idProduct: data[index].id));
                                           } else {
-                                            context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: data[index].id));
+                                            favoriteBloc.add(FavoriteDeleteEvent(idProduct: data[index].id));
                                           }
                                         },
                                         icon: Icon(

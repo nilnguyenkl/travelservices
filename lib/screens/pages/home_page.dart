@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_bloc.dart';
+import 'package:travelservices/blocs/cart_bloc/cart_event.dart';
 import 'package:travelservices/blocs/cart_bloc/cart_state.dart';
 import 'package:travelservices/blocs/category_bloc/category_bloc.dart';
 import 'package:travelservices/blocs/category_bloc/category_event.dart';
@@ -54,6 +55,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    CartBloc cartBloc = context.read<CartBloc>();
+    cartBloc.add(CartReadEvent());
+
     return SafeArea(
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -127,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ),
               BlocBuilder<CartBloc, CartState>(
+                bloc: cartBloc,
                 builder:(context, state) {
                   return Badge(
                     badgeContent: Text(state.items.length.toString()),
@@ -337,6 +343,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget serviceTravelHot(BuildContext context){
+
+    FavoriteBloc favoriteBloc = context.read<FavoriteBloc>();
+    favoriteBloc.add(FavoriteReadEvent());
+
     return SizedBox(
       child: FutureBuilder(
           future: getServiceHot(),
@@ -383,6 +393,7 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           BlocBuilder<FavoriteBloc, FavoriteState>(
+                                            bloc: favoriteBloc,
                                             buildWhen: (previous, current) {
                                               return previous.statusAdd != current.statusAdd || previous.statusDelete != current.statusDelete;
                                             },
@@ -391,9 +402,9 @@ class _HomePageState extends State<HomePage> {
                                               return IconButton(
                                                 onPressed: (){
                                                   if (contain.isEmpty) {
-                                                    context.read<FavoriteBloc>().add(FavoriteAddEvent(idProduct: data[index].id));
+                                                    favoriteBloc.add(FavoriteAddEvent(idProduct: data[index].id));
                                                   } else {
-                                                    context.read<FavoriteBloc>().add(FavoriteDeleteEvent(idProduct: data[index].id));
+                                                    favoriteBloc.add(FavoriteDeleteEvent(idProduct: data[index].id));
                                                   }
                                                 },
                                                 icon: Icon(
