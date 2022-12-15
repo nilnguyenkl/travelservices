@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:travelservices/api/api.dart';
 import 'package:travelservices/configs/colors.dart';
 import 'package:travelservices/configs/constants.dart';
@@ -149,9 +150,31 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         newPassword: newPasswordController.text
                       ));
                       if (message.message == "Success") {
-                        print("success");
+                        if (!mounted) return;
+                        MotionToast.success(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width*3/4,
+                          title: const Text(
+                            "Success",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          description: const Text("Change success")
+                        ).show(context);
                       } else {
-                        print("failed");
+                        if (!mounted) return;
+                        MotionToast.error(
+                          height: 80,
+                          width: MediaQuery.of(context).size.width*3/4,
+                          title: const Text(
+                            "Failed",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          description: const Text("Change failed")
+                        ).show(context);
                       }
                     },
                     style: ButtonStyle(

@@ -70,14 +70,14 @@ class TicketForProductForUpdate {
   final int idTicket;
   final int valueTicket;
   final String typeTicket;
-  final String noteTicket;
+  final String note;
   final int amountTicket;
   
   TicketForProductForUpdate({
     required this.idTicket,
     required this.valueTicket,
     required this.typeTicket,
-    required this.noteTicket,
+    required this.note,
     required this.amountTicket,
   });
 
@@ -85,7 +85,7 @@ class TicketForProductForUpdate {
     "idTicket": idTicket,
     "valueTicket": valueTicket,
     "typeTicket": typeTicket,
-    "noteTicket": noteTicket,
+    "note": note,
     "amountTicket": amountTicket,
   };
 }

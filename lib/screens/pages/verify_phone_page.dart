@@ -8,6 +8,7 @@ import 'package:travelservices/blocs/signup_bloc/signup_event.dart';
 import 'package:travelservices/blocs/signup_bloc/signup_state.dart';
 import 'package:travelservices/routes.dart';
 import 'package:travelservices/screens/arguments/signupform.dart';
+import 'package:travelservices/screens/arguments/typeloginarguments.dart';
 
 class VerifyPhonePage extends StatefulWidget {
   const VerifyPhonePage({Key? key}) : super(key: key);
@@ -158,7 +159,8 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                             print("asdasd");
                           }
                           if (state.status is SuccessStatus) {
-                            Navigator.pushNamed(context, Routes.login);
+                            // print("1111111111111111");
+                            // Navigator.pushNamed(context, Routes.login);
                           }
                           return SizedBox(
                             width: MediaQuery.of(context).size.width*0.35,
@@ -179,6 +181,56 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
                                         context.read<SignUpBloc>().add(SignUpProviderEvent(formData.provider));
                                         context.read<SignUpBloc>().add(SignUpRoleEvent(formData.role));
                                         context.read<SignUpBloc>().add(SignUpSubmitEvent());
+                                        showDialog(
+                                          context: context, 
+                                          builder: (context) {
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(15)
+                                              ),
+                                              child: SizedBox(
+                                                height: 200,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/images/success.png",
+                                                      height: 50,
+                                                      width: 50,
+                                                    ), 
+                                                    const SizedBox(height: 20),
+                                                    const Text(
+                                                      "Successfully",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 18,
+                                                        fontStyle: FontStyle.italic
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 20),
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        if (formData.role == 1) {
+                                                          Navigator.pushNamed(context, Routes.login, arguments: TypeLogin(false, "Admin"));
+                                                        } else {
+                                                          Navigator.pushNamed(context, Routes.login, arguments: TypeLogin(true, "User"));
+                                                        }
+                                                      },
+                                                      style: ButtonStyle(
+                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(18.0),
+                                                          )
+                                                        )
+                                                      ), 
+                                                      child: const Text("OK")
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        );
                                     } else {
                                       MotionToast.error(
                                         height: 80,

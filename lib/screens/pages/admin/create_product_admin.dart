@@ -684,7 +684,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                       TicketForProductForAdd ticket = TicketForProductForAdd(
                         valueTicket: int.parse(widget.valueController.text), 
                         typeTicket: widget.typeController.text, 
-                        noteTicket: widget.amountController.text, 
+                        noteTicket: widget.noteController.text, 
                         amountTicket: int.parse(widget.amountController.text)
                       );
                       tickets.add(ticket);
@@ -791,7 +791,7 @@ class _CreateProductAdminState extends State<CreateProductAdmin> {
                         idTicket: idTickets[i], 
                         valueTicket: int.parse(ticketsWidget[i].valueController.text), 
                         typeTicket: ticketsWidget[i].typeController.text, 
-                        noteTicket: ticketsWidget[i].noteController.text, 
+                        note: ticketsWidget[i].noteController.text, 
                         amountTicket: int.parse(ticketsWidget[i].amountController.text)
                       );
                       ticket.add(temp);

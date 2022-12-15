@@ -5,7 +5,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelservices/models/cart_model.dart';
 import 'package:travelservices/models/login_model.dart';
-import 'package:travelservices/models/manage_order_model.dart';
 import 'package:travelservices/models/message_model.dart';
 import 'package:travelservices/models/order_model.dart';
 import 'package:travelservices/models/product_admin_model.dart';
@@ -478,6 +477,7 @@ class Api {
   Future<MessageModel> updateService(String url, String endpoint, UpdateProduct model, int idService) async {
     Response response;
     String token = await SharedPreferencesCustom.getStringCustom('accessToken');
+    print(model.toJson());
     try {
       response = await Dio().put(
         url + endpoint + idService.toString(),
